@@ -148,7 +148,9 @@ i.test{
 
 .beta-btn.primary {
     background-color: #ffffff;
-    color: black;
+    font-weight: bold;
+    color: rgb(203, 13, 19);
+    text-decoration: none;
     border: 1px solid blue;
 }
 

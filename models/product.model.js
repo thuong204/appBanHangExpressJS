@@ -7,7 +7,7 @@ const productSchema = new mongoose.Schema(
         discountPercentage: Number,
         total: Number,
         status:String,
-        deleted:Boolean,
+        delete:Boolean,
         thumbnail:String
     }
 )

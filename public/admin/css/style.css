@@ -1,0 +1,57 @@
+/* Header */
+.header {
+    background: #202020;
+    padding: 10px 0;
+    position: sticky;
+    top: 0;
+    z-index: 999;
+}
+.header .inner-logo a {
+    font-size: 24px;
+    font-weight: 700;
+    color: #fff;
+}
+/* End header */
+
+/* Body */
+.body {
+    display: flex;
+    flex-wrap: nowrap;
+    height: 100%;
+    overflow: hidden;
+}
+.body .sider {
+    width: 150px;
+    background: #323232;
+    color: #fff;
+    height: calc(100vh - 56px); /* Adjust height considering header */
+    position: fixed;
+    top: 56px;
+    left: 0;
+}
+.body .main {
+    margin: 15px;
+    position: relative;
+    left: 150px;
+    width: calc(100% - 180px); /* Adjust width considering sider width and main margin */
+    overflow: auto; /* Add scroll if content exceeds */
+}
+/* End Body */
+
+/* Sider */
+.sider .inner-menu ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+.sider .inner-menu ul li a {
+    color: #fff;
+    display: block;
+    padding: 6px 10px;
+    text-decoration: none;
+    border-bottom: 1px solid #515151;
+}
+.sider .inner-menu ul li a:hover {
+    background: #444; /* Add hover effect */
+}
+/* End Sider */

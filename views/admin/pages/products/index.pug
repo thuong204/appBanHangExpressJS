@@ -1,0 +1,36 @@
+extends ../../layouts/default.pug
+block main  
+    h1 Danh sách sản phẩm
+
+    .card-mb-3
+        .card-header Bộ lọc và tìm kiếm 
+        .card-body.mt-3
+            each item in filterStatus
+                button(class= `btn btn-sm ms-1 btn-outline-success ${item.class}` button-status = item.status) #{item.name}
+
+    table.table.table-hover.table-sm.mt-3
+        thead
+            tr
+                th STT
+                th Hình ảnh
+                th Tiêu đề
+                th Giá
+                th Trạng thái
+                th Hành động
+        tbody
+            each item, index in products
+                tr
+                    td #{index+1}
+                    td 
+                        img(src= item.thumbnail, alt='Hình ảnh sản phẩm' width='50')
+                    td #{item.title}
+                    td #{item.price}$
+                    td  
+                        if(item.status==="active")
+                            a(href="#" class="badge bg-success text-decoration-none") Hoạt động
+                        else
+                            a(href="#" class="badge bg-danger text-decoration-none") Dừng hoạt động
+
+                    td 
+                        button(class="btn btn-warning btn-sm" href="") Sửa
+                        button(class="btn btn-danger btn-sm ms-1" href="") Xóa
