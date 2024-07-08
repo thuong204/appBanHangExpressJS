@@ -1,40 +1,79 @@
 const Product = require("../../models/product.model")
+const filterStatusHelpers = require("../../helpers/filterStatus")
+const searchHelpers = require("../../helpers/search")
+const paginationHelpers = require("../../helpers/pagination")
+
 module.exports.index = async (req, res) => {
-    let filterStatus =[
-        {
-            name:"Tất cả",
-            status:"",
-            class:""
-        },
-        {
-            name:"Hoat động",
-            status:"active",
-            class:""
-        },  {
-            name:"Dừng hoạt động",
-            status:"inactive",
-            class:""
-        }
-    ]
-    // màu xanh hoạt động
-    if(req.query.status){
-        const index = filterStatus.findIndex(item => item.status == req.query.status)
-        filterStatus[index].class = "active"
-    }
-    else{
-        const index = filterStatus.findIndex(item => item.status == "")
-        filterStatus[index].class = "active"
-    }
+
+    const filterStatus = filterStatusHelpers(req.query);
     let find = {
         delete: false
     }
 
-    if(req.query.status)
+    const objectSearch = searchHelpers(req.query)
+    if(req.query.status){
         find.status = req.query.status
-    const  products =  await Product.find(find)
+    }
+    if(objectSearch.regex){
+        find.title = objectSearch.regex
+    }
+    //Pagination
+    const countProducts =  await Product.find(find).count()
+    let objectPagination = paginationHelpers({
+        currentPage:1,
+        limitItems:4,
+    },req.query,countProducts)
+
+    
+    //End pagination
+
+       
+
+    const  products =  await Product.find(find).limit(objectPagination.limitItems).skip(objectPagination.skip)
     res.render("admin/pages/products/index",{
         pageTitle:"Manage Products",
         products: products,
-        filterStatus: filterStatus
+        filterStatus: filterStatus,
+        keyworld: objectSearch.keyworld,
+        pagination: objectPagination
     })
  };
+ //ChangeStatus PATCH
+ module.exports.changeStatus = async (req, res) =>{
+    const status  = req.params.status
+    const id = req.params.id
+
+    await Product.updateOne({_id:id}, {status: status})
+
+
+    res.redirect('back')
+    
+ } 
+
+ //ChangeMulti PATCH
+ module.exports.changeMulti = async (req, res) =>{
+    const type = req.body.type
+    const ids = req.body.ids.split(", ")
+
+    switch(type){
+        case "active":
+            await Product.updateMany({
+                _id: { $in: ids}},
+                {
+                status: "active"
+            })
+
+            break;
+        case "inactive":
+            await Product.updateMany({
+                _id: { $in: ids}},
+                {
+                status: "inactive"
+            })
+            break;
+        default: 
+            break;
+    }
+    res.redirect("back")
+    
+ } 

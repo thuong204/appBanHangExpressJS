@@ -11,7 +11,6 @@ module.exports.index = async (req, res) => {
     res.render("clients/pages/products/index",{
         pageTitle:"Trang sản phẩm",
         products: products
-
     }
     )
  };

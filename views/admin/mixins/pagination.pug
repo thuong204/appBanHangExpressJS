@@ -1,0 +1,17 @@
+mixin pagination
+    nav.mt-3    
+        ul(class="pagination")
+            if(pagination.currentPage>1)
+                li(class="page-item")
+                    button(class="page-link" button-pagination= pagination.currentPage-1) Trang trước
+            - for (var i = pagination.currentPage-2;i<=pagination.totalPage;i++)
+                if(i<1) 
+                    - continue
+                li(class=`page-item ${pagination.currentPage == i ? "active" :""}`)
+                    button(class="page-link" button-pagination= i) #{i}
+                if(i>pagination.currentPage+1) 
+                    -break
+              
+            if(pagination.currentPage<pagination.totalPage)
+                li(class="page-item")
+                    button(class="page-link" button-pagination= pagination.currentPage+1) Trang tiếp
