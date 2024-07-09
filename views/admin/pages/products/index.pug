@@ -20,7 +20,14 @@ block main
     .card.mt-3
         .card-header Danh sách
             .card-body
-                +form-change-multi(`${prefixAdmin}/products/change-multi?_method=PATCH`)
+                .row 
+                    .col-10
+                        +form-change-multi(`${prefixAdmin}/products/change-multi?_method=PATCH`)
+                    .col-2
+                        a(
+                            class="btn btn-outline-success"
+                            href=`${prefixAdmin}/products/create`
+                        ) +Thêm sản phẩm
                 table(
                     class="table table-hover table-sm mt-3"
                     checkbox-multi
