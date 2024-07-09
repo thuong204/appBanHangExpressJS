@@ -101,18 +101,34 @@ if (formchangeMulti) {
         const inputChecked = checkboxMulti.querySelectorAll(
             "input[name='id']:checked"
         )
-        if(inputChecked.length > 0){
+
+        const typeChange = e.target.elements.type.value;
+        if (typeChange == "delete-all") {
+            const isConfirm = confirm("Bạn có chắc muốn xóa những sản phẩm này")
+            if (!isConfirm) {
+                return;
+            }
+        }
+        if (inputChecked.length > 0) {
             let ids = [];
             const inputIds = formchangeMulti.querySelector("input[name='ids']")
-            inputChecked.forEach(input =>{
-                const id = input.value 
-                ids.push(id)
+            inputChecked.forEach(input => {
+                const id = input.value
+                if (typeChange == "change-position") {
+                    const position = input.closest("tr").querySelector("input[name='position']").value
+                    console.log(`${id} - ${position}`)
+                    ids.push(`${id}-${position}`)
+                }
+                else {
+                    ids.push(id)
+                }
 
             })
+
             inputIds.value=ids.join(", ")
             formchangeMulti.submit()
         }
-        else{
+        else {
             alert("Vui lòng chọn ít nhất một bản ghi")
         }
 
@@ -122,20 +138,34 @@ if (formchangeMulti) {
 
 //Delete item
 const buttonDelete = document.querySelectorAll(("[button-delete]"))
-if(buttonDelete){
-    buttonDelete.forEach(button =>{
-        const formDeleteItem= document.querySelector("#form-delete-item")
+if (buttonDelete) {
+    buttonDelete.forEach(button => {
+        const formDeleteItem = document.querySelector("#form-delete-item")
         const path = formDeleteItem.getAttribute("data-path")
-        button.addEventListener("click", () =>{
+        button.addEventListener("click", () => {
             const isConfirm = confirm("Bạn có chắc muốn xóa sản phẩm này")
-            if(isConfirm){
+            if (isConfirm) {
                 const idDelete = button.getAttribute("data-id")
-                const action =  `${path}/${idDelete}?_method=DELETE`
-                formDeleteItem.action= action
+                const action = `${path}/${idDelete}?_method=DELETE`
+                formDeleteItem.action = action
                 formDeleteItem.submit()
             }
         })
     })
 }
+//Show alert
+const showAlert = document.querySelector("[show-alert]")
+if(showAlert){
+     const closeAlert = document.querySelector("[close-alert]")
+    const time = parseInt(showAlert.getAttribute("data-time"))
+    setTimeout(()=>{
+        showAlert.classList.add("alert-hidden")
+    },time)
+    closeAlert.addEventListener8("click",()=>{
+        showAlert.classList.add("alert-hidden")
 
+    })
+
+}
+//End show alert
 

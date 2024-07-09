@@ -3,7 +3,10 @@ include ../../mixins/filterStatus.pug
 include ../../mixins/search.pug
 include ../../mixins/pagination.pug
 include ../../mixins/form-change-multi.pug
-block main  
+include ../../mixins/alert.pug
+block main 
+    +alert-success(3000)
+
     h1 Danh sách sản phẩm
 
     .card
@@ -14,9 +17,6 @@ block main
                     +filterStatus()
                 .col-6
                     +search()
-
-
-
     .card.mt-3
         .card-header Danh sách
             .card-body
@@ -33,6 +33,7 @@ block main
                             th Hình ảnh
                             th Tiêu đề
                             th Giá
+                            th Vị trí
                             th Trạng thái
                             th Hành động
                     tbody
@@ -45,6 +46,14 @@ block main
                                     img(src= item.thumbnail, alt='Hình ảnh sản phẩm' width='50')
                                 td #{item.title}
                                 td #{item.price}$
+                                td 
+                                    input(
+                                        type="number"
+                                        value = item.position
+                                        style ="width: 60px"
+                                        min="1"
+                                        name="position"
+                                    )
                                 td  
                                     if(item.status==="active")
                                         a(href="javascript:;" button-change-status data-status = item.status data-id = item.id class="badge bg-success text-decoration-none") Hoạt động

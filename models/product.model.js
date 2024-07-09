@@ -6,9 +6,11 @@ const productSchema = new mongoose.Schema(
         quantity: Number,
         discountPercentage: Number,
         total: Number,
+        position:Number,
         status:String,
         delete:Boolean,
-        thumbnail:String
+        thumbnail:String,
+        deletedAt:Date
     }
 )
 

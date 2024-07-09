@@ -2,6 +2,11 @@ extends ../../layouts/default.pug
 block main  
     br
     br 
+
+    - if(messages.Success){
+        .message.info 
+            span = messages.success
+    }
     .row
         each item in products
             .col-sm-3

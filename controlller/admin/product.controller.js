@@ -29,7 +29,7 @@ module.exports.index = async (req, res) => {
 
        
 
-    const  products =  await Product.find(find).limit(objectPagination.limitItems).skip(objectPagination.skip)
+    const  products =  await Product.find(find).sort({position:"asc"}).limit(objectPagination.limitItems).skip(objectPagination.skip)
     res.render("admin/pages/products/index",{
         pageTitle:"Manage Products",
         products: products,
@@ -42,10 +42,17 @@ module.exports.index = async (req, res) => {
  module.exports.changeStatus = async (req, res) =>{
     const status  = req.params.status
     const id = req.params.id
+    let statusVN = ""
+    if(status=="active"){
+        statusVN ="Hoạt Động"
+    }
+    else{
+        statusVN = "Dừng Hoạt Động"
+    }
 
     await Product.updateOne({_id:id}, {status: status})
 
-
+    req.flash("Success",`Cập nhật trạng thái "${statusVN}" thành công`);
     res.redirect('back')
     
  } 
@@ -62,6 +69,7 @@ module.exports.index = async (req, res) => {
                 {
                 status: "active"
             })
+            req.flash("Success",`Cập nhật trạng thái  "Hoạt Động"${ids.length} sản phẩm thành công`)
 
             break;
         case "inactive":
@@ -70,7 +78,30 @@ module.exports.index = async (req, res) => {
                 {
                 status: "inactive"
             })
+            req.flash("Success",`Cập nhật trạng thái "Dừng Hoạt Động" ${ids.length} sản phẩm thành công`)
             break;
+        case "delete-all":
+            await Product.updateMany(
+                {_id: {$in: ids}},
+                {
+                    delete:true,
+                    deletedAt: new Date()
+                }
+            )
+            req.flash("Success",`Xóa ${ids.length} sản phẩm thành công`)
+            break;
+        case "change-position":
+            for(const item of ids){
+                let [id,position]= item.split("-")
+                position = parseInt(position)
+                await Product.updateOne(
+                {_id: id},
+                {position: position}
+            )
+            }
+            req.flash("Success",`Thay đổi vị trí ${ids.length} sản phẩm thành công`)
+            break;
+           
         default: 
             break;
     }
@@ -80,6 +111,6 @@ module.exports.index = async (req, res) => {
 //delete item
 module.exports.deleteItem = async (req, res) =>{
     const id  = req.params.id
-    await Product.deleteOne({_id: id})
+    await Product.updateOne({_id: id},{delete: true,deletedAt: new Date()})
     res.redirect("back")
 }

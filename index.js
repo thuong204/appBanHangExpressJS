@@ -10,6 +10,10 @@ const systemConfig= require("./config/system.js")
 
 const bodyParser = require("body-parser")
 
+const flash = require("express-flash")
+const cookieParser =require("cookie-parser")
+const session = require("express-session")
+
 const database = require("./config/database.js")
 
 const app = express()
@@ -28,6 +32,11 @@ app.locals.prefixAdmin =  systemConfig.prefixAdmin
 
 app.use(bodyParser.urlencoded({extended: false}))
 
+//flash
+app.use(cookieParser("JHGJKLKLGFLJK"))
+app.use(session({cookie: {maxAge: 60000}}))
+app.use(flash())
+//end flash
 
 route(app);
 routeAdmin(app);

@@ -1,0 +1,7 @@
+mixin alert-success(time)
+    - if(messages.Success)
+        div(
+            class="alert alert-success"
+            show-alert 
+            data-time=time
+        ) #{messages.Success} <span close-alert >x</span>

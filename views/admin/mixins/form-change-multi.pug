@@ -8,8 +8,12 @@ mixin form-change-multi(path)
                         .form-group
     
                             select(name="type" class="form-select")
+                                option(disabled selected) -- Chọn hành động--
                                 option(value="active") Hoạt động
                                 option(value="inactive") Dừng hoạt động
+                                option(value="delete-all") Xóa sản phẩm
+                                option(value="change-position") Thay đổi vị trí
+
                         .form-group
                             input(
                                 type="text"
