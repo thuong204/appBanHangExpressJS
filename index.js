@@ -2,6 +2,7 @@ const express = require('express')
 require("dotenv").config()
 
 const methodOverride=  require("method-override")
+const multer = require('multer');
 
 const route = require("./routes/client/index.route")
 const routeAdmin = require("./routes/admin/index.route")

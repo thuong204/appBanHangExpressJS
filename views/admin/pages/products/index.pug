@@ -6,8 +6,8 @@ include ../../mixins/form-change-multi.pug
 include ../../mixins/alert.pug
 block main 
     +alert-success(3000)
-
-    h1 Danh sách sản phẩm
+    +alert-error(3000)
+        h1 Danh sách sản phẩm
 
     .card
         .card-header Bộ lọc và tìm kiếm 
@@ -68,7 +68,10 @@ block main
                                         a(href=`javascript:;` button-change-status data-status = item.status data-id = item.id class="badge bg-danger text-decoration-none") Dừng hoạt động
 
                                 td 
-                                    button(class="btn btn-warning btn-sm") Sửa
+                                    a(
+                                        href=`${prefixAdmin}/products/edit/${item.id}`
+                                        class="btn btn-warning btn-sm"
+                                        data-id = item.id) Sửa
                                     button(class="btn btn-danger btn-sm ms-1" button-delete data-id=item.id ) Xóa
     +pagination()
     form(

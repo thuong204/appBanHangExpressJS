@@ -1,11 +1,14 @@
 extends ../../layouts/default.pug
+include ../../mixins/alert.pug
 block main
+    +alert-error(3000)
     .container.mt-5
       h2(class="text-danger") Thêm mới sản phẩm
       form(
         action=`${prefixAdmin}/products/create`
         id="form-create-product"
         method="POST"
+        enctype="multipart/form-data"
       )
         div(class="mb-3")
           label(for="title") Tiêu đề
@@ -48,13 +51,21 @@ block main
             value="0" 
             min="0" 
             placeholder="Nhập số lượng")
-        div(class="mb-3")
+        div(class="mb-3" upload-image)
           label(for="thumbnail") Hình ảnh
           input.form-control(
-            type="text" 
+            type="file" 
             id="thumbnail" 
+            class="form-control-file"
+            accept ="image/*"
             name="thumbnail" 
+            upload-image-input
             value="")
+          img(
+              src=""
+              class="image-preview"
+              upload-image-preview
+            )
         div(class="mb-3")
           label(for="position") Vị trí
           input.form-control(
@@ -69,6 +80,7 @@ block main
             class="form-check-input" 
             id="statusActive" 
             name="status" 
+            checked
             value="active")
           label(
             for="statusActive" 

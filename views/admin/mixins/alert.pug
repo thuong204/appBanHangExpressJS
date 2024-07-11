@@ -5,3 +5,12 @@ mixin alert-success(time)
             show-alert 
             data-time=time
         ) #{messages.Success} <span close-alert >x</span>
+
+mixin alert-error(time)
+    - if(messages.Error)
+        .message-info
+            div(
+                class="alert alert-danger"
+                show-alert 
+                data-time=time
+            ) #{messages.Error} <span close-alert >x</span>
