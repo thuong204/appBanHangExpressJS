@@ -1,2 +1,41 @@
-footer.footer 
-    .copy @Copyright 2024 Vo Thuong
+#footer.bg-footer.py-5
+    .container
+        .row.g-4
+            .col-md-5
+                .widget
+                    h4.widget-title.text-uppercase Công ty TNHH Vô Thường
+                    p.footer-text Mã Số Thuế: 01064848679
+                    p.footer-text Địa chỉ: Phường Hòa Quý - Quận Ngũ Hành Sơn - TP Đà Nẵng.
+
+                .widget
+                    h4.widget-title.text-uppercase(style="color: red; font-size: 20px;") Tham gia bảng tin
+                    form(action="#" method="post")
+                        .mb-3
+                            input.form-control(type="email" name="your_email" style="width:80%" placeholder="Nhập email của bạn")
+                        button.btn.btn-success(type="submit") Đăng kí
+
+            .col-md-4
+                .widget
+                    h4.widget-title.text-uppercase Chính sách khách hàng
+                    ul.list-unstyled.footer-list
+                        li: a(href="blog_fullwidth_2col.html") Chính sách khách hàng thân thiết
+                        li: a(href="blog_fullwidth_2col.html") Chính sách đổi trả
+                        li: a(href="blog_fullwidth_2col.html") Chính sách bảo hành
+                        li: a(href="blog_fullwidth_2col.html") Chính sách bảo mật
+                        li: a(href="blog_fullwidth_2col.html") Câu hỏi thường gặp
+                        li: a(href="blog_fullwidth_2col.html") Hướng dẫn mua hàng online
+                        li: a(href="blog_fullwidth_2col.html") Hướng dẫn kiểm tra hạng thẻ thành viên
+
+            .col-md-3
+                .widget
+                    h4.widget-title.text-uppercase Thông tin cửa hàng
+                    .contact-info
+                        p.footer-text Phường Hòa Quý - Quận Ngũ Hành Sơn - TP Đà Nẵng
+                        p.footer-text Triệu Sơn - Triệu Phong - Quảng Trị
+                        p.footer-text Phường Nam Hải - Quận 1 - Hồ Chí Minh
+
+.copyright.bg-dark.pt-3.text-center.text-md-start
+    .container
+        .row.align-items-center
+            .col-md-6
+                p.text-white Privacy policy. (&copy;) 2024

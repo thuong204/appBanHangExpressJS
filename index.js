@@ -25,7 +25,7 @@ app.use(methodOverride('_method'))
 database.connect()
 
 
-app.set('views', './views')
+app.set('views', `${__dirname}/views`)
 app.set('view engine', 'pug')
 
 //App local variable
@@ -41,7 +41,7 @@ app.use(flash())
 
 route(app);
 routeAdmin(app);
-app.use(express.static('public'))
+app.use(express.static(`${__dirname}/public`))
 
 
 app.listen(port, () => {

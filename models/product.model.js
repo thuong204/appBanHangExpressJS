@@ -16,7 +16,8 @@ const productSchema = new mongoose.Schema(
         slug:{
             type:String,
             slug:"title",
-            unique: true
+            unique: true,
+            index: true
         }
     },{
         timestamps: true

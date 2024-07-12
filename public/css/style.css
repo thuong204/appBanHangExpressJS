@@ -60,6 +60,13 @@ i.test{
     padding-right: 15px;
     padding-left: 15px;
 }
+.col-sm-9{
+    position: relative;
+    width: 100%;
+    padding-right: 15px;
+    padding-left: 15px;
+}
+
 
 .single-item {
     border: 1px solid #ddd;
@@ -83,31 +90,29 @@ i.test{
     margin-top: 20px;
     max-width: 100%;
     width:130px;
-    height:180px;
-    height: auto;
+    height:130px;
+
 }
 
 .single-item-body {
-    text-align: center;
     margin-bottom: 15px;
 }
 
-.single-item-title {
-    font-size: 14px;
-    height: 50px;
+.single-item .single-item-body .single-item-title {
+    font-size: 20px;
     font-weight: bold;
     margin-bottom: 10px;
 }
 
 .single-item-price span.price {
-    font-size: 15px;
+    font-size: 16px;
     color: red;
     text-decoration: line-through;
     font-weight: bold;
     margin-right: 30px;
 }
 .single-item-price span.price-payment{
-    font-size: 15px;
+    font-size: px;
     color: rgb(18, 175, 15);
     font-weight: bold;
 }
@@ -151,7 +156,7 @@ i.test{
     font-weight: bold;
     color: rgb(203, 13, 19);
     text-decoration: none;
-    border: 1px solid blue;
+    border: 1px solid rgb(255, 0, 0);
 }
 
 .beta-btn.primary:hover {
@@ -169,6 +174,156 @@ i.test{
     margin-left: 5px;
 }
 
+/* footer */
+/* Custom Footer Styles */
+/* Custom Footer Styles */
+#footer {
+    background-color: #f2eeee;
+  }
+  
+  .widget-title {
+    color: red;
+    font-size: 18px;
+    font-weight: bold;
+  }
+  
+  .footer-text {
+    font-size: 14px;
+  }
+  
+  .footer-list li {
+    margin-bottom: 5px;
+  }
+  .footer-list li a{
+    color: black;
+    text-decoration: none;
+  }
+  .contact-info {
+    margin-top: 15px;
+  }
+  
+  .copyright {
+    background-color: #343a40;
+    color: #fff;
+    font-size: 14px;
+  }
+  
+  /* Responsive Adjustments */
+  @media (max-width: 991.98px) {
+    .widget-title {
+      font-size: 16px;
+    }
+  }
+  
+  @media (max-width: 767.98px) {
+    .footer-list li {
+      margin-bottom: 3px;
+    }
+  }
+ /* end footer    */
 
 
+ /* container  */
+ /* Custom Styles for Your Website */
+
+/* Style for product thumbnail */
+.row span.discount {
+    position: absolute;
+    font-size: 15px;
+    width: 70px;
+    height: 40px;
+    margin-top: 10px;
+    margin-left: 10px;
+    color: #fff;
+    font-weight: bold;
+    background: red;
+    padding: 10px;
+    animation: blink 0.2s infinite alternate;
+}
+
+.single-item-body img {
+    margin-top: 20px;
+    max-width: 100%;
+    width:130px;
+    height:130px;
+}
+
+/* Style for single item title */
+
+.single-item-body .single-item-title {
+    font-weight: bold;
+    font-size: 20sm !important;
+    margin-top: 10px;
+    color: red;
+}
+
+/* Style for single item price */
+
+/* Style for options */
+.single-item-options {
+    display: flex;
+}
+.single-item-options{
+    font-size: 15sm;
+}
+
+.single-item-options select {
+    width: 100px;
+    margin-right:5px;
+    padding: 8px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+}
+
+.single-item-options a.add-to-cart {
+    display: inline-block;
+    color: #fff;
+    height:100%;
+    padding: 8px 8px;
+    border-radius: 4px;
+    background:red;
+    text-decoration: none;
+}
+
+.single-item-options a.add-to-cart:hover {
+    background-color: #0056b3;
+}
+
+/* WooCommerce Tabs */
+.tabs.nav.nav-tabs {
+    border-bottom: none;
+}
+
+.tabs.nav.nav-tabs li.nav-item {
+    margin-bottom: 0;
+}
+
+.tabs.nav.nav-tabs li.nav-item a.nav-link {
+    border: none;
+    background:#76BB68;
+    color: #F3E5CA;
+    font-weight: bold;
+}
+
+.tabs.nav.nav-tabs li.nav-item a.nav-link.active {
+    color: #007bff;
+    border-bottom: 2px solid #007bff;
+}
+
+.tab-content .tab-pane {
+    padding: 20px 0;
+}
+
+/* Space utilities */
+.space20 {
+    margin-top: 20px;
+}
+
+.space40 {
+    margin-top: 40px;
+}
+
+.space50 {
+    margin-top: 50px;
+}
 

@@ -1,25 +1,26 @@
 extends ../../layouts/default.pug
 block main  
-    br
-    br 
 
-    .row
+    h2(class="text-danger mt-3 ms-3") Danh sách sản phẩm
+
+    .row.mt-4
         each item in products
             .col-sm-3
                 .single-item
                     span.discount -#{item.discountPercentage}%
                     .single-item-header
-                        a(href='product.html')
-                        img(src=item.thumbnail)
+                        a(href=`products/detail/${item.slug}`)
+                            img(src=item.thumbnail)
                     .single-item-body
-                        p.single-item-title #{item.title}
-                        p.single-item-price
+                        p.single-item-title.text-center
+                            a(class="text-decoration-none text-danger" href=`products/detail/${item.slug}`) #{item.title}
+                        p.single-item-price.text-center
                             span.price #{item.price}$
                             span.price-payment  #{item.priceNew}$
                     .single-item-caption
                         a.add-to-cart.pull-left(href='shopping_cart.html')
                             i.fa.fa-shopping-cart
-                        a.beta-btn.primary(href='product.html')
+                        a.beta-btn.primary(href=`products/detail/${item.slug}`)
                             | Details 
                             i.fa.fa-chevron-right
                     .clearfix
