@@ -28,6 +28,7 @@ router.get(
 router.patch(
     '/edit/:id',
     upload.single("thumbnail"),
+    uploadFile.upload,
     validate.createPost,
     controller.updateItem,
 )
