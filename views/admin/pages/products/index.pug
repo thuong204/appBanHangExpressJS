@@ -69,8 +69,12 @@ block main
 
                                 td 
                                     a(
+                                        href=`${prefixAdmin}/products/detail/${item.id}`
+                                        class="btn btn-secondary btn-sm"
+                                        data-id = item.id) Chi tiết
+                                    a(
                                         href=`${prefixAdmin}/products/edit/${item.id}`
-                                        class="btn btn-warning btn-sm"
+                                        class="btn btn-warning btn-sm ms-1"
                                         data-id = item.id) Sửa
                                     button(class="btn btn-danger btn-sm ms-1" button-delete data-id=item.id ) Xóa
     +pagination()

@@ -99,3 +99,64 @@
     display: none;
 }
 
+.container {
+    max-width: 800px;
+    margin: 40px auto;
+    padding: 20px;
+    background-color: #ffffff;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+}
+
+/* Header Styles */
+h1 {
+    color: #343a40;
+    font-size: 2rem;
+    margin-bottom: 20px;
+}
+
+/* Margin Bottom Utility Class */
+.mb-4 {
+    margin-bottom: 1.5rem;
+    font-size: 1.1rem;
+    color: #555;
+}
+
+/* Badge Styles */
+.badge {
+    padding: 0.5em 1em;
+    border-radius: 0.25rem;
+    font-size: 0.875rem;
+    display: inline-block;
+}
+
+.badge.bg-success {
+    background-color: #28a745;
+    color: white;
+}
+
+.badge.bg-danger {
+    background-color: #dc3545;
+    color: white;
+}
+
+/* Image Styles */
+img {
+    width: 170px;
+    height: auto;
+    border-radius: 8px;
+    display: block;
+    margin-bottom: 20px;
+}
+
+/* Additional Styling */
+.product-detail {
+    color: #343a40;
+    font-size: 1rem;
+    margin-bottom: 10px;
+}
+
+.product-detail b {
+    font-weight: 600;
+}
+

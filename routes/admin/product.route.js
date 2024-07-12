@@ -27,7 +27,6 @@ router.patch(
     validate.createPost,
     controller.updateItem,
 )
-
-
+router.get('/detail/:id', controller.detailItem,)
 
  module.exports = router;

@@ -179,3 +179,18 @@ module.exports.updateItem = async (req, res) => {
     res.redirect("/admin/products")
 }
 
+module.exports.detailItem = async (req, res) => {
+    try {
+        const product_edit = await Product.findOne({ _id: req.params.id, delete: false })
+        res.render("admin/pages/products/detail", {
+            pageTitle: "Detail Product",
+            product: product_edit,
+            id: req.params.id
+        })
+    } catch (error) {
+        req.flash("Error", "Không tồn tại sản phẩm này")
+        res.redirect('/admin/products')
+    }
+
+}
+
