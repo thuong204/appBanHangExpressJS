@@ -1,4 +1,5 @@
 const express = require('express')
+var path = require('path');
 require("dotenv").config()
 
 const methodOverride=  require("method-override")
@@ -21,6 +22,7 @@ const app = express()
 const port = process.env.PORT
 
 app.use(methodOverride('_method'))
+app.use('/tinymce', express.static(path.join(__dirname, 'node_modules', 'tinymce')));
 
 database.connect()
 

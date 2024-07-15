@@ -4,10 +4,10 @@ include ../../mixins/select-tree.pug
 block main
   +alert-error(3000)
   .container.mt-5
-    h2(class="text-danger") Thêm mới sản phẩm
+    h2(class="text-danger") Thêm mới danh mục sản phẩm
     form(
-      action=`${prefixAdmin}/products/create`
-      id="form-create-product"
+      action=`${prefixAdmin}/category-products/create`
+      id="form-create-category-product"
       method="POST"
       enctype="multipart/form-data"
     )
@@ -20,51 +20,18 @@ block main
           required 
           placeholder="Nhập tiêu đề")
       div(class="mb-3")
+        label(for="parent_id") Danh mục cha
+        select(name="parent_id" id="parent_id" class="form-select")
+          option(disable selected) Chọn danh mục cha
+          +select-tree(categoryProduct)
+
+      div(class="mb-3")
         label(for="description") Mô tả
         textarea.form-control.textarea-mce(
           id ="desc" 
           name="description" 
           rows="5" 
           placeholder="Nhập mô tả")
-      div(class="mb-3")
-        label(for="description") Nội dung
-        textarea.form-control.textarea-mce(
-          id ="content" 
-          name="content" 
-          rows="5" 
-          placeholder="Nhập nội dung")
-      div(class="mb-3")
-        label(for="categoryProduct")
-        select(name="categoryProduct" id="categoryProduct" class="form-select")
-          option(value="") Danh mục sản phẩm
-          +select-tree(categoryProduct)
-
-      div(class="mb-3")
-        label(for="price") Giá
-        input.form-control(
-          type="number" 
-          id="price" 
-          name="price" 
-          value="0" 
-          min="0" 
-          placeholder="Nhập giá")
-      div(class="mb-3")
-        label(for="mb-3") Phần trăm giảm giá
-        input.form-control(
-          type="number" 
-          id="discount" 
-          name="discountPercentage" 
-          value="0" min="0" 
-          placeholder="Nhập phần trăm giảm giá")
-      div(class="mb-3")
-        label(for="stock") Số lượng
-        input.form-control(
-          type="number" 
-          id="quantity" 
-          name="quantity" 
-          value="0" 
-          min="0" 
-          placeholder="Nhập số lượng")
       div(class="mb-3" upload-image)
         label(for="thumbnail") Hình ảnh
         input.form-control(

@@ -1,0 +1,67 @@
+extends ../../layouts/default.pug
+include ../../mixins/filterStatus.pug
+include ../../mixins/search.pug
+include ../../mixins/pagination.pug
+include ../../mixins/form-change-multi.pug
+include ../../mixins/alert.pug
+include ../../mixins/sortCategory.pug
+include ../../mixins/table-tree.pug
+block main 
+    h1 Danh mục sản phẩm
+    .card
+        .card-header Bộ lọc và tìm kiếm 
+        .card-body.mt-3
+            .row
+                .col-6  
+                    +filterStatus()  
+                .col-6
+                    +search()           
+
+    .card.mt-3 
+        .card-header Sắp xếp 
+            .card-body 
+                .row 
+                    .col-4 
+                        +sort()
+                     
+    .card.mt-3
+        .card-header Danh sách danh mục
+            .card-body
+                .row 
+                    .col-10
+                        +form-change-multi(`${prefixAdmin}/category-products/change-multi?_method=PATCH`)
+                       
+                    .col-2
+                        a(
+                            class="btn btn-outline-success"
+                            href=`${prefixAdmin}/category-products/create`
+                        ) +Thêm sản phẩm
+                table(
+                    class="table table-hover table-sm mt-3"
+                    checkbox-multi
+                )
+                    thead
+                        tr
+                            th 
+                                input(type="checkbox" name="checkall")
+                            th STT
+                            th Hình ảnh
+                            th Tiêu đề
+                            th Vị trí
+                            th Trạng thái
+                            th Hành động
+                    tbody
+                        +table-tree(records)
+                        
+    form(
+        action=""
+        method="POST"
+        id="form-change-status"
+        data-path=`${prefixAdmin}/category-products/change-status/`
+        )
+    form(
+        action=""
+        method="POST"
+        id="form-delete-item"
+        data-path=`${prefixAdmin}/category-products/delete`
+        )

@@ -18,7 +18,6 @@ if(buttonChangeStatus.length > 0){
             formChangeStatus.action = action
 
             formChangeStatus.submit();
-        
 
         })
     })

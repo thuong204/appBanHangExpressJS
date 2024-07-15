@@ -1,0 +1,16 @@
+mixin select-tree(items, level=1)
+    each item in items 
+        - let prefix = ""
+        if level === 1
+            - prefix = "&nbsp; - "
+        else if level === 2
+            - prefix = "&nbsp;&nbsp;&nbsp;&nbsp;→ "
+        else if level === 3
+            - prefix = "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;↳ "
+        else if level === 4
+            - prefix = "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;• "
+        else
+            - prefix = Array(level - 3).join("• ") + "→ "
+        option(value=item.id) !{prefix}#{item.title} 
+            if item.children && item.children.length > 0
+                +select-tree(item.children, level+1)

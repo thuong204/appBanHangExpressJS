@@ -1,4 +1,5 @@
 const Product = require("../../models/product.model")
+const CategoryProduct =require("../../models/category-product.model")
 const filterStatusHelpers = require("../../helpers/filterStatus")
 const searchHelpers = require("../../helpers/search")
 const paginationHelpers = require("../../helpers/pagination")
@@ -26,7 +27,7 @@ module.exports.index = async (req, res) => {
     }, req.query, countProducts)
 
 
-    //End pagination
+    //End paginati
 
     // SOrt
     let sort = {}
@@ -130,8 +131,10 @@ module.exports.deleteItem = async (req, res) => {
     res.redirect("back")
 }
 module.exports.createItem = async (req, res) => {
+    const categoryProduct = await CategoryProduct.find({delete: false})
     res.render("admin/pages/products/create", {
-        pageTitle: "Thêm sản phẩm"
+        pageTitle: "Thêm sản phẩm",
+        categoryProduct: categoryProduct
     })
 }
 module.exports.saveItem = async (req, res) => {
@@ -147,6 +150,7 @@ module.exports.saveItem = async (req, res) => {
     else {
         req.body.position = parseInt(req.body.position)
     }
+    console.log(req.body)
 
     const product = new Product(req.body)
     await product.save()
@@ -173,9 +177,6 @@ module.exports.updateItem = async (req, res) => {
     req.body.discountPercentage = parseInt(req.body.discountPercentage)
     req.body.quantity = parseInt(req.body.quantity)
     req.body.position = parseInt(req.body.position)
-    if (req.file) {
-        req.body.thumbnail =  `/uploads/${req.file.filename}`
-    }
     try {
         await Product.updateOne({
             _id:id

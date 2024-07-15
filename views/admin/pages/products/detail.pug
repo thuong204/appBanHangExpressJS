@@ -25,11 +25,10 @@ block main
             div.mb-4 Vị trí: 
                 b= product.position
         
-            div.mb-4 Mô tả: 
-                b= product.description + 'tulasubus'
-        a(
-            href=`${prefixAdmin}/products/edit/${id}`
-            class="btn btn-warning btn-sm ms-1 " 
-            style="width: 80px"                         
-            data-id =id ) Sửa
-                           
+            div.mb-4 !{product.description}
+            a(
+                href=`${prefixAdmin}/products/edit/${id}`
+                class="btn btn-warning btn-sm ms-1 " 
+                style="width: 80px"                         
+                data-id =id ) Sửa
+                            

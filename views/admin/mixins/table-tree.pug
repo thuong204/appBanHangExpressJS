@@ -1,0 +1,33 @@
+mixin table-tree(records, level=1)
+    each item, index in records
+        - const prefix = Array(level +1).join("-- ")
+        tr
+            td 
+                input(type="checkbox" name="id" value = item.id)
+            td #{index+1}
+            td 
+                img(src= item.thumbnail, alt='Hình ảnh sản phẩm' width='50')
+            td #{prefix}#{item.title}
+            td 
+                input(
+                    type="number"
+                    value = item.position
+                    style ="width: 60px"
+                    min="1"
+                    name="position"
+                )
+            td  
+                if(item.status==="active")
+                    a(href="javascript:;" button-change-status data-status = item.status data-id = item.id class="badge bg-success text-decoration-none") Hoạt động
+                else
+                    a(href=`javascript:;` button-change-status data-status = item.status data-id = item.id class="badge bg-danger text-decoration-none") Dừng hoạt động
+
+            td 
+
+                a(
+                    href=`${prefixAdmin}/category-products/edit/${item.id}`
+                    class="btn btn-warning btn-sm ms-1"
+                    data-id = item.id) Sửa
+                button(class="btn btn-danger btn-sm ms-1" button-delete data-id=item.id ) Xóa
+        if item.children && item.children.length > 0
+                +table-tree(item.children, level+1)

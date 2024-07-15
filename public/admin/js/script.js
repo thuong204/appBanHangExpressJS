@@ -125,7 +125,8 @@ if (formchangeMulti) {
 
             })
 
-            inputIds.value=ids.join(", ")
+            inputIds.value = ids.join(", ")
+            console.log(inputIds.value)
             formchangeMulti.submit()
         }
         else {
@@ -137,31 +138,54 @@ if (formchangeMulti) {
 //end form change multi
 
 //Delete item
-const buttonDelete = document.querySelectorAll(("[button-delete]"))
-if (buttonDelete) {
-    buttonDelete.forEach(button => {
-        const formDeleteItem = document.querySelector("#form-delete-item")
-        const path = formDeleteItem.getAttribute("data-path")
-        button.addEventListener("click", () => {
-            const isConfirm = confirm("Bạn có chắc muốn xóa sản phẩm này")
-            if (isConfirm) {
-                const idDelete = button.getAttribute("data-id")
-                const action = `${path}/${idDelete}?_method=DELETE`
-                formDeleteItem.action = action
-                formDeleteItem.submit()
+// const buttonDelete = document.querySelectorAll(("[button-delete]"))
+// if (buttonDelete) {
+//     buttonDelete.forEach(button => {
+//         const formDeleteItem = document.querySelector("#form-delete-item")
+//         const path = formDeleteItem.getAttribute("data-path")
+//         button.addEventListener("click", () => {
+//             const isConfirm = confirm("Bạn có chắc muốn xóa sản phẩm này")
+//             if (isConfirm) {
+//                 const idDelete = button.getAttribute("data-id")
+//                 const action = `${path}/${idDelete}?_method=DELETE`
+//                 formDeleteItem.action = action
+//                 formDeleteItem.submit()
+//             }
+//         })
+//     })
+// }
+
+
+const buttonDelete = document.querySelectorAll("[button-delete]")
+
+if(buttonDelete){
+    const formDelete = document.querySelector("#form-delete-item")
+    const path = formDelete.getAttribute("data-path")
+    buttonDelete.forEach(button =>{
+        button.addEventListener("click", () =>{
+            const isConfirm = confirm("Bạn có chắc xóa sản phẩm này không?")
+            if(isConfirm){
+                const dataid = button.getAttribute("data-id")
+                const action = `${path}/${dataid}?_method=PATCH`
+                formDelete.action = action
+                formDelete.submit()
             }
+           
+
         })
+
     })
 }
+
 //Show alert
 const showAlert = document.querySelector("[show-alert]")
-if(showAlert){
-     const closeAlert = document.querySelector("[close-alert]")
+if (showAlert) {
+    const closeAlert = document.querySelector("[close-alert]")
     const time = parseInt(showAlert.getAttribute("data-time"))
-    setTimeout(()=>{
+    setTimeout(() => {
         showAlert.classList.add("alert-hidden")
-    },time)
-    closeAlert.addEventListener8("click",()=>{
+    }, time)
+    closeAlert.addEventListener("click", () => {
         showAlert.classList.add("alert-hidden")
 
     })
@@ -171,33 +195,65 @@ if(showAlert){
 
 //Upload image
 const uploadImage = document.querySelector("[upload-image]")
-if(uploadImage){
+if (uploadImage) {
     const uploadImageInput = document.querySelector("[upload-image-input]")
     const uploadImagePreview = document.querySelector("[upload-image-preview]")
-    uploadImageInput.addEventListener("change",(e) =>{
+    console.log(uploadImageInput)
+    console.log(uploadImagePreview)
+    uploadImageInput.addEventListener("change", (e) => {
         const file = e.target.files[0]
-        if(file){
+        if (file) {
             uploadImagePreview.src = URL.createObjectURL(file)
         }
     })
 }
 //Sort
+// const sort = document.querySelector("[sort]")
+// if(sort){
+//     const sortSelect = sort.querySelector("[sort-select]")
+//     const sortClear = sort.querySelector("[sort-clear]")
+//     let url = new URL(window.location.href)
+//     sortSelect.addEventListener("change", (e) =>{
+//         const value = e.target.value
+//         const [sortKey,sortValue] = value.split("-")
+//         if(sortKey && sortValue){
+//             url.searchParams.set("sortKey", sortKey)
+//             url.searchParams.set("sortValue", sortValue)
+
+//         }
+//         window.location.href = url.href
+//     })
+//     sortClear.addEventListener("click",() =>{
+//         url.searchParams.delete("sortKey")
+//         url.searchParams.delete("sortValue")
+//         window.location.href = url.href
+//     })
+
+//     const sortKey = url.searchParams.get("sortKey")
+//     const sortValue = url.searchParams.get("sortValue")
+
+//     if(sortKey && sortValue){
+//         const stringSort = `${sortKey}-${sortValue}`
+//         const optionSelected = sortSelect.querySelector(`option[value='${stringSort}`)
+//         optionSelected.selected = true
+//     }
+
+// }
+
+
 const sort = document.querySelector("[sort]")
-if(sort){
+if (sort) {
     const sortSelect = sort.querySelector("[sort-select]")
     const sortClear = sort.querySelector("[sort-clear]")
-    let url = new URL(window.location.href)
-    sortSelect.addEventListener("change", (e) =>{
+    const url = new URL(window.location.href)
+    sortSelect.addEventListener("change", (e) => {
         const value = e.target.value
-        const [sortKey,sortValue] = value.split("-")
-        if(sortKey && sortValue){
-            url.searchParams.set("sortKey", sortKey)
-            url.searchParams.set("sortValue", sortValue)
-
-        }
+        const [sortKey, sortValue] = value.split("-")
+        url.searchParams.set("sortKey",sortKey)
+        url.searchParams.set("sortValue",sortValue)
         window.location.href = url.href
     })
-    sortClear.addEventListener("click",() =>{
+    sortClear.addEventListener("click",()=>{
         url.searchParams.delete("sortKey")
         url.searchParams.delete("sortValue")
         window.location.href = url.href
@@ -208,9 +264,10 @@ if(sort){
 
     if(sortKey && sortValue){
         const stringSort = `${sortKey}-${sortValue}`
-        const optionSelected = sortSelect.querySelector(`option[value='${stringSort}`)
-        optionSelected.selected = true
+        const option = document.querySelector(`option[value=${stringSort}]`)  
+        option.selected= true  
     }
+
 
 }
 //end sort

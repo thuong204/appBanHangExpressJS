@@ -16,8 +16,7 @@ router.get('/create', controller.createItem)
 router.post(
     '/create',
     upload.single("thumbnail"),
-    uploadFile.upload
-    ,
+    uploadFile.upload,
     validate.createPost,
     controller.saveItem,
 )
@@ -30,8 +29,8 @@ router.patch(
     upload.single("thumbnail"),
     uploadFile.upload,
     validate.createPost,
-    controller.updateItem,
+    controller.updateItem
 )
-router.get('/detail/:id', controller.detailItem,)
+router.get('/detail/:id', controller.detailItem)
 
 module.exports = router;
