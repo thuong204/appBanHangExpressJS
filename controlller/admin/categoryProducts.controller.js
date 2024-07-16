@@ -1,4 +1,6 @@
 const CategoryProduct = require("../../models/category-product.model")
+const Product = require("../../models/product.model")
+
 const filterStatusHelpers = require("../../helpers/filterStatus")
 const searchHelpers = require("../../helpers/search")
 const paginationHelpers = require("../../helpers/pagination")
@@ -88,10 +90,18 @@ module.exports.editItem = async (req, res) => {
             _id: req.params.id,
             delete: false
         }
+        let findCategory ={
+            delete: false,
+        }
+     
+        const allCategoryProduct = await CategoryProduct.find(findCategory)
         const categoryProduct = await CategoryProduct.findOne(find)
+        const newAllCategoryProduct = tree.createTree(allCategoryProduct)
+
         res.render("admin/pages/category-products/edit",
             {
                 categoryProduct: categoryProduct,
+                newAllCategoryProduct: newAllCategoryProduct
             }
         )
 
@@ -103,6 +113,11 @@ module.exports.editItem = async (req, res) => {
 }
 module.exports.updateItem = async (req, res) => {
     req.body.position = parseInt(req.body.position)
+    if(req.params.id == req.body.parent_id){
+        req.flash("Error", "Cập nhật  không thành công vì danh mục sản phẩm không được trùng với danh mục cha")
+        res.redirect("back")
+        return;
+    }
     try {
         await CategoryProduct.updateOne({
             _id: req.params.id
@@ -135,8 +150,30 @@ module.exports.changeStatus = async (req, res) => {
 
 }
 module.exports.deleteItem = async (req,res) => {
+    const find = {
+        delete:false,
+        parent_id: req.params.id
+    }
+    const findProduct = {
+        delete:false,
+        categoryProduct: req.params.id
+    }
+    const allCategoryInCateDelete = await CategoryProduct.find(find).count()
+    const allProductInCateDelete = await Product.find(findProduct).count() 
+    if(allProductInCateDelete >=1){
+        req.flash("Error", "Xóa danh mục không thành công vì có sản phẩm trong danh mục này")
+        res.redirect("back")
+        return;
+    }
+    if(allCategoryInCateDelete >=1 || allProductInCateDelete >=1){
+        req.flash("Error", "Xóa danh mục không thành công vì có danh mục con trong danh mục này")
+        res.redirect("back")
+        return;
+    }
+  
     const iddelete = req.params.id
     await CategoryProduct.updateOne({_id:iddelete},{delete: true})
+    req.flash("Success", "Xóa danh mục sản phẩm thành công")
     res.redirect("back")
 }
 //change-multi

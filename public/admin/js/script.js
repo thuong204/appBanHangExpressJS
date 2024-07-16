@@ -116,7 +116,6 @@ if (formchangeMulti) {
                 const id = input.value
                 if (typeChange == "change-position") {
                     const position = input.closest("tr").querySelector("input[name='position']").value
-                    console.log(`${id} - ${position}`)
                     ids.push(`${id}-${position}`)
                 }
                 else {
@@ -125,8 +124,7 @@ if (formchangeMulti) {
 
             })
 
-            inputIds.value = ids.join(", ")
-            console.log(inputIds.value)
+            inputIds.value = ids.join(", ") // lấy ra id của sp muốn change và vị trí muốn change
             formchangeMulti.submit()
         }
         else {
@@ -137,7 +135,7 @@ if (formchangeMulti) {
 }
 //end form change multi
 
-//Delete item
+// Delete item
 // const buttonDelete = document.querySelectorAll(("[button-delete]"))
 // if (buttonDelete) {
 //     buttonDelete.forEach(button => {
@@ -159,16 +157,17 @@ if (formchangeMulti) {
 const buttonDelete = document.querySelectorAll("[button-delete]")
 
 if(buttonDelete){
-    const formDelete = document.querySelector("#form-delete-item")
-    const path = formDelete.getAttribute("data-path")
     buttonDelete.forEach(button =>{
         button.addEventListener("click", () =>{
-            const isConfirm = confirm("Bạn có chắc xóa sản phẩm này không?")
+            const formDeleteItem = document.querySelector("#form-delete-item")
+            const path = formDeleteItem.getAttribute("data-path")
+            const isConfirm = confirm("Bạn có chắc xóa không?")
             if(isConfirm){
                 const dataid = button.getAttribute("data-id")
-                const action = `${path}/${dataid}?_method=PATCH`
-                formDelete.action = action
-                formDelete.submit()
+                const action = `${path}/${dataid}?_method=DELETE`
+                formDeleteItem.action = action
+                console.log(action)
+                formDeleteItem.submit()
             }
            
 
@@ -198,11 +197,10 @@ const uploadImage = document.querySelector("[upload-image]")
 if (uploadImage) {
     const uploadImageInput = document.querySelector("[upload-image-input]")
     const uploadImagePreview = document.querySelector("[upload-image-preview]")
-    console.log(uploadImageInput)
-    console.log(uploadImagePreview)
     uploadImageInput.addEventListener("change", (e) => {
         const file = e.target.files[0]
-        if (file) {
+        console.log(file)
+        if(file) {
             uploadImagePreview.src = URL.createObjectURL(file)
         }
     })

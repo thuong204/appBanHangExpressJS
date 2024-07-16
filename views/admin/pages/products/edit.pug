@@ -1,8 +1,9 @@
 extends ../../layouts/default.pug
 include ../../mixins/alert.pug
+include ../../mixins/select-tree.pug
 block main
     +alert-success(3000)
-    +alert-error(3000)
+    +alert-error(5000)
     .container.mt-5
       h2(class="text-danger") Chỉnh sửa sản phẩm
       form(
@@ -33,6 +34,11 @@ block main
             name="price" 
             step="0.001"
             value= product.price)
+        div(class="mb-3")
+          label(for="categoryProduct") Danh mục sản phẩm
+          select(name="categoryProduct" id="categoryProduct" class="form-select")
+            option(value="") Chọn danh mục sản phẩm
+            +select-tree(categoryProduct,1, product.categoryProduct)
         div(class="mb-3")
           label(for="mb-3") Phần trăm giảm giá
           input.form-control(
@@ -98,3 +104,4 @@ block main
 
         div(class="mb-3")
             button.btn.btn-primary(type="submit") Lưu thông tin
+    

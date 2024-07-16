@@ -7,6 +7,8 @@ include ../../mixins/alert.pug
 include ../../mixins/sortCategory.pug
 include ../../mixins/table-tree.pug
 block main 
+    +alert-success(3000)
+    +alert-error(3000)
     h1 Danh mục sản phẩm
     .card
         .card-header Bộ lọc và tìm kiếm 
@@ -17,12 +19,6 @@ block main
                 .col-6
                     +search()           
 
-    .card.mt-3 
-        .card-header Sắp xếp 
-            .card-body 
-                .row 
-                    .col-4 
-                        +sort()
                      
     .card.mt-3
         .card-header Danh sách danh mục

@@ -24,7 +24,7 @@ router.patch('/edit/:id',
     controller.updateItem)
 
 router.patch('/change-status/:status/:id', controller.changeStatus)
-router.patch('/delete/:id', controller.deleteItem)
+router.delete('/delete/:id', controller.deleteItem)
 router.patch('/change-multi', controller.changeMulti)
 
 

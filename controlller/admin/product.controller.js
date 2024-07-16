@@ -3,6 +3,7 @@ const CategoryProduct =require("../../models/category-product.model")
 const filterStatusHelpers = require("../../helpers/filterStatus")
 const searchHelpers = require("../../helpers/search")
 const paginationHelpers = require("../../helpers/pagination")
+const tree = require("../../helpers/createtree")
 
 
 module.exports.index = async (req, res) => {
@@ -132,9 +133,11 @@ module.exports.deleteItem = async (req, res) => {
 }
 module.exports.createItem = async (req, res) => {
     const categoryProduct = await CategoryProduct.find({delete: false})
+    const newCategoryProduct = tree.createTree(categoryProduct)
+
     res.render("admin/pages/products/create", {
         pageTitle: "Thêm sản phẩm",
-        categoryProduct: categoryProduct
+        categoryProduct:newCategoryProduct
     })
 }
 module.exports.saveItem = async (req, res) => {
@@ -160,10 +163,13 @@ module.exports.saveItem = async (req, res) => {
 
 module.exports.editItem = async (req, res) => {
     try {
+        const categoryProduct = await CategoryProduct.find({delete: false})
+        const newCategoryProduct = tree.createTree(categoryProduct)
         const product_edit = await Product.findOne({ _id: req.params.id, delete: false })
         res.render("admin/pages/products/edit", {
             pageTitle: "Edit Product",
-            product: product_edit
+            product: product_edit,
+            categoryProduct: newCategoryProduct
         })
     } catch (error) {
         req.flash("Error", "Không tồn tại sản phẩm này")

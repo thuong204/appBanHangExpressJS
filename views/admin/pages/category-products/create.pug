@@ -22,7 +22,7 @@ block main
       div(class="mb-3")
         label(for="parent_id") Danh mục cha
         select(name="parent_id" id="parent_id" class="form-select")
-          option(disable selected) Chọn danh mục cha
+          option(selected) Chọn danh mục cha
           +select-tree(categoryProduct)
 
       div(class="mb-3")
