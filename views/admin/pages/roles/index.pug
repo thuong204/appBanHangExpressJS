@@ -1,0 +1,55 @@
+extends ../../layouts/default.pug
+include ../../mixins/alert.pug
+block main 
+    +alert-success(3000)
+    +alert-error(3000)
+    h1(class="mb-3") Nhóm quyền 
+
+    .card.mb-3 
+        .card-header Danh sach 
+        .card-body 
+            .row 
+                .col-10
+                .col-2.text-right 
+                    a(
+                        href=`${prefixAdmin}/roles/create`
+                        class= "btn btn-outline-success"
+                    ) + Thêm mới 
+            table(
+                class="table table-hover table-sm mt-3"   
+            )
+                thead
+                    tr
+                        th STT
+                        th Nhóm quyền
+                        th Mô tả ngắn
+                        th Hành động
+                tbody
+                    if(records.length > 0)
+                        each item, index in records
+                            tr
+                                td #{index+1}
+                                td #{item.title}
+                                td #{item.description}
+                                td 
+                                    a(
+                                        href=`${prefixAdmin}/roles/detail/${item.id}`
+                                        class="btn btn-secondary btn-sm"
+                                        data-id = item.id) Chi tiết
+                                    a(
+                                        href=`${prefixAdmin}/roles/edit/${item.id}`
+                                        class="btn btn-warning btn-sm ms-1"
+                                        data-id = item.id) Sửa
+                                    button(class="btn btn-danger btn-sm ms-1" button-delete data-id=item.id ) Xóa
+                    else 
+                        tr 
+                            td(colspan=3 class="text-center") Chưa có nhóm quyền nào được chọn
+    form(
+        action=""
+        method="POST"
+        id="form-delete-item"
+        data-path=`${prefixAdmin}/roles/delete`
+        )
+
+
+

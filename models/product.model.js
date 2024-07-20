@@ -25,7 +25,8 @@ const productSchema = new mongoose.Schema(
             unique: true,
             index: true
         }
-    },{
+    },
+    {
         timestamps: true
     }
 )

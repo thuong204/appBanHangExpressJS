@@ -1,0 +1,30 @@
+extends ../../layouts/default.pug
+block main 
+    h1(class="mb-3") Tạo nhóm quyền 
+
+    form(
+        action=`${prefixAdmin}/roles/create`
+        method="POST"
+    )
+        div(class="mb-3")
+            label(for="title") Tên nhóm quyền
+            input.form-control(
+            type="text" 
+            id="title" 
+            name ="title" 
+            required 
+            placeholder="Nhập tên nhóm quyền")
+        div(class="mb-3")
+            label(for="description") Mô tả
+            textarea.form-control(
+            id ="desc" 
+            name="description" 
+            rows="1" 
+            placeholder="Nhập mô tả")
+        div(class="mb-3")
+            button.btn.btn-primary(type="submit") Thêm mới
+
+
+
+
+

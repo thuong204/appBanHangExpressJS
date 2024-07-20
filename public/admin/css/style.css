@@ -6,11 +6,13 @@
     top: 0;
     z-index: 999;
 }
+
 .header .inner-logo a {
     font-size: 24px;
     font-weight: 700;
     color: #fff;
 }
+
 /* End header */
 
 /* Body */
@@ -20,22 +22,28 @@
     height: 100vh;
     overflow: hidden;
 }
+
 .body .sider {
     width: 150px;
     background: #323232;
     color: #fff;
-    height: calc(100vh - 56px); /* Adjust height considering header */
+    height: calc(100vh - 56px);
+    /* Adjust height considering header */
     position: fixed;
     top: 56px;
     left: 0;
 }
+
 .body .main {
     margin: 15px;
     position: relative;
     left: 150px;
-    width: calc(100% - 180px); /* Adjust width considering sider width and main margin */
-    overflow: auto; /* Add scroll if content exceeds */
+    width: calc(100% - 180px);
+    /* Adjust width considering sider width and main margin */
+    overflow: auto;
+    /* Add scroll if content exceeds */
 }
+
 /* End Body */
 
 /* Sider */
@@ -44,6 +52,7 @@
     padding: 0;
     margin: 0;
 }
+
 .sider .inner-menu ul li a {
     color: #fff;
     display: block;
@@ -51,23 +60,28 @@
     text-decoration: none;
     border-bottom: 1px solid #515151;
 }
+
 .sider .inner-menu ul li a:hover {
-    background: #444; /* Add hover effect */
+    background: #444;
+    /* Add hover effect */
 }
+
 /* End Sider */
 /* Show alert */
-[show-alert]{
+[show-alert] {
     position: fixed;
-    top:20px;
-    right:15px;
+    top: 20px;
+    right: 15px;
     z-index: 9999;
 }
-[show-alert].alert-hidden{
-    animation-name: alert-hidden ;
+
+[show-alert].alert-hidden {
+    animation-name: alert-hidden;
     animation-duration: 0.5s;
     animation-fill-mode: both;
 }
-[show-alert] [close-alert]{
+
+[show-alert] [close-alert] {
     background: #ffffffc4;
     width: 24px;
     height: 24px;
@@ -77,17 +91,19 @@
     border-radius: 50%;
     cursor: pointer;
 }
-@keyframes alert-hidden{
-    from{
+
+@keyframes alert-hidden {
+    from {
         right: 15px;
     }
-    to{
+
+    to {
         right: -100%;
         display: none;
     }
 }
 
-.image-preview{
+.image-preview {
     width: 150px;
     height: auto;
     margin-top: 15px;
@@ -95,7 +111,8 @@
     padding: 15px;
     border-radius: 5px;
 }
-.image-preview[src=""]{
+
+.image-preview[src=""] {
     display: none;
 }
 
@@ -161,3 +178,20 @@ img {
 }
 
 /* container  */
+
+/*table-permission */
+.table-custom tr th{
+    background-color: #e4eef6;
+    border: 1px solid #b5bec7;
+}
+.table-custom{
+    border: 1px solid #b5bec7;
+}
+.table-custom thead {
+    background-color: #e9ecef;
+}
+
+.table-custom tbody tr:hover {
+    background-color: #f1f1f1;
+}
+/*end table permission*/

@@ -155,7 +155,6 @@ if (formchangeMulti) {
 
 
 const buttonDelete = document.querySelectorAll("[button-delete]")
-
 if(buttonDelete){
     buttonDelete.forEach(button =>{
         button.addEventListener("click", () =>{
