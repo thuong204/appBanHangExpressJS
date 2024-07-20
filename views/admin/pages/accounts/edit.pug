@@ -1,0 +1,100 @@
+extends ../../layouts/default.pug
+include ../../mixins/alert.pug
+include ../../mixins/select-tree.pug
+block main
+    +alert-error(3000)
+    h1(class="mb-3") Chỉnh sửa tài khoản
+    .container
+        form(
+            action=`${prefixAdmin}/accounts/edit/${account._id}?_method=PATCH`
+            method="POST"
+            enctype="multipart/form-data"
+        )
+            div(class="mb-3")
+                label(for="fullName") Họ tên <span class="text-danger">*</span>
+                input.form-control(
+                type="text" 
+                id="fullName" 
+                name ="fullName" 
+                required 
+                value= account.fullName)
+            div(class="mb-3")
+                label(for="email") Email <span class="text-danger">*</span>
+                input.form-control(
+                type=text
+                id ="email" 
+                name="email" 
+                value= account.email 
+                placeholder="Nhập email")
+            div(class="mb-3")
+                label(for="password") Mật khẩu <span class="text-danger">*</span>
+                input.form-control(
+                type="password"
+                id ="password" 
+                name="password" 
+                value= account.password
+                placeholder="Nhập mật khẩu")
+                small(class="form-text text-muted") 
+                    | Mật khẩu phải có ít nhất 8 ký tự, bao gồm chữ hoa, chữ thường, số và ký tự đặc biệt.
+            div(class="mb-3")
+                label(for="phone")  Nhập số điện thoại
+                input.form-control(
+                type="text"
+                id ="phone" 
+                name="phone" 
+                value= account.phone
+                rows="1" 
+                placeholder="Nhập SDT")
+            div(class="mb-3" upload-image)
+                label(for="avatar") Avatar
+                input.form-control(
+                type="file" 
+                id="avatar" 
+                class="form-control-file"
+                accept ="image/*"
+                name="avatar" 
+                upload-image-input)
+                img(
+                src= account.avatar
+                class="image-preview"
+                upload-image-preview
+                )
+            div(class="mb-3")
+                label(for="role_id") Phân quyền
+                select(name="role_id" id="role_id" class="form-select")
+                    option(disabled selected) --Chọn-- 
+                    each item in roles 
+                        option(
+                            value= item.id
+                            selected = (item.id == account.role_id ? true : false)
+                            ) #{item.title}
+            div(class="mb-3 form-check form-check-inline" )
+                input(
+                type="radio" 
+                class="form-check-input" 
+                id="statusActive" 
+                name="status" 
+                checked = (account.status =="active" ? true : false)
+                value="active")
+                label(
+                for="statusActive" 
+                class="form-check-label") Hoạt động        
+            div(class="mb-3 form-check form-check-inline" )
+                input(
+                type="radio" 
+                class="form-check-input" 
+                id="statusInActive" 
+                checked = (account.status =="inactive" ? true : false)
+                name="status" 
+                value="inactive")
+                label(
+                for="statusInActive" 
+                class="form-check-label") Dừng hoạt động
+            div(class="mb-3")
+                button.btn.btn-primary(type="submit") Cập nhật
+
+
+
+
+
+
