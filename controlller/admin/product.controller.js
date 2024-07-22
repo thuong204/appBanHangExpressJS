@@ -1,4 +1,5 @@
 const Product = require("../../models/product.model")
+const Account = require("../../models/accounts.model")
 const CategoryProduct =require("../../models/category-product.model")
 const filterStatusHelpers = require("../../helpers/filterStatus")
 const searchHelpers = require("../../helpers/search")
@@ -44,7 +45,18 @@ module.exports.index = async (req, res) => {
 
 
 
+
+
     const products = await Product.find(find).sort(sort).limit(objectPagination.limitItems).skip(objectPagination.skip)
+
+    for(const product of products){
+        const userCreate = await Account.findOne({
+            _id: product.createdBy.account_id
+        }).select("-password")
+        if(userCreate){
+            product.accountFullName = userCreate.fullName
+        }
+    }
     res.render("admin/pages/products/index", {
         pageTitle: "Manage Products",
         products: products,
@@ -102,7 +114,11 @@ module.exports.changeMulti = async (req, res) => {
                 { _id: { $in: ids } },
                 {
                     delete: true,
-                    deletedAt: new Date()
+                    deletedBy: {
+                        account_id: res.locals.user.id,
+                        deletedAt: new Date()
+                    }
+                   
                 }
             )
             req.flash("Success", `Xóa ${ids.length} sản phẩm thành công`)
@@ -128,10 +144,14 @@ module.exports.changeMulti = async (req, res) => {
 //delete item
 module.exports.deleteItem = async (req, res) => {
     const id = req.params.id
-    await Product.updateOne({ _id: id }, { delete: true, deletedAt: new Date() })
+    await Product.updateOne({ _id: id }, { delete: true, deletedBy: {
+        account_id: res.locals.user.id,
+        deletedAt: new Date()
+    }})
     res.redirect("back")
 }
 module.exports.createItem = async (req, res) => {
+
     const categoryProduct = await CategoryProduct.find({delete: false})
     const newCategoryProduct = tree.createTree(categoryProduct)
 
@@ -153,7 +173,9 @@ module.exports.saveItem = async (req, res) => {
     else {
         req.body.position = parseInt(req.body.position)
     }
-    console.log(req.body)
+    req.body.createdBy = {
+        account_id: res.locals.user.id
+    }
 
     const product = new Product(req.body)
     await product.save()
@@ -183,6 +205,10 @@ module.exports.updateItem = async (req, res) => {
     req.body.discountPercentage = parseInt(req.body.discountPercentage)
     req.body.quantity = parseInt(req.body.quantity)
     req.body.position = parseInt(req.body.position)
+    req.body.updatedBy=  {
+        account_id: res.locals.user.id,
+        updatedAt: new Date()
+    }
     try {
         await Product.updateOne({
             _id:id

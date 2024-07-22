@@ -2,33 +2,37 @@ extends ../../layouts/default.pug
 include ../../mixins/alert.pug
 
 block main
-    .container
-        if product.title
-            h1.mb-4= product.title
-        if product.price
-            div.mb-4 Giá: 
-                b= product.price + '$'
-        if product.discountPercentage
-            div.mb-4 Phần trăm giảm giá: 
-                b= product.discountPercentage + '%'
-        if product.thumbnail
-            div.mb-4
-                img(src=product.thumbnail)
-        if product.status
-            div.mb-4
-                span Trạng thái 
-                if product.status == 'active'
-                    span.badge.bg-success Hoạt động
-                else 
-                    span.badge.bg-danger Dừng hoạt động
-        if product.position
-            div.mb-4 Vị trí: 
-                b= product.position
-        
-            div.mb-4 !{product.description}
-            a(
-                href=`${prefixAdmin}/products/edit/${id}`
-                class="btn btn-warning btn-sm ms-1 " 
-                style="width: 80px"                         
-                data-id =id ) Sửa
-                            
+    if(role.permissions.includes("products-view"))
+        .container
+            if product.title
+                h1.mb-4= product.title
+            if product.price
+                div.mb-4 Giá: 
+                    b= product.price + '$'
+            if product.discountPercentage
+                div.mb-4 Phần trăm giảm giá: 
+                    b= product.discountPercentage + '%'
+            if product.thumbnail
+                div.mb-4
+                    img(src=product.thumbnail)
+            if product.status
+                div.mb-4
+                    span Trạng thái 
+                    if product.status == 'active'
+                        span.badge.bg-success Hoạt động
+                    else 
+                        span.badge.bg-danger Dừng hoạt động
+            if product.position
+                div.mb-4 Vị trí: 
+                    b= product.position
+            
+                div.mb-4 !{product.description}
+                if(role.permissions.includes("products-edit"))
+                    a(
+                        href=`${prefixAdmin}/products/edit/${id}`
+                        class="btn btn-warning btn-sm ms-1 " 
+                        style="width: 80px"                         
+                        data-id =id ) Sửa
+    else 
+        h1 Bạn không có quyền truy cập
+                                

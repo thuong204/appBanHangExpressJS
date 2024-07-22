@@ -13,6 +13,7 @@ const systemConfig= require("./config/system.js")
 const bodyParser = require("body-parser")
 
 const flash = require("express-flash")
+const moment = require("moment")
 const cookieParser =require("cookie-parser")
 const session = require("express-session")
 
@@ -32,6 +33,7 @@ app.set('view engine', 'pug')
 
 //App local variable
 app.locals.prefixAdmin =  systemConfig.prefixAdmin
+app.locals.moment = moment
 
 app.use(bodyParser.urlencoded({extended: false}))
 

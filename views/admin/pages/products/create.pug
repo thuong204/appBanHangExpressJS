@@ -2,114 +2,116 @@ extends ../../layouts/default.pug
 include ../../mixins/alert.pug
 include ../../mixins/select-tree.pug
 block main
-  +alert-error(3000)
-  .container.mt-5
-    h2(class="text-danger") Thêm mới sản phẩm
-    form(
-      action=`${prefixAdmin}/products/create`
-      id="form-create-product"
-      method="POST"
-      enctype="multipart/form-data"
-    )
-      div(class="mb-3")
-        label(for="title") Tiêu đề
-        input.form-control(
-          type="text" 
-          id="title" 
-          name ="title" 
-          required 
-          placeholder="Nhập tiêu đề")
-      div(class="mb-3")
-        label(for="description") Mô tả
-        textarea.form-control.textarea-mce(
-          id ="desc" 
-          name="description" 
-          rows="5" 
-          placeholder="Nhập mô tả")
-      div(class="mb-3")
-        label(for="description") Nội dung
-        textarea.form-control.textarea-mce(
-          id ="content" 
-          name="content" 
-          rows="5" 
-          placeholder="Nhập nội dung")
-      div(class="mb-3")
-        label(for="parent_id") Danh mục sản phẩm
-        select(name="parent_id" id="parent_id" class="form-select")
-          option(value="" selected) Chọn danh mục sản phẩm
-          option(value="") Danh mục lớn nhất
-          +select-tree(categoryProduct)
-      div(class="mb-3")
-        label(for="price") Giá
-        input.form-control(
-          type="number" 
-          id="price" 
-          name="price" 
-          value="0" 
-          min="0" 
-          placeholder="Nhập giá")
-      div(class="mb-3")
-        label(for="mb-3") Phần trăm giảm giá
-        input.form-control(
-          type="number" 
-          id="discount" 
-          name="discountPercentage" 
-          value="0" min="0" 
-          placeholder="Nhập phần trăm giảm giá")
-      div(class="mb-3")
-        label(for="stock") Số lượng
-        input.form-control(
-          type="number" 
-          id="quantity" 
-          name="quantity" 
-          value="0" 
-          min="0" 
-          placeholder="Nhập số lượng")
-      div(class="mb-3" upload-image)
-        label(for="thumbnail") Hình ảnh
-        input.form-control(
-          type="file" 
-          id="thumbnail" 
-          class="form-control-file"
-          accept ="image/*"
-          name="thumbnail" 
-          upload-image-input)
-        img(
-          src=""
-          class="image-preview"
-          upload-image-preview
-          )
-      div(class="mb-3")
-        label(for="position") Vị trí
-        input.form-control(
-          name="position"
-          type="number" 
-          id="position" 
-          placeholder="Tự động tăng" 
-          min="1")
-      div(class="mb-3 form-check form-check-inline" )
-        input(
-          type="radio" 
-          class="form-check-input" 
-          id="statusActive" 
-          name="status" 
-          checked
-          value="active")
-        label(
-          for="statusActive" 
-          class="form-check-label") Hoạt động        
-      div(class="mb-3 form-check form-check-inline" )
-        input(
-          type="radio" 
-          class="form-check-input" 
-          id="statusInActive" 
-          name="status" 
-          value="inactive")
-        label(
-          for="statusInActive" 
-          class="form-check-label") Dừng hoạt động
+  if(role.permissions.includes("products-create"))
+    +alert-error(3000)
+    .container.mt-5
+      h2(class="text-danger") Thêm mới sản phẩm
+      form(
+        action=`${prefixAdmin}/products/create`
+        id="form-create-product"
+        method="POST"
+        enctype="multipart/form-data"
+      )
+        div(class="mb-3")
+          label(for="title") Tiêu đề
+          input.form-control(
+            type="text" 
+            id="title" 
+            name ="title" 
+            required 
+            placeholder="Nhập tiêu đề")
+        div(class="mb-3")
+          label(for="description") Mô tả
+          textarea.form-control.textarea-mce(
+            id ="desc" 
+            name="description" 
+            rows="5" 
+            placeholder="Nhập mô tả")
+        div(class="mb-3")
+          label(for="description") Nội dung
+          textarea.form-control.textarea-mce(
+            id ="content" 
+            name="content" 
+            rows="5" 
+            placeholder="Nhập nội dung")
+        div(class="mb-3")
+          label(for="parent_id") Danh mục sản phẩm
+          select(name="parent_id" id="parent_id" class="form-select")
+            option(value="" selected) Chọn danh mục sản phẩm
+            option(value="") Danh mục lớn nhất
+            +select-tree(categoryProduct)
+        div(class="mb-3")
+          label(for="price") Giá
+          input.form-control(
+            type="number" 
+            id="price" 
+            name="price" 
+            value="0" 
+            min="0" 
+            placeholder="Nhập giá")
+        div(class="mb-3")
+          label(for="mb-3") Phần trăm giảm giá
+          input.form-control(
+            type="number" 
+            id="discount" 
+            name="discountPercentage" 
+            value="0" min="0" 
+            placeholder="Nhập phần trăm giảm giá")
+        div(class="mb-3")
+          label(for="stock") Số lượng
+          input.form-control(
+            type="number" 
+            id="quantity" 
+            name="quantity" 
+            value="0" 
+            min="0" 
+            placeholder="Nhập số lượng")
+        div(class="mb-3" upload-image)
+          label(for="thumbnail") Hình ảnh
+          input.form-control(
+            type="file" 
+            id="thumbnail" 
+            class="form-control-file"
+            accept ="image/*"
+            name="thumbnail" 
+            upload-image-input)
+          img(
+            src=""
+            class="image-preview"
+            upload-image-preview
+            )
+        div(class="mb-3")
+          label(for="position") Vị trí
+          input.form-control(
+            name="position"
+            type="number" 
+            id="position" 
+            placeholder="Tự động tăng" 
+            min="1")
+        div(class="mb-3 form-check form-check-inline" )
+          input(
+            type="radio" 
+            class="form-check-input" 
+            id="statusActive" 
+            name="status" 
+            checked
+            value="active")
+          label(
+            for="statusActive" 
+            class="form-check-label") Hoạt động        
+        div(class="mb-3 form-check form-check-inline" )
+          input(
+            type="radio" 
+            class="form-check-input" 
+            id="statusInActive" 
+            name="status" 
+            value="inactive")
+          label(
+            for="statusInActive" 
+            class="form-check-label") Dừng hoạt động
 
-      div(class="mb-3")
-        button.btn.btn-primary(type="submit") Thêm mới
-
-    
+        div(class="mb-3")
+          button.btn.btn-primary(type="submit") Thêm mới
+  else 
+    h1 Bạn không có quyền truy cập
+      

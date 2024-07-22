@@ -1,0 +1,6 @@
+mixin formatDateTime(time)
+    span Ngày tạo: #{moment(time).format("DD/MM/YYYY hh:mm:ss")}
+mixin formatDate(time)
+    span #{moment(time).format("DD/MM/YYYY")}
+mixin formatTime(time)
+    span #{moment(time).format("hh:mm:ss")}

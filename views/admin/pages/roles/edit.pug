@@ -1,30 +1,33 @@
 extends ../../layouts/default.pug
 include ../../mixins/alert.pug
 block main 
-    +alert-success(3000)
-    +alert-error(5000)
-    h1(class="mb-3") Chỉnh sửa nhóm quyền 
+    if(role.permissions.includes("roles-edit")) 
+        +alert-success(3000)
+        +alert-error(5000)
+        h1(class="mb-3") Chỉnh sửa nhóm quyền 
 
-    form(
-        action=`${prefixAdmin}/roles/edit/${role._id}?_method=PATCH`
-        method="POST"
-    )
-        div(class="mb-3")
-            label(for="title") Tên nhóm quyền
-            input.form-control(
-            type="text" 
-            id="title" 
-            name ="title" 
-            required 
-            value = role.title)
-        div(class="mb-3")
-            label(for="description") Mô tả
-            textarea.form-control(
-            id ="desc" 
-            name="description" 
-            rows="1" ) #{role.description}
-        div(class="mb-3")
-            button.btn.btn-primary(type="submit") Cập nhật
+        form(
+            action=`${prefixAdmin}/roles/edit/${role._id}?_method=PATCH`
+            method="POST"
+        )
+            div(class="mb-3")
+                label(for="title") Tên nhóm quyền
+                input.form-control(
+                type="text" 
+                id="title" 
+                name ="title" 
+                required 
+                value = role.title)
+            div(class="mb-3")
+                label(for="description") Mô tả
+                textarea.form-control(
+                id ="desc" 
+                name="description" 
+                rows="1" ) #{role.description}
+            div(class="mb-3")
+                button.btn.btn-primary(type="submit") Cập nhật
+    else 
+        h1 Bạn không có quyền truy cập
 
 
 

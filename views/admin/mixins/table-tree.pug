@@ -24,10 +24,12 @@ mixin table-tree(records, level=1)
 
             td 
 
-                a(
-                    href=`${prefixAdmin}/category-products/edit/${item.id}`
-                    class="btn btn-warning btn-sm ms-1"
-                    data-id = item.id) Sửa
-                button(class="btn btn-danger btn-sm ms-1" button-delete data-id=item.id ) Xóa
+                if(role.permissions.includes("products-category-edit"))
+                    a(
+                        href=`${prefixAdmin}/category-products/edit/${item.id}`
+                        class="btn btn-warning btn-sm ms-1"
+                        data-id = item.id) Sửa
+                if(role.permissions.includes("products-category-delete"))
+                    button(class="btn btn-danger btn-sm ms-1" button-delete data-id=item.id ) Xóa
         if item.children && item.children.length > 0
                 +table-tree(item.children, level+1)
