@@ -1,0 +1,26 @@
+extends ../../layouts/auth.pug
+include ../../mixins/alert.pug
+block main 
+    .card
+        .ms-3
+            +alert-success(3000)
+            +alert-error(3000)
+
+        form(action=`${prefixAdmin}/auth/login` method="post")
+            .login-box
+                .login-header
+                    header SIGN IN NOW
+                .input-box
+                    input(type="text" class="input-field" name="email" autocomplete="on" required)
+                    label(for="email") Email
+                .input-box
+                    input(type="password" class="input-field" name="password" autocomplete="off" required)
+                    label(for="password") Password
+                .forgot
+                    section
+                        input(type="checkbox" name="check")
+                        label(for="check") Remember me
+                    section
+                        a(href="#" class="forgot-link") Forgot password?
+                .input-box
+                    button(type="submit" name="signup" class="signin") Sign In

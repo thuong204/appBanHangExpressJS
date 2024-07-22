@@ -1,7 +1,7 @@
 mixin alert-success(time)
     - if(messages.Success)
         div(
-            class="alert alert-success"
+            class="alert alert-success text-end relative-alert"
             show-alert 
             data-time=time
         ) #{messages.Success} <span close-alert ></span>
@@ -10,7 +10,7 @@ mixin alert-error(time)
     - if(messages.Error)
         .message-info
             h5(
-                class="alert alert-danger"
+                class="alert alert-danger text-end relative-alert"
                 show-alert 
                 data-time=time
             ) #{messages.Error} <span close-alert ></span>

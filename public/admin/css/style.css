@@ -25,7 +25,7 @@
 
 .body .sider {
     width: 150px;
-    background: #323232;
+    background: #2a2f2c;
     color: #fff;
     height: calc(100vh - 56px);
     /* Adjust height considering header */
@@ -195,3 +195,4 @@ img {
     background-color: #f1f1f1;
 }
 /*end table permission*/
+
