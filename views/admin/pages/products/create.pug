@@ -27,6 +27,28 @@ block main
             name="description" 
             rows="5" 
             placeholder="Nhập mô tả")
+        div(class="mb-3 form-check form-check-inline" )
+          input(
+            type="radio" 
+            class="form-check-input" 
+            id="featured" 
+            name="featured" 
+            checked
+            value="1")
+          label(
+            for="featured" 
+            class="form-check-label") Nổi bật      
+        div(class="mb-3 form-check form-check-inline" )
+          input(
+            type="radio" 
+            class="form-check-input" 
+            id="notfeatured" 
+            name="notfeatured" 
+            value="0")
+          label(
+            for="notfeatured" 
+            class="form-check-label") Không
+
         div(class="mb-3")
           label(for="description") Nội dung
           textarea.form-control.textarea-mce(

@@ -40,6 +40,29 @@ block main
             select(name="categoryProduct" id="categoryProduct" class="form-select")
               option(value="") Chọn danh mục sản phẩm
               +select-tree(categoryProduct,1, product.categoryProduct)
+          div(class="mb-3 form-check form-check-inline" )
+            input(
+              type="radio" 
+              class="form-check-input" 
+              id="featured" 
+              name="featured" 
+              checked =(product.featured =="1" ? true : false)
+              value="1")
+            label(
+              for="featured" 
+              class="form-check-label") Nổi bật      
+          div(class="mb-3 form-check form-check-inline" )
+            input(
+              type="radio" 
+              class="form-check-input" 
+              id="notfeatured" 
+              name="notfeatured" 
+              checked =(product.featured =="0" ? true : false)
+              value="0")
+            label(
+              for="notfeatured" 
+              class="form-check-label") Không
+
           div(class="mb-3")
             label(for="mb-3") Phần trăm giảm giá
             input.form-control(

@@ -72,6 +72,7 @@ i.test{
     border: 1px solid #ddd;
     margin-bottom: 30px;
     padding: 15px;
+    height: 90%;
     transition: all 0.3s ease-in-out;
     background-color: #fff;
 }
@@ -115,13 +116,6 @@ i.test{
     font-size: px;
     color: rgb(18, 175, 15);
     font-weight: bold;
-}
-.single-item span.discount{
-    font-size: 18px;
-    color: rgb(255, 255, 255);
-    font-weight: bold;
-    background: red;
-    padding: 10px;
 }
 
 
@@ -228,10 +222,10 @@ i.test{
 
 /* Style for product thumbnail */
 .row span.discount {
-    position: absolute;
     font-size: 15px;
     width: 70px;
     height: 40px;
+    border: 1px solid white;
     margin-top: 10px;
     margin-left: 10px;
     color: #fff;
@@ -239,6 +233,60 @@ i.test{
     background: red;
     padding: 10px;
     animation: blink 0.2s infinite alternate;
+}
+
+.row span.featured {
+    font-size: 1rem; /* Default font size */
+    color: #fff;
+    float:right;
+    margin-top: -5px;
+    font-weight: bold;
+    font-size: 18px !important;
+    background: rgb(14, 128, 24);
+    padding: 0.5rem;
+    animation: blink 0.2s infinite alternate;
+}
+
+/* Specific styles for different breakpoints */
+@media (min-width: 576px) {
+    .featured {
+        font-size: 1.2rem;
+        top: -0.5rem;
+        left: 5rem;
+    }
+}
+
+@media (min-width: 768px) {
+    .featured {
+        font-size: 1.5rem;
+        top: -1rem;
+        left: 10rem;
+    }
+}
+
+@media (min-width: 992px) {
+    .featured {
+        font-size: 2rem;
+        top: -1.5rem;
+        left: 15rem;
+    }
+}
+
+/* Medium screens (tablets) */
+@media (min-width: 768px) and (max-width: 991px) {
+    .row span.featured {
+        margin-top: -5px;
+        margin-left: 180px;
+        font-size: 13px;
+    }
+}
+
+/* Small screens (mobiles) */
+@media (max-width: 767px) {
+    .row span.featured {
+        margin-left: 120px;
+        font-size: 11px;
+    }
 }
 
 .single-item-body img {

@@ -1,2 +1,11 @@
 extends ../../layouts/default.pug
+include ../../mixins/grid-products.pug
 block main  
+
+    h2(class="text-danger mt-3 ms-3") Sản phẩm nổi bật
+    .row.mt-4
+        +grid-products(productsFeatured)
+    h2(class="text-danger mt-3 ms-3") Sản phẩm mới
+    .row.mt-4
+        +grid-products(productsNew)
+    
