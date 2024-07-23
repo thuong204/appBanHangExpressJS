@@ -1,3 +1,4 @@
+include formatDateTime.pug
 mixin table-tree(records, level=1)
     each item, index in records
         - const prefix = Array(level +1).join("-- ")
@@ -16,6 +17,14 @@ mixin table-tree(records, level=1)
                     min="1"
                     name="position"
                 )
+            td
+                p #{item.createdName}
+                if(item.createdName)
+                    +formatDateTime(item.createdBy.createdAt)
+            td
+                p #{item.updatedName}
+                if(item.updatedName)
+                    +formatDateTime(item.updatedBy.updatedAt[2])
             td  
                 if(item.status==="active")
                     a(href="javascript:;" button-change-status data-status = item.status data-id = item.id class="badge bg-success text-decoration-none") Hoạt động
@@ -32,4 +41,4 @@ mixin table-tree(records, level=1)
                 if(role.permissions.includes("products-category-delete"))
                     button(class="btn btn-danger btn-sm ms-1" button-delete data-id=item.id ) Xóa
         if item.children && item.children.length > 0
-                +table-tree(item.children, level+1)
+            +table-tree(item.children, level+1)

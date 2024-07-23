@@ -2,16 +2,16 @@ const Account = require("../../models/accounts.model")
 const Role = require("../../models/roles.model")
 const systemConfig = require("../../config/system")
 module.exports.login = async (req, res) => {
-    // if (req.cookies.token) {
-    //     const user = await Account.findOne({ token: req.cookies.token })
-    //     if (user) {
-    //         res.redirect(`${systemConfig.prefixAdmin}/dashboard`)
-    //     } 
-    // } else {
+    if (req.cookies.token) {
+        const user = await Account.findOne({ token: req.cookies.token })
+        if (user) {
+            res.redirect(`${systemConfig.prefixAdmin}/dashboard`)
+        } 
+    } else {
         res.render("admin/pages/auth/login", {
             pageTitle: "Login"
         })
-    // }
+    }
 
 }
 module.exports.loginPost = async (req, res) => {

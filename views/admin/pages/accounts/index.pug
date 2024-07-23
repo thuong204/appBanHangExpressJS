@@ -1,5 +1,6 @@
 extends ../../layouts/default.pug
 include ../../mixins/alert.pug
+include ../../mixins/formatDateTime.pug
 block main 
     if(role.permissions.includes("accounts-view"))      
         +alert-success(3000)
@@ -31,8 +32,10 @@ block main
                                 th Họ tên
                                 th Phân quyền
                                 th Email
-                                th Trạng thái
-                                th Hành động
+                                th Người tạo
+                                th Người cập nhật
+                                th(style="width:100px") Trạng thái
+                                th(style="width:170px") Hành động
                         tbody
                             each item, index in accounts
                                 tr
@@ -44,11 +47,19 @@ block main
                                     td #{item.fullName}
                                     td #{item.role.title}
                                     td #{item.email}
+                                    td 
+                                        p #{item.createdName}
+                                        if(item.createdName)
+                                            +formatDateTime(item.createdBy.createdAt)
+                                    td 
+                                        p #{item.updatedName}
+                                        if(item.updatedName)
+                                            +formatDateTime(item.createdBy.createdAt)
                                     td  
                                         if(item.status==="active")
-                                            a(href="javascript:;" button-change-status data-status = item.status data-id = item.id class="badge bg-success text-decoration-none") Hoạt động
+                                            a.mt-2(href="javascript:;" button-change-status data-status = item.status data-id = item.id class="badge bg-success text-decoration-none") Hoạt động
                                         else
-                                            a(href=`javascript:;` button-change-status data-status = item.status data-id = item.id class="badge bg-danger text-decoration-none") Dừng hoạt động
+                                            a.mt-2(href=`javascript:;` button-change-status data-status = item.status data-id = item.id class="badge bg-danger text-decoration-none") Dừng hoạt động
 
                                     td 
                                         a(

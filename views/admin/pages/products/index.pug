@@ -54,6 +54,7 @@ block main
                                 th Giá
                                 th Vị trí
                                 th Người tạo
+                                th Người cập nhật
                                 th Trạng thái
                                 th Hành động
                         tbody
@@ -76,7 +77,12 @@ block main
                                         )
                                     td
                                         p #{item.accountFullName}
-                                        +formatDateTime(item.createdBy.createdAt)
+                                        if(item.accountFullName)
+                                            +formatDateTime(item.createdBy.createdAt)
+                                    td
+                                        p #{item.updatedName}
+                                        if(item.updatedBy.updatedAt)
+                                           +formatDateTime(item.updatedBy.updatedAt[2])
                                     td  
                                         if(item.status==="active")
                                             a(href="javascript:;" button-change-status data-status = item.status data-id = item.id class="badge bg-success text-decoration-none") Hoạt động

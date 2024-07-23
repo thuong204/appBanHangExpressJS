@@ -1,0 +1,34 @@
+extends ../../layouts/default.pug
+include ../../mixins/alert.pug
+
+block main
+    +alert-success(3000)
+    .container
+        if user.avatar
+            div.mb-4 
+                img(src=user.avatar style="width:150px")
+        else 
+            img(src="/admin/images/avatar.png" width="150px")
+        if user.fullName
+            div.mb-4 Họ tên: <b> #{user.fullName}</b>
+        if user.dateofBirth
+            div.mb-4 Ngày sinh: <b> #{user.dateOfBirth}</b>
+        if user.email
+            div.mb-4 Email: <b> #{user.email}</b>
+        if user.phone
+            div.mb-4 Số điện thoại: <b> #{user.phone}</b>
+        if user.status
+            div.mb-4
+                span Trạng thái 
+                if user.status == 'active'
+                    span.badge.bg-success.mt-3 Hoạt động
+                else 
+                    span.badge.bg-danger.mt-3 Dừng hoạt động
+        if role.title
+            div.mb-4 Chức vụ: <b> #{role.title}</b>
+
+        a(
+            href=`${prefixAdmin}/my-account/edit`
+            class="btn btn-warning btn-sm ms-1 " 
+            style="width: 80px"                         
+            data-id =id ) Sửa
