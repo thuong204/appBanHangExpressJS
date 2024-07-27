@@ -1,101 +1,86 @@
 extends ../../layouts/default.pug
+include ../../mixins/alert.pug
 
 block main
-    .container.mt-3
+    +alert-success(3000)
+    .main-products
         #content
             .row
                 .col-sm-9
                     .row
-                        span.discount -#{product.discountPercentage}%
-                        .col-sm-5.bg-light
-                            img(src=`${product.thumbnail}`, alt='' style="width:200px")
-                        .col-sm-7.bg-light
-                            .single-item-body
-                                p.single-item-title.text-left(style='font-size: 30px;') #{product.title}
-                                p.single-item-price
-                                    span.price #{product.price}$
-                                    span.price-payment  #{product.priceNew}$
-                            .clearfix
-                            p(style='font-weight: bold;') Options:
-                            .single-item-options
-                                select.wc-select(name='size')
-                                    option Size
-                                    option(value='XS') XS
-                                    option(value='S') S
-                                    option(value='M') M
-                                    option(value='L') L
-                                    option(value='XL') XL
-                                select.wc-select(name='color')
-                                    option Color
-                                    option(value='Red') Red
-                                    option(value='Green') Green
-                                    option(value='Yellow') Yellow
-                                    option(value='Black') Black
-                                    option(value='White') White
-                                select.wc-select(name='qty')
-                                    option Qty
-                                    option(value='1') 1
-                                    option(value='2') 2
-                                    option(value='3') 3
-                                    option(value='4') 4
-                                    option(value='5') 5
-                                a.add-to-cart(href='#') 
-                                    i.fa.fa-shopping-cart
-                                .clearfix
+                        .col-5.bg-light
+                            .card 
+                                .card-header
+                                    img(src=`${product.thumbnail}`, alt='' style="width:200px")
+                                    img(src=`${product.thumbnail}`, alt='' style="width:200px")
 
-                    .woocommerce-tabs.mt-3
-                        ul.tabs.nav.nav-tabs
-                            li.nav-item
-                                a.nav-link(href='#tab-description') Description
-                            li.nav-item
-                                a.nav-link.ms-1(href='#tab-reviews') Reviews (0)
+                                .card-body
+                                    .card-title.text-success.text-title ĐẶC ĐIỂM NỔI BẬT
+                                    .card-text.text-description !{product.content}
+                            .card 
+                                .card-body
+                                    .card-title.text-title THÔNG TIN CHI TIẾT
 
-                        .tab-content
-                            .tab-pane.fade.show.active#tab-description
-                                p(style='color:red') THÔNG TIN CHI TIẾT #{product.title}
-                                p #{product.description}
-                                br
-                                p #{product.description}
-                            .tab-pane.fade#tab-reviews
-                                p No Reviews
+
+                        .col-7.bg-light
+                            .card
+                                .card-body
+                                    .single-item-body
+                                        p.single-item-title.text-left(style='font-size: 30px;') #{product.title}
+                                        p.single-item-price
+                                            span.price-details #{product.price}$
+                                            span.price-payment-details #{product.priceNew}$
+                                    .clearfix
+                                    .single-item-options
+                                        form(
+                                            action=`/cart/add/${product.id}`
+                                            method ="POST"
+                                        )
+                                            label(for="quantity") Số lượng
+                                            input(
+                                                class="form-control"
+                                                type="number"
+                                                name="quantity"
+                                                value="1"
+                                                min="1"
+                                                max= product.stock
+                                            )
+                                            button.btn.btn-success.mt-3 Thêm vào giỏ hàng
+                                            button.btn.btn-danger.mt-3.ms-3 Mua ngay 
+                                        .clearfix
+                            .card.mt-3
+                                .card-body
+                                    .card-title.text-title MÔ TẢ SẢN PHẨM
+                                    .card-text.text-description !{product.description}
 
                     .space50
                         | &nbsp;
 
                     .beta-products-list
-                        h4 Related Products
+                        h4 Sản phẩm tương tự
                         .row
                             .col-sm-4
                                 .single-item
                                     .single-item-header
                                         a(href='product.html')
-                                            img(src="https://cdn.dummyjson.com/products/images/mobile-accessories/Apple%20Airpods/thumbnail.png",width='270px' height='380px')
+                                            img(src="https://cdn.dummyjson.com/products/images/mobile-accessories/Apple%20Airpods/thumbnail.png" width='270px' height='380px')
                                     .single-item-body
                                         p.single-item-title 100
                                         .single-item-price
                                             span
 
 
-                .col-sm-3.aside
+                .col-3.aside
                     .widget
-                        h3.widget-title Best Sellers
+                        h3.widget-title Sản phẩm nổi bật
                         .widget-body
                             .beta-sales.beta-lists
                                 .media.beta-sales-item
                                     a.pull-left
-                                        img(src="https://cdn.dummyjson.com/products/images/mobile-accessories/Apple%20Airpods/thumbnail.png", alt='')
+                                        img(src="https://cdn.dummyjson.com/products/images/mobile-accessories/Apple%20Airpods/thumbnail.png" alt='')
                                     .media-body
                                         p.beta-sales-name
+                                            p Airpode 12
                                         p.beta-sales-price   
 
-                    .widget
-                        h3.widget-title New Products
-                        .widget-body
-                            .beta-sales.beta-lists
-                                .media.beta-sales-item
-                                    a.pull-left(href='product.html')
-                                        img(src="https://cdn.dummyjson.com/products/images/mobile-accessories/Apple%20Airpods/thumbnail.png", alt='')
-                                    .media-body
-                                        p.beta-sales-name
-                                        p.beta-sales-price
 

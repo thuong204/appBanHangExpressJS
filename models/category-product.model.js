@@ -26,10 +26,10 @@ const categoryProductSchema = new mongoose.Schema(
             account_id: String,
             deletedAt: Date
         },
-        updatedBy:{
+        updatedBy:[{
             account_id: String,
             updatedAt: Date
-        },
+        }],
         slug:{
             type:String,
             slug:"title",

@@ -1,52 +1,189 @@
-i.test{
+/*  */
+
+/* Fix potential overflow in other sections */
+body {
+    overflow-x: hidden;
+    width: 100%;
+}
+
+
+i.test {
     color: red;
 }
-.header{
+
+.header {
     background: rgb(255, 255, 255);
+    position: fixed;
+    top: 0;
+    width: 100%;
+    z-index: 9999;
 }
-.header{
+
+.header {
     border-bottom: 1px solid #ddd;
-    padding: 10px 0;
 
 }
-.header .inner-logo img{
+.header-item{
+    background: #FFD700;
+    color: black;
+    padding:10px;
+}
+
+.header .inner-logo img {
     height: 50px;
     width: 100px;
+    margin-left: 50px;
 }
-.header .inner-menu > ul{
+.header .icon-search{
+    font-size: 30px;
+}
+.header .btn-cart{
+    background: fixed;
+    border: none;
+    color: white;
+}
+.header .btn-account{
+    color: black;
+    font-size: 20px;
+    text-decoration: none;
+    font-weight: bold;
+    background: yellow;
+}
+.header i.btn-phone{
+    font-size: 22.5px;
+    border: 2px solid #e9b226;
+}
+.header span.text-phone{
+    font-size: 18px;
+    font-weight: bold;
+    margin-top: 25px ;
+    padding: 5px;
+}
+
+.header .inner-menu>ul {
     list-style: none;
-    padding:0;
+    padding: 0;
     margin: 0;
     display: flex;
     align-items: center;
     justify-self: flex-end;
     flex-wrap: wrap;
     margin-left: 50px;
-
 }
-.header .inner-menu > ul > li{
+
+.header .inner-menu>ul>li {
     margin-left: 30px;
     margin-right: 10px;
 }
-.footer{
+
+.footer {
     background: black;
     color: #fff;
     padding: 10px;
 }
-.header .inner-menu > ul > li a{
+
+.header .inner-menu>ul>li>a {
     text-decoration: none;
     color: black;
     font-weight: bold;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    font-size: 15px;
+    font-size: 16px;
     text-transform: uppercase;
 }
-.footer .copy{
-    color:white
+
+/* end header  */
+
+
+
+
+/* satrt menu */
+/* .sub-menu {
+    position: relative;
+    z-index: 999;
+}
+
+.sub-menu ul {
+    position: absolute;
+    left: 0;
+    top: 100%;
+    list-style: none;
+    padding: 0;
+    background: white;
+    border: 1px solid #ddd;
+    min-width: 180px;
+    display: none;
+}
+
+.sub-menu ul li {
+    padding: 10px;
+
+
+}
+
+.sub-menu:hover>ul {
+    display: block;
+    opacity: 1;
+    visibility: visible;
+
+}
+
+.sub-menu ul li {
+    position: relative;
+}
+
+.sub-menu ul li ul {
+    left: 100%;
+    top: 0;
+    margin-left: -10px;
+}
+
+.sub-menu ul>li a {
+    font-size: 12px;
+    font-weight: lighter;
+    list-style: none;
+    text-decoration: none;
+    color: black;
+}
+
+.sub-menu ul li:hover>ul {
+    display: block;
+}
+
+.sub-menu ul li:hover {
+    background: #eae9e9;
+} */
+
+
+/* end menu  */
+
+/* sider  */
+/* body  */
+
+.body .container ul.sub-cart li {
+    list-style: none;
+}
+.body .container img.img-cart{
+    width: 70px;
+    height: 70px;
+}
+.body .container table td a.product-info, .body .container table td  p {
+    text-decoration: none;
+    font-size: 16px;
+    padding-top: 20px;
+    color: black;
+    display: block; /* or inline-block */
 }
 
 
-/* css chinh */
+
+.container section .text-category {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-size: 28px;
+    font-weight: bold;
+    color: black;
+}
+
+
 .row {
     display: flex;
     flex-wrap: wrap;
@@ -60,25 +197,95 @@ i.test{
     padding-right: 15px;
     padding-left: 15px;
 }
-.col-sm-9{
+
+.col-sm-9 {
     position: relative;
     width: 100%;
     padding-right: 15px;
     padding-left: 15px;
 }
 
+/* body  */
+body {
+    padding-top: 120px; /* Adjust this value based on the height of your header */
+}
+
+
+[show-alert] {
+    position: fixed !important;
+    top: 120px;
+    right: 15px;
+    float: right;
+    z-index: 9999;}
+
+[show-alert].alert-hidden {
+    animation-name: alert-hidden;
+    animation-duration: 0.5s;
+    animation-fill-mode: both;
+}
+
+
+@keyframes alert-hidden {
+    from {
+        right: 15px;
+    }
+
+    to {
+        right: -100%;
+        display: none;
+    }
+}
+
+
+
+.button-add-quantity {
+    display: flex;
+    align-items: center;
+    padding-top: 20px;
+}
+
+.button-add-quantity input[type="button"] {
+    background-color: #7ca0c8;
+    color: white;
+    border: none;
+    cursor: pointer;
+    font-size: 14px;
+    margin: 0 5px;
+    border-radius: 4px;
+    transition: background-color 0.3s;
+}
+
+.button-add-quantity input[type="button"]:hover {
+    background-color: #0056b3;
+}
+
+.button-add-quantity input[type="text"] {
+    text-align: center;
+    width: 40px; /* Adjusted width for better appearance */
+    padding:4px;
+    font-size: 12px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    margin: 0 5px;
+}
+
+
+
+/* item  */
+
 
 .single-item {
     border: 1px solid #ddd;
-    margin-bottom: 30px;
+    margin-bottom:20px;
     padding: 15px;
-    height: 90%;
     transition: all 0.3s ease-in-out;
     background-color: #fff;
+    height: 98%;
+    margin: 5px;
 }
 
 .single-item:hover {
-    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     transform: translateY(-5px);
 }
 
@@ -90,8 +297,8 @@ i.test{
 .single-item-header img {
     margin-top: 20px;
     max-width: 100%;
-    width:130px;
-    height:130px;
+    width: 130px;
+    height: 130px;
 
 }
 
@@ -99,39 +306,62 @@ i.test{
     margin-bottom: 15px;
 }
 
-.single-item .single-item-body .single-item-title {
+
+.single-item .single-item-body .single-item-title a {
     font-size: 20px;
     font-weight: bold;
+    color: black;
     margin-bottom: 10px;
 }
 
-.single-item-price span.price {
-    font-size: 16px;
+.single-item-price span.price-payment {
+    font-size: 20px;
     color: red;
-    text-decoration: line-through;
     font-weight: bold;
     margin-right: 30px;
 }
-.single-item-price span.price-payment{
-    font-size: px;
-    color: rgb(18, 175, 15);
+
+
+.single-item-price span.price {
+    font-size: 20px;
+    color: rgb(20, 151, 99);
     font-weight: bold;
+    text-decoration: line-through;
+    margin-right: 30px;
 }
 
+.single-item-price span.price-payment-details {
+    font-size: 30px;
+    color: red;
+    font-weight: bold;
+    margin-right: 30px;
+}
+
+.single-item-price span.price-details {
+    font-size: 30px;
+    color: rgb(20, 151, 99);
+    font-weight: bold;
+    text-decoration: line-through;
+    margin-right: 30px;
+}
 
 .single-item-caption {
     text-align: center;
 }
 
-.single-item-caption a {
+.single-item-caption a.cart {
     display: inline-block;
-    margin: 5px 10px;
-    padding: 10px 20px;
+    margin-right: 30px;
     color: #fff;
-    background-color: #337ab7;
+    width: 50px;
+    padding-top:5px;
+    padding-left: -1px;
+    background-color: red;
     border-radius: 4px;
+    height: 37px;
     transition: background-color 0.3s ease-in-out;
 }
+
 
 .single-item-caption a:hover {
     background-color: #286090;
@@ -173,72 +403,79 @@ i.test{
 /* Custom Footer Styles */
 #footer {
     background-color: #f2eeee;
-  }
-  
-  .widget-title {
+}
+
+.widget-title {
     color: red;
     font-size: 18px;
     font-weight: bold;
-  }
-  
-  .footer-text {
+}
+
+.footer-text {
     font-size: 14px;
-  }
-  
-  .footer-list li {
+}
+
+.footer-list li {
     margin-bottom: 5px;
-  }
-  .footer-list li a{
+}
+
+.footer-list li a {
     color: black;
     text-decoration: none;
-  }
-  .contact-info {
+}
+
+.contact-info {
     margin-top: 15px;
-  }
-  
-  .copyright {
+}
+
+.copyright {
     background-color: #343a40;
     color: #fff;
     font-size: 14px;
-  }
-  
-  /* Responsive Adjustments */
-  @media (max-width: 991.98px) {
+}
+
+/* Responsive Adjustments */
+@media (max-width: 991.98px) {
     .widget-title {
-      font-size: 16px;
+        font-size: 16px;
     }
-  }
-  
-  @media (max-width: 767.98px) {
+}
+
+@media (max-width: 767.98px) {
     .footer-list li {
-      margin-bottom: 3px;
+        margin-bottom: 3px;
     }
-  }
- /* end footer    */
+}
+
+/* end footer    */
 
 
- /* container  */
- /* Custom Styles for Your Website */
+/* container  */
+/* Custom Styles for Your Website */
 
 /* Style for product thumbnail */
+.row-option{
+    height:10px;
+}
 .row span.discount {
     font-size: 15px;
     width: 70px;
     height: 40px;
     border: 1px solid white;
     margin-top: 10px;
-    margin-left: 10px;
     color: #fff;
     font-weight: bold;
+    border-radius: 50%;
     background: red;
     padding: 10px;
     animation: blink 0.2s infinite alternate;
 }
 
 .row span.featured {
-    font-size: 1rem; /* Default font size */
+    font-size: 1rem;
+    /* Default font size */
     color: #fff;
-    float:right;
+    float: right;
     margin-top: -5px;
     font-weight: bold;
     font-size: 18px !important;
@@ -292,8 +529,8 @@ i.test{
 .single-item-body img {
     margin-top: 20px;
     max-width: 100%;
-    width:130px;
-    height:130px;
+    width: 130px;
+    height: 130px;
 }
 
 /* Style for single item title */
@@ -302,7 +539,7 @@ i.test{
     font-weight: bold;
     font-size: 20sm !important;
     margin-top: 10px;
-    color: red;
+    color: black;
 }
 
 /* Style for single item price */
@@ -311,13 +548,14 @@ i.test{
 .single-item-options {
     display: flex;
 }
-.single-item-options{
+
+.single-item-options {
     font-size: 15sm;
 }
 
 .single-item-options select {
     width: 100px;
-    margin-right:5px;
+    margin-right: 5px;
     padding: 8px;
     margin-bottom: 10px;
     border: 1px solid #ccc;
@@ -326,10 +564,10 @@ i.test{
 .single-item-options a.add-to-cart {
     display: inline-block;
     color: #fff;
-    height:100%;
+    height: 100%;
     padding: 8px 8px;
     border-radius: 4px;
-    background:red;
+    background: rgb(7, 106, 65);
     text-decoration: none;
 }
 
@@ -348,7 +586,7 @@ i.test{
 
 .tabs.nav.nav-tabs li.nav-item a.nav-link {
     border: none;
-    background:#76BB68;
+    background: #76BB68;
     color: #F3E5CA;
     font-weight: bold;
 }
@@ -375,3 +613,18 @@ i.test{
     margin-top: 50px;
 }
 
+/* detail products */
+.main-products {
+    margin: 50px;
+}
+
+.card .card-body .text-title {
+    font-size: 30px;
+    font-weight: bold;
+    color: #157c15;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.card .card-body .text-description {
+    padding-left: 20px;
+}

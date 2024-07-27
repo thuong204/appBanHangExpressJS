@@ -51,17 +51,18 @@ module.exports.index = async (req, res) => {
         if (userCreate) {
             product.accountFullName = userCreate.fullName
         }
-        const obj = JSON.stringify(product.updatedBy)
-        const objchange = JSON.parse(obj)
-        if (objchange.length > 0) {
+        if (product.updatedBy.length > 0) {
             const userUpdated = await Account.findOne({
-                _id: objchange[objchange.length - 1].account_id
+                _id: product.updatedBy[product.updatedBy.length - 1].account_id
             }).select("-password")
             if (userUpdated) {
                 product.updatedName = userUpdated.fullName
+                product.timeUpdatedNew = product.updatedBy[product.updatedBy.length-1].updatedAt
             }
 
         }
+
+
     }
 
     res.render("admin/pages/products/index", {

@@ -1,16 +1,18 @@
 const Product = require("../../models/product.model")
 const priceNew= require("../../helpers/priceNew")
+const CategoryProduct = require("../../models/category-product.model")
+const productsCategoryHelper = require("../../helpers/products-category")
 
 module.exports.index = async (req, res) => {
+
     const  products =  await Product.find({
         status:"active",
         delete:false
     }).sort({position:"asc"})
     
     const productsNewPrice = priceNew(products)
-    console.log(productsNewPrice)
     res.render("clients/pages/products/index",{
-        pageTitle:"Trang sản phẩm",
+        pageTitle:"Danh sách sản phẩm",
         products: productsNewPrice,
     }
     )
@@ -33,5 +35,24 @@ module.exports.detailItem = async (req, res) => {
         res.redirect('/products')
     }
 
+}
+module.exports.category = async (req,res) =>{
+    const category = await CategoryProduct.findOne({delete:false, status: "active", slug: req.params.slugCategory})
+
+    const listSubCategory = await productsCategoryHelper.getSubCategory(category.id)
+    const listSubCategoryId = listSubCategory.map(item => item.id)
+    const productsCategory = await Product.find({
+        delete:false,
+        status:"active",
+        categoryProduct: { $in: [category.id , ...listSubCategoryId]}
+    }).sort({position:"desc"})
+
+
+    const productsNewCategory = priceNew(productsCategory)
+    res.render("clients/pages/products/index", {
+        pageTitle: category.title,
+        products: productsNewCategory,
+        status:"active"
+    })
 }
 

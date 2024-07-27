@@ -1,24 +1,52 @@
-header.header   
-    .container      
-        .row.align-items-center 
-            .col-3 
-                .inner-logo         
+include ../mixins/sub-menu.pug
+header.header
+    .header-search
+        .row.align-items-center
+            .col-2
+                .inner-logo
                     a(href="/")
-                        img(src="/images/dina.png", alt = "Logo")
-            .col-9
+                        img(src="/images/dina.png" alt="Logo")
+            .col-6
+                .inner-search.mt-3
+                    form(action="/search" method="GET")
+                        div(class="mb-3 d-flex")
+                            input(
+                                type="text"
+                                placeholder="Hôm nay bạn tìm gì ...."
+                                class="form-control"
+                                name="keyword"
+                                value= keyword
+                            )
+                            button(
+                                type="submit"
+                                class="btn btn-warning"
+                            )  <i class="fas fa-search"></i>  
+            .col-3
                 .inner-menu
-                    ul 
-                        li  
-                            a(href="/") Trang chủ
-                        li  
-                            a(href="/products") Sản phẩm
-                        li  
-                            a(href="/products") Bộ sưu tập
-                        li  
-                            a(href="/") Giới thiệu
-                        li  
-                            a(href="/products") Liên hệ
+                    ul
+                        li.nav-item
+                            a.border-warning.border.border-2.btn(href="/cart") <i class="fas fa-cart-plus fs-5 "></i>  
+                        li.nav-item
+                            a.text-hotline(href="/phone") <i class="fas fa-phone-alt btn-phone btn"></i> 
+                            span.text-phone 0812299913
+            .col-1
+                img.d-none
+                a.btn.btn-warning Tài khoản
+    .header-item
+        .row 
+            .col-10.text-center
+                .inner-menu
+                    ul
+                        li.nav-item.dropdown <i class="fas fa-home"></i>
 
-            .col-3 
-
-
+                            a.ms-2(href="/") Trang chủ
+                        each item in categoryProducts
+                            li.nav-item.dropdown.sub-menu
+                                -const pathProduct = "/products"
+                                a(href= `/products/${item.slug}`) #{item.title}
+                        li.nav-item.dropdown
+                            a(href="/") Tin tức
+                        li.nav-item.dropdown
+                            a(href="/") Liên hệ
+                        li.nav-item.dropdown
+                            a(href="/") Hệ thống cưa hàng

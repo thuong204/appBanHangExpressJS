@@ -54,7 +54,7 @@ block main
                                     td 
                                         p #{item.updatedName}
                                         if(item.updatedName)
-                                            +formatDateTime(item.createdBy.createdAt)
+                                            +formatDateTime(item.timeUpdatedNew)
                                     td  
                                         if(item.status==="active")
                                             a.mt-2(href="javascript:;" button-change-status data-status = item.status data-id = item.id class="badge bg-success text-decoration-none") Hoạt động

@@ -28,6 +28,13 @@ block main
               name="description" 
               rows="5") !{product.description}
           div(class="mb-3")
+            label(for="description") Nội dung
+            textarea.form-control.textarea-mce(
+              id ="content" 
+              name="content" 
+              rows="5" 
+              placeholder="Nhập nội dung") !{product.content}
+          div(class="mb-3")
             label(for="price") Giá
             input.form-control(
               type="number"

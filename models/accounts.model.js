@@ -10,6 +10,7 @@ const accountSchema = new mongoose.Schema(
             default: generate.generateRandomString(20)
         },
         status: String,
+        dateOfBirth: Date,
         phone:String,
         avatar:String,
         role_id:String,
@@ -26,10 +27,10 @@ const accountSchema = new mongoose.Schema(
             account_id: String,
             deletedAt: Date
         },
-        updatedBy:{
+        updatedBy:[{
             account_id: String,
             updatedAt: Date
-        }
+        }]
     },
     {
         timestamps: true

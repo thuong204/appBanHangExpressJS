@@ -4,13 +4,13 @@ mixin alert-success(time)
             class="alert alert-success"
             show-alert 
             data-time=time
-        ) #{messages.Success}
+        ) #{messages.Success} 
 
 mixin alert-error(time)
     - if(messages.Error)
         .message-info
             h5(
-                class="alert alert-danger"
+                class="alert alert-danger "
                 show-alert 
                 data-time=time
-            ) #{messages.Error} 
+            ) #{messages.Error}

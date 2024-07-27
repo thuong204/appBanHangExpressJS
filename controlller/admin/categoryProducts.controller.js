@@ -51,17 +51,17 @@ module.exports.index = async (req, res) => {
         if (userCreated) {
             record.createdName = userCreated.fullName
         }
-        const obj = JSON.stringify(record.updatedBy)
-        const objchange = JSON.parse(obj)
-        if (objchange.length > 0) {
+        if (record.updatedBy.length > 0) {
             const userUpdated = await Account.findOne({
-                _id: objchange[objchange.length - 1].account_id
+                _id:  record.updatedBy[record.updatedBy.length - 1].account_id
             }).select("-password")
             if (userUpdated) {
                 record.updatedName = userUpdated.fullName
+                record.timeUpdatedNew = record.updatedBy[record.updatedBy.length-1].updatedAt
             }
 
         }
+
 
 
     }

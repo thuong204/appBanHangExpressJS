@@ -1,11 +1,28 @@
 extends ../../layouts/default.pug
 include ../../mixins/grid-products.pug
-block main  
+block main 
+    div(class="slider")
+        #carouselExampleAutoplaying.carousel.slide(data-bs-ride='carousel')
+            .carousel-inner
+                .carousel-item.active
+                    img.d-block.w-100(src='https://static.vecteezy.com/system/resources/thumbnails/002/006/605/small/paper-art-shopping-online-on-smartphone-and-new-buy-sale-promotion-pink-backgroud-for-banner-market-ecommerce-free-vector.jpg' alt='...')
+                .carousel-item
+                    img.d-block.w-100(src='https://img.freepik.com/free-vector/flat-horizontal-sale-banner-template-with-photo_23-2149000923.jpg' alt='...')
+                .carousel-item
+                    img.d-block.w-100(src="https://static.vecteezy.com/system/resources/thumbnails/002/006/605/small/paper-art-shopping-online-on-smartphone-and-new-buy-sale-promotion-pink-backgroud-for-banner-market-ecommerce-free-vector.jpg" alt='...')
+            button.carousel-control-prev(type='button' data-bs-target='#carouselExampleAutoplaying' data-bs-slide='prev')
+                span.carousel-control-prev-icon(aria-hidden='true')
+                span.visually-hidden Previous
+            button.carousel-control-next(type='button' data-bs-target='#carouselExampleAutoplaying' data-bs-slide='next')
+                span.carousel-control-next-icon(aria-hidden='true')
+                span.visually-hidden Next
+    .container
+        section 
+            div(class="text-bold mt-3 ms-3 text-center  text-category") Sản phẩm nổi bật
+            .row.mt-4
+                +grid-products(productsFeatured)
+        section
+            div(class="text-bold mt-3 ms-3 text-center text-category") Sản phẩm mới
+            .row.mt-4
+                +grid-products(productsNew)
 
-    h2(class="text-danger mt-3 ms-3") Sản phẩm nổi bật
-    .row.mt-4
-        +grid-products(productsFeatured)
-    h2(class="text-danger mt-3 ms-3") Sản phẩm mới
-    .row.mt-4
-        +grid-products(productsNew)
-    

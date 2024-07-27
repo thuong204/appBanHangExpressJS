@@ -1,6 +1,6 @@
 mixin grid-products(products)
     each item in products
-        .col-sm-3
+        .col-sm-3.mt-3
             .single-item
                 .row.row-option
                     .col-6
@@ -14,12 +14,5 @@ mixin grid-products(products)
                     p.single-item-title.text-center
                         a(class="text-decoration-none" href=`products/detail/${item.slug}`) #{item.title}
                     p.single-item-price.text-center
-                        span.price #{item.price}$
                         span.price-payment  #{item.priceNew}$
-                .single-item-caption
-                    a.add-to-cart.pull-left.cart(href='shopping_cart.html')
-                        i.fa.fa-shopping-cart
-                    a.btn.btn-info(href=`/products/detail/${item.slug}`)
-                        | More
-                        i.fa.fa-chevron-right
                 .clearfix

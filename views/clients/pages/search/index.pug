@@ -1,0 +1,10 @@
+extends ../../layouts/default.pug
+include ../../mixins/grid-products.pug
+block main
+    section 
+        p Trang chủ / Kết quả tìm kiếm "#{keyword}"
+
+    .container.my-3 
+        h4(class="text-success") #{pageTitle}
+        .row.mt-4
+                +grid-products(products)

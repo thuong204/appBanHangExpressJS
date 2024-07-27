@@ -4,15 +4,11 @@
     padding: 10px 0;
     position: sticky;
     top: 0;
-    z-index: 999;
+    z-index: 9999;
     border-bottom: 2px solid #ecebe4;
-    /* Màu wheat đã được thay thế bằng mã màu hex */
     width: calc(100% - 150px);
-    /* Điều chỉnh chiều rộng để không tràn qua sider */
     margin-left: 150px;
-    /* Đẩy header sang phải để không đè lên sider */
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    /* Thêm bóng đổ nhẹ */
 }
 
 .header .inner-logo a {
@@ -54,7 +50,7 @@
     margin: 0;
 }
 
-/* Dropdown menu item styling */
+
 .dropdown-item.d-flex {
     display: flex;
     align-items: center;
@@ -123,7 +119,6 @@
 .body {
     display: flex;
     flex-wrap: nowrap;
-    height: 100vh;
     overflow: hidden;
 }
 
@@ -137,7 +132,7 @@
     left: 0;
     overflow-y: auto;
     /* Để cuộn nếu nội dung vượt quá chiều cao */
-    z-index: 1000;
+    z-index: 9999;
     /* Đảm bảo rằng sider nằm trên các phần tử khác */
 }
 
@@ -178,9 +173,10 @@
 /* End Sider */
 /* Show alert */
 [show-alert] {
-    position: fixed;
-    top: 20px;
+    position: fixed !important;
+    top: 50px;
     right: 15px;
+    float: right;
     z-index: 9999;
 }
 
@@ -190,16 +186,6 @@
     animation-fill-mode: both;
 }
 
-[show-alert] [close-alert] {
-    background: #ffffffc4;
-    width: 24px;
-    height: 24px;
-    line-height: 24px;
-    text-align: center;
-    font-weight: 600;
-    border-radius: 50%;
-    cursor: pointer;
-}
 
 @keyframes alert-hidden {
     from {

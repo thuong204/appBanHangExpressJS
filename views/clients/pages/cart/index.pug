@@ -1,0 +1,74 @@
+extends ../../layouts/default.pug
+include ../../mixins/grid-products.pug
+include ../../mixins/section-page.pug
+include ../../mixins/alert.pug
+block main 
+        
+    +alert-success(3000)
+    +section-page(pageTitle)
+    .body 
+        .main 
+            .container
+                .row
+                    .col-7 
+                        table(
+                            class="table table-hover table-sm mt-3"
+                            checkbox-multi
+                        )
+                            thead
+                                tr
+                                    th(class="product-name text-uppercase" colspan="3") Sản phẩm
+                                    th(class="product-price text-uppercase") Giá
+                                    th(class="product-quantity text-uppercase") Số lượng
+                                    th(class="product-total text-uppercase") Tổng
+                            tbody
+                                each item, index in cart.products
+                                    tr
+                                        td  
+                                            a(href=`/cart/delete/${item.product_id}`
+                                                class="btn btn-danger mt-3") Xóa 
+                                        td
+                                            img(src= item.productInfo.thumbnail class="img-cart")
+                                        td 
+                                            a(href="" class="product-info") #{item.productInfo.title}
+                                        td 
+                                            p #{item.productInfo.priceNew}$
+                                        td 
+                                            div.button-add-quantity 
+                                                input(type="button" value="-" button-decrease)  
+                                                input(type="text" class="fw-bold" value= item.quantity style="width:20px" value-quantity)
+                                                input(type="button" value="+" button-increase)
+                                        td 
+                                            p(total-product class="fw-bold text-danger") #{item.totalPrice}$
+
+                    .col-5
+                        table(
+                            class="table  table-sm mt-3 fs-5  table-borderless table-danger"
+                        )
+                            thead 
+                                tr
+                                    th(class="subtotal text-uppercase") Tổng số lượng
+
+                        table(
+                            cellspacing="0"
+                            class="table  table-sm mt-3 fs-5  table-borderless"
+                        )
+                            tbody
+                                tr
+                                    td Tổng phụ
+                                    td(class="float-end text-danger fw-bold") #{cart.total}$
+
+                                tr 
+                                    td(colspan="2")
+                                        table(class="table er table-sm  table-borderless")
+                                            tbody 
+                                                tr 
+                                                    td Giao hàng 
+                                                    td(class="float-end")
+                                                        ul(class="sub-cart fs-6")
+                                                            li Phí vận chuyển 
+                                                            li Miến phí
+                                tr 
+                                    th(class="text-danger") Tổng tiền thanh toán:
+                                    td(class="float-end text-danger fw-bold") #{cart.total}$
+
