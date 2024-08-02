@@ -1,0 +1,104 @@
+extends ../../layouts/default.pug
+include ../../mixins/section-page.pug
+include ../../mixins/alert.pug
+
+block main     
+    +alert-success(3000)
+    +section-page(pageTitle)
+    .body 
+        .container 
+            .row 
+                .col-7
+                    h3 Thông tin đặt hàng
+                    form(
+                        action="order"
+                        method="POST"
+                    )
+                        div(class="mb-3")
+                            label(for="fullname") Họ tên
+                            input.form-control(
+                                type="text" 
+                                id="fullname" 
+                                name="fullname" 
+                                required 
+                                placeholder="Nhập họ tên" )
+                        div(class="mb-3")
+                            label(for="phone") Số điện thoại
+                            input.form-control(
+                                type="text" 
+                                id="phone" 
+                                name="phone" 
+                                required 
+                                placeholder="Nhập số điện thoại")
+                        div(class="mb-3")
+                            label(for="address") Địa chỉ nhận hàng:
+                            input.form-control(
+                                type="text" 
+                                id="address" 
+                                name="address" 
+                                required
+                                placeholder="Nhập địa chỉ nhận hàng")
+                        div(class="mb-3")
+                            label(for="note") Ghi chú đơn hàng
+                            textarea.form-control(
+                                rows=3
+                                id="note"
+                                name="note"
+                            )
+                        div(class="mb-3 form-check-inline form-check" )
+                            input(
+                                type="radio" 
+                                class="form-check-input" 
+                                id="paymentdelivery" 
+                                name="payment" 
+                                checked
+                                value="paymentdelivery")
+                            label(
+                                for="paymentdelivery" 
+                                class="form-check-label") Thanh toán khi nhận hàng       
+                        div(class="mb-3 form-check-inline form-check" )
+                            input(
+                                type="radio" 
+                                class="form-check-input" 
+                                id="paymentcard" 
+                                name="payment" 
+                                value="paymentcard")
+                            label(
+                                for="paymentcard" 
+                                class="form-check-label") Thanh toán bằng thẻ  
+                        div(class="mb-3")
+                            button(type="submit" class="btn btn-danger mb-3") Đặt hàng
+                .col-5
+                    .container
+                        table.table.table-hover.fs-4.text-uppercase.table-danger.table-border.custom-table
+                            thead
+                                tr 
+                                    th Đơn hàng của bạn
+                        table.table.table-hover.table-sm.fs-5(cellspacing="0") 
+                            tbody 
+                                tr
+                                    td(colspan="2")
+                                        table.table.fs-6(cellspacing="0").custom-table
+                                            thead 
+                                                tr 
+                                                    th SẢN PHẨM
+                                                    th.text-end Tổng
+                                            tbody 
+                                            each item in cart.products
+                                                tr 
+                                                    td #{item.productInfo.title} <span class="fw-bold"> x#{item.quantity} </span>
+                                                    td.text-end #{item.totalPrice}$
+
+                                tr 
+                                    th  Tổng tiền: 
+                                    td.text-end #{cart.total}$
+                                tr 
+                                    th Phí vận chuyển 
+                                    td.text-end.fs-6 Miễn phí
+                                tr 
+                                    th Tổng tiền thanh toán: 
+                                    td.text-end.text-danger.text-uppercase.fw-bold.fs-5 #{cart.total}$
+                                
+                                
+
+

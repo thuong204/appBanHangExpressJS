@@ -1,0 +1,16 @@
+extends ../../layouts/default.pug
+include ../../mixins/grid-products.pug
+include ../../mixins/section-page.pug
+include ../../mixins/alert.pug
+block main 
+        
+    +alert-success(3000)
+    +section-page(pageTitle)
+    .body 
+        .main 
+            .container 
+                .row 
+                    .col-7 
+                        
+
+                    .col-5

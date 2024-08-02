@@ -1,0 +1,68 @@
+extends ../../layouts/default.pug
+include ../../mixins/section-page.pug
+include ../../mixins/alert.pug
+
+block main     
+    +section-page(pageTitle)
+    .body 
+        .container 
+            .row
+                .col-12
+                    h3.text-success Đặt hàng thành công
+            .row 
+                .col-12 
+                    div(class="alert alert-success")
+                        | Chúc mừng bạn đã đặt hàng thành công! Chúng tôi sẽ xử lí đơn hàng trong thời gian sớm nhất.
+            if(order)
+                .row 
+                    .col-12
+                        h4.mb-2 Thông tin cá nhân 
+                        table(class="table table-bodered")
+                            tbody 
+                                tr 
+                                    th Họ tên 
+                                    td #{order.userInfo.fullName}
+
+                                tr 
+                                    th Số điện thoại 
+                                    td #{order.userInfo.phone}
+                                tr 
+                                    th Địa chỉ
+                                    td #{order.userInfo.address}
+                .row 
+                    .col-12
+                        h4.mb-2 Thông tin đơn hàng
+                        table(class="table table-bodered")
+                            thead 
+                                tr 
+                                    th STT 
+                                    th Ảnh 
+                                    th Tên 
+                                    th Giá 
+                                    th Số lượng
+                                    th Tông tiền
+                            tbody 
+                                each item, index  in order.products
+                                    tr 
+                                        td #{index+1}
+                                        td 
+                                            img(
+                                                src= item.productInfo.thumbnail 
+                                                width="80px")
+                                        td #{item.productInfo.title}  
+                                        td #{item.priceNew}$  
+                                        td #{item.quantity}
+                                        td #{item.totalPrice}$
+                        if(order.products.length>0)
+                            if(order.note)
+                                p Ghi chú :  #{order.note}
+                            if(order.payments == "paymentdelivery")
+                                h4(class="text-end") Tổng đơn hàng #{order.totalPrice}$
+                                h5(class="text-end") Thanh toán khi nhận hàng
+                                h4(class="text-end text-danger") Tổng tiền thanh toán: #{order.totalPrice}$
+                            else 
+                                h4(class="text-end") Tổng đơn hàng #{order.totalPrice}$
+                                h5(class="text-end") Đã thanh toán khi đặt hàng
+                                h4(class="text-end text-danger") Tổng tiền thanh toán: 0$
+
+
