@@ -1,0 +1,37 @@
+extends ../../layouts/default.pug
+include ../../mixins/alert.pug
+block main 
+    +alert-success(3000)
+    +alert-error(3000)
+    section
+        p Trang chủ / #{pageTitle}
+    .body 
+        .main 
+            .row.mb-3
+                .col-7
+                    h3.text-success Thông tin cá nhân
+                    if user.fullName
+                        div.mb-4 Họ tên: <b> #{user.fullName}</b>
+                    if user.dateOfBirth
+                        div.mb-4 Ngày sinh: <b> #{user.dateOfBirth}</b>
+                    if user.email
+                        div.mb-4 Email: <b> #{user.email}</b>
+                    if user.phone
+                        div.mb-4 Số điện thoại: <b> #{user.phone}</b>
+                    if user.status
+                        div.mb-4
+                            span Trạng thái 
+                            if user.status == 'active'
+                                span.badge.bg-success.mt-3 Hoạt động
+                            else 
+                                span.badge.bg-danger.mt-3 Dừng hoạt động
+                    if user.createdAt 
+                        div.mb-4  Ngày tạo tài khoản: #{user.createdAt}
+                    a(
+                        href=`${prefixAdmin}/user/edit`
+                        class="btn btn-warning btn-sm ms-1 "                          
+                        data-id =id ) Sửa
+                    a(
+                        href=`${prefixAdmin}/user/changepassword`
+                        class="btn btn-danger btn-sm ms-1 d-inline "                         
+                        data-id =id ) Thay đổi mật khẩu

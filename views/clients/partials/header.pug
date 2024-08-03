@@ -30,8 +30,23 @@ header.header
                             a.text-hotline(href="/phone") <i class="fas fa-phone-alt btn-phone btn"></i> 
                             span.text-phone 0812299913
             .col-1
-                img.d-none
-                a.btn.btn-warning Tài khoản
+                .dropdown.text-center
+                    if(user)
+                        i.fas.fa-user#dropdownMenuButton.btn.btn-warning(type="button" data-bs-toggle="dropdown" aria-expanded="false")
+                        ul.dropdown-menu(aria-labelledby="dropdownMenuButton")
+                            li
+                                a.dropdown-item(href="/user/info") Thông tin tài khoản
+                            li
+                                a.dropdown-item(href="/user/logout") Đăng xuất
+                    else
+                        button#dropdownMenuButton.btn.btn-warning(type="button" data-bs-toggle="dropdown" aria-expanded="false")
+                            | Tài khoản
+                        ul.dropdown-menu(aria-labelledby="dropdownMenuButton")
+                            li
+                                a.dropdown-item(href="/user/login") Đăng nhập
+                            li
+                                a.dropdown-item(href="/user/register") Đăng ký
+
     .header-item
         .row 
             .col-10.text-center

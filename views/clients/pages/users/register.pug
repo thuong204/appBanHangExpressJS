@@ -1,0 +1,46 @@
+extends ../../layouts/default.pug
+include ../../mixins/alert.pug
+block main 
+    +alert-success(3000)
+    +alert-error(3000)
+
+    .body-register
+        form(action="register" method="POST")
+            .register-box
+                .register-header
+                    header Tạo tài khoản
+                    p.text-danger.fw-bold Welcome to Thuong Electronics
+
+                .input-box
+                    input.input-field(type="text" name="fullName" autocomplete="off")
+                    label(for="fullName") Họ và tên
+                .input-box
+                    input.input-field(type="date" name="dateOfBirth" autocomplete="off" )
+                    label(for="dateOfBirth" style="display:none") Date of birth
+                .input-box
+                    input.input-field(type="text" name="email" autocomplete="off" )
+                    label(for="email") Email
+                .input-box
+                    input.input-field(type="password" name="password" autocomplete="off" )
+                    label(for="password") Mật khẩu
+                    small(class="form-text text-muted") 
+                        | Mật khẩu phải có ít nhất 8 ký tự, bao gồm chữ hoa, chữ thường, số và ký tự đặc biệt.
+                .input-box
+                    input.input-field(type="text" name="phone" autocomplete="off" )
+                    label(for="phone") Số điện thoại
+                .input-box
+                    button.input-submit.btn.btn-success(type="submit") Đăng kí
+                .middle-text
+                    hr
+                    p.or-text Or
+                .input-box
+                    a.input-social.btn.btn-light
+                        img(src="https://res.cloudinary.com/dwk6tmsmh/image/upload/v1722602737/jnwhzzq4939gb1gl7edy.png" alt="")
+                        p.fw-bold.text-uppercase Đăng kí với Google
+                .input-box
+                    a.btn.input-social.btn-light
+                        img(src="https://res.cloudinary.com/dwk6tmsmh/image/upload/v1722595810/s5duvlhqarv7xfrtedfl.png" alt="")
+                        p.fw-bold.text-uppercase Đăng kí với Twitter
+                .sign-up
+                    p Bạn đã có tài khoản
+                        a(href="login") Đăng nhập

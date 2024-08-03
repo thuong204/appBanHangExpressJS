@@ -1,0 +1,40 @@
+extends ../../layouts/default.pug
+include ../../mixins/alert.pug
+block main 
+    +alert-success(3000)
+    +alert-error(3000)
+
+    .body-login
+        form(action="login" method="post")
+            .login-box
+                .login-header
+                    header Welcome
+                    p We are happy to have you back!
+                .input-box
+                    input(type="text" class="input-field" name="email" autocomplete="off" )
+                    label(for="email") Email
+                .input-box
+                    input(type="password" class="input-field" name="password" autocomplete="off" )
+                    label(for="password") Password
+                .forgot
+                    section
+                        input(type="checkbox" name="check")
+                        label(for="check") Remember me
+                    section
+                        a(href="password/forgot" class="forgot-link") Forgot password?
+                .input-box
+                    button(type="submit" class="input-submit btn btn-success") Sign In
+                .middle-text
+                    hr
+                    p.or-text Or
+                .input-box
+                    a.input-social.btn.btn-light
+                        img(src="https://res.cloudinary.com/dwk6tmsmh/image/upload/v1722602737/jnwhzzq4939gb1gl7edy.png" alt="")
+                        p.fw-bold.text-uppercase Đăng nhập với Google
+                .input-box
+                    a.btn.input-social.btn-light
+                        img(src="https://res.cloudinary.com/dwk6tmsmh/image/upload/v1722595810/s5duvlhqarv7xfrtedfl.png" alt="")
+                        p.fw-bold.text-uppercase Đăng nhập với Twitter
+                .sign-up
+                    p Don't have account 
+                        a(href="register") Sign up

@@ -23,10 +23,11 @@ i.test {
     border-bottom: 1px solid #ddd;
 
 }
-.header-item{
+
+.header-item {
     background: #FFD700;
     color: black;
-    padding:10px;
+    padding: 10px;
 }
 
 .header .inner-logo img {
@@ -34,29 +35,34 @@ i.test {
     width: 100px;
     margin-left: 50px;
 }
-.header .icon-search{
+
+.header .icon-search {
     font-size: 30px;
 }
-.header .btn-cart{
+
+.header .btn-cart {
     background: fixed;
     border: none;
     color: white;
 }
-.header .btn-account{
+
+.header .btn-account {
     color: black;
     font-size: 20px;
     text-decoration: none;
     font-weight: bold;
     background: yellow;
 }
-.header i.btn-phone{
+
+.header i.btn-phone {
     font-size: 22.5px;
     border: 2px solid #e9b226;
 }
-.header span.text-phone{
+
+.header span.text-phone {
     font-size: 18px;
     font-weight: bold;
-    margin-top: 25px ;
+    margin-top: 25px;
     padding: 5px;
 }
 
@@ -162,16 +168,20 @@ i.test {
 .body .container ul.sub-cart li {
     list-style: none;
 }
-.body .container img.img-cart{
+
+.body .container img.img-cart {
     width: 70px;
     height: 70px;
 }
-.body .container table td a.product-info, .body .container table td  p {
+
+.body .container table td a.product-info,
+.body .container table td p {
     text-decoration: none;
     font-size: 16px;
     padding-top: 20px;
     color: black;
-    display: block; /* or inline-block */
+    display: block;
+    /* or inline-block */
 }
 
 
@@ -207,7 +217,8 @@ i.test {
 
 /* body  */
 body {
-    padding-top: 120px; /* Adjust this value based on the height of your header */
+    padding-top: 120px;
+    /* Adjust this value based on the height of your header */
 }
 
 
@@ -216,7 +227,8 @@ body {
     top: 120px;
     right: 15px;
     float: right;
-    z-index: 9999;}
+    z-index: 9999;
+}
 
 [show-alert].alert-hidden {
     animation-name: alert-hidden;
@@ -261,8 +273,9 @@ body {
 
 .button-add-quantity input[type="text"] {
     text-align: center;
-    width: 40px; /* Adjusted width for better appearance */
-    padding:4px;
+    width: 40px;
+    /* Adjusted width for better appearance */
+    padding: 4px;
     font-size: 12px;
     border: 1px solid #ccc;
     border-radius: 4px;
@@ -276,12 +289,12 @@ body {
 
 .single-item {
     border: 1px solid #ddd;
-    margin-bottom:20px;
     padding: 15px;
     transition: all 0.3s ease-in-out;
     background-color: #fff;
     height: 98%;
-    margin: 5px;
+    margin-bottom: 20px !important;
+    margin: 10px ;
 }
 
 .single-item:hover {
@@ -354,7 +367,7 @@ body {
     margin-right: 30px;
     color: #fff;
     width: 50px;
-    padding-top:5px;
+    padding-top: 5px;
     padding-left: -1px;
     background-color: red;
     border-radius: 4px;
@@ -454,9 +467,10 @@ body {
 /* Custom Styles for Your Website */
 
 /* Style for product thumbnail */
-.row-option{
-    height:10px;
+.row-option {
+    height: 10px;
 }
+
 .row span.discount {
     font-size: 15px;
     width: 70px;
@@ -630,12 +644,12 @@ body {
 }
 
 @media (max-width: 991.98px) {
-    .header .inner-menu > ul {
+    .header .inner-menu>ul {
         flex-direction: column;
         margin-left: 0;
     }
 
-    .header .inner-menu > ul > li {
+    .header .inner-menu>ul>li {
         margin-left: 0;
         margin-right: 0;
     }
@@ -692,11 +706,11 @@ body {
         margin-top: 10px;
     }
 
-    .header .inner-menu > ul {
+    .header .inner-menu>ul {
         flex-direction: column;
     }
 
-    .header .inner-menu > ul > li {
+    .header .inner-menu>ul>li {
         margin-left: 0;
         margin-right: 0;
     }
@@ -717,12 +731,14 @@ body {
         font-size: 20px;
     }
 
-    .header .btn-cart, .header .btn-account {
+    .header .btn-cart,
+    .header .btn-account {
         font-size: 14px;
     }
 
     .header .inner-menu {
-        display: none; /* Hide menu by default */
+        display: none;
+        /* Hide menu by default */
         width: 100%;
         background: white;
         position: absolute;
@@ -734,22 +750,24 @@ body {
     }
 
     .header .inner-menu.active {
-        display: block; /* Show menu when toggled */
+        display: block;
+        /* Show menu when toggled */
     }
 
-    .header .inner-menu > ul {
+    .header .inner-menu>ul {
         flex-direction: column;
         padding: 0;
         margin: 0;
     }
 
-    .header .inner-menu > ul > li {
+    .header .inner-menu>ul>li {
         margin: 10px 0;
         text-align: center;
     }
 
     .header .menu-toggle {
-        display: block; /* Show menu toggle button */
+        display: block;
+        /* Show menu toggle button */
         font-size: 24px;
         cursor: pointer;
         margin-left: auto;
@@ -759,7 +777,7 @@ body {
         font-size: 24px;
     }
 
-    .header .inner-menu > ul > li > a {
+    .header .inner-menu>ul>li>a {
         display: block;
         padding: 10px;
         color: black;
@@ -768,8 +786,364 @@ body {
         font-size: 18px;
     }
 
-    .header .inner-menu > ul > li > a:hover {
+    .header .inner-menu>ul>li>a:hover {
         background: #f0f0f0;
     }
 }
 
+/* login and régister */
+
+/* register */
+.body-register {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 20px;
+    background-position: center;
+    background-size: cover;
+}
+
+.register-box {
+    position: relative;
+    width: 470px;
+    height: 610px;
+    padding: 10px 30px;
+    margin-bottom: 20px;
+    background: #FFF;
+    border: 1px solid #ddd;
+}
+
+.register-header {
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+    margin: 20px 0 20px 0;
+}
+
+
+.register-header header {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: #333;
+    font-size: 30px;
+    margin-bottom: Spx;
+
+}
+
+.register-header p {
+    color: #555;
+}
+
+.register-box .name {
+    display: flex;
+
+}
+
+.input-box {
+    position: relative;
+    width: 100%;
+}
+
+.input-box label {
+    position: absolute;
+    top: 7px;
+    left: 15px;
+    color: #555;
+    transition: .15s ease-in-out;
+}
+
+.input-box .input-field {
+    font-size: 1em;
+    color: #333;
+    padding-left: 15px;
+    padding-bottom: 15px;
+    padding-top: 15px;
+    border: 1px solid #ddd;
+    border-radius: 3px;
+    outline: none;
+    width: 96%;
+    height: 40px;
+    margin-bottom: 10px;
+
+}
+
+.input-box .input-lock {
+    font-size: 1em;
+    color: #333;
+    padding-left: 15px;
+    padding-bottom: 15px;
+    padding-top: 15px;
+    border: 1px solid #ddd;
+    border-radius: 3px;
+    outline: none;
+    background: #e6dcdc;
+    width: 96%;
+    height: 40px;
+    margin-bottom: 10px;
+
+}
+
+.input-box input[type="password"] {
+    margin-bottom: 10px;
+}
+
+.input-box .input-field:focus {
+    border: 2px solid #8749F2;
+}
+
+.input-field:focus~label,
+.input-field:valid~label {
+    top: -8px;
+    left: 12px;
+    font-size: 12px;
+    color: #7931F5;
+    background: #FFF;
+    padding: 0 5px;
+}
+
+.input-box label.focus {
+    top: -8px;
+    left: 12px;
+    font-size: 12px;
+    color: black;
+    background: #e6dcdc;
+    padding: 0 5px;
+}
+
+.input-field:valid~label {
+    color: #555;
+}
+
+.forgot {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 25px;
+
+}
+
+
+#check {
+    margin-right: 10px;
+
+}
+
+section .forgot-link {
+    font-weight: 500;
+    text-decoration: none;
+    color: #7931F5;
+}
+
+.input-submit {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-size: 15px;
+    color: #FFF;
+    background: #7931F5;
+    border: none;
+    border-radius: 5px;
+    width: 96%;
+}
+
+.middle-text {
+    position: relative;
+    width: 100%;
+    margin: 30px 0;
+}
+
+.or-text {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    position: absolute;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: #FFF;
+    color: #777;
+    padding: 15px;
+    margin-top: -10px;
+}
+
+hr {
+    border: 1px solid #ddd;
+}
+
+.social-sign-up {
+    display: flex;
+    gap: 15px;
+}
+
+.input-social {
+    width: 96%;
+    margin: 0px 0px 5px;
+    border: 1px solid #ad1c1c;
+}
+
+.input-social img {
+    width: 25px;
+}
+
+.input-social p {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-size: 15px;
+    margin-left: 20px;
+    width: 100%;
+    display: inline;
+}
+
+
+.input-google:hover,
+.input-twitter:hover,
+.input-submit:hover {
+    opacity: 0.9;
+}
+
+.sign-up {
+    position: absolute;
+    bottom: -10px;
+    right: 0;
+}
+
+.sign-up p {
+    font-size: 14px;
+
+}
+
+.sign-up p>a {
+    text-decoration: none;
+}
+
+@media only screen and (max-width:510px) {
+    .login-box {
+        padding: 10px 30px;
+        margin: 20px;
+    }
+
+}
+
+@media only screen and (max-width:415px) {
+    .login-box {
+        padding: 10px 25px;
+        margin: 15px;
+    }
+
+}
+
+/* login  */
+.body-login {
+    margin-bottom: 20px;
+    margin-top: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-position: center;
+    background-size: cover;
+}
+
+.login-box {
+    position: relative;
+    width: 470px;
+    height: 550px;
+    padding: 10px 30px;
+    background: #FFF;
+    border: 1px solid #ddd;
+}
+
+.login-header {
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+    margin: 20px 0 50px 0;
+}
+
+.login-header header {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: #333;
+    font-size: 30px;
+    margin-bottom: 5px;
+}
+
+.login-header p {
+    color: #555;
+}
+
+section .forgot-link {
+    font-weight: 500;
+    text-decoration: none;
+    color: #7931F5;
+}
+
+
+.sign-up {
+    position: absolute;
+    bottom: -12px;
+    right: 0;
+}
+
+
+.sign-up p {
+    font-size: 14px;
+}
+
+.sign-up p>a {
+    text-decoration: none;
+}
+
+@media only screen and (max-width:510px) {
+    .login-box {
+        padding: 10px 30px;
+        margin: 20px;
+    }
+}
+
+@media only screen and (max-width:415px) {
+    .login-box {
+        padding: 10px 25px;
+        margin: 15px;
+    }
+}
+
+
+.body-forgotpassword {
+    margin-bottom: 50px;
+    margin-top: 50px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-position: center;
+    background-size: cover;
+}
+
+.forgot-password-box {
+    position: relative;
+    width: 460px;
+    height: 210px;
+    padding: 10px 30px;
+    background: #FFF;
+    border: 1px solid #ddd;
+}
+
+
+.otp-forgotpassword {
+    margin-bottom: 50px;
+    margin-top: 50px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-position: center;
+    background-size: cover;
+}
+
+.otp-password-box {
+    position: relative;
+    width: 460px;
+    height: 250px;
+    padding: 10px 30px;
+    background: #FFF;
+    border: 1px solid #ddd;
+}
+.send-otp{
+    margin-top: 25px;
+    text-align: right; 
+    margin-right: 15px;
+}
+
+
+
+
+/* end login and régister */
