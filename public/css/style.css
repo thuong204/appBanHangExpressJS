@@ -1147,3 +1147,60 @@ section .forgot-link {
 
 
 /* end login and régister */
+
+
+
+/* chat  */
+chat-body {
+    height: 400px;
+    overflow-y: auto;
+}
+
+.chat-messages {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.message {
+    align-items: flex-end;
+}
+
+.avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    margin-right: 10px;
+}
+
+.message-bubble {
+    max-width: 60%;
+    padding: 10px 15px;
+    border-radius: 15px;
+    position: relative;
+}
+
+.message-bubble.sender {
+    background-color: #0084ff;
+    color: white;
+    border-bottom-right-radius: 0;
+    align-self: flex-end;
+}
+
+.message-bubble.receiver {
+    background-color: #f1f0f0;
+    color: black;
+    border-bottom-left-radius: 0;
+    align-self: flex-start;
+}
+
+.input-group input {
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+}
+
+.input-group button {
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+}
+ /* end chat  */

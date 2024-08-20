@@ -25,6 +25,7 @@
     "multer": "^1.4.5-lts.1",
     "nodemailer": "^6.9.14",
     "pug": "^3.0.3",
+    "socket.io": "^4.7.5",
     "streamifier": "^0.1.1",
     "tinymce": "^7.2.1"
   },

@@ -1,0 +1,27 @@
+extends ../../layouts/default.pug
+include ../../mixins/grid-products.pug
+block main 
+    section
+        p Trang chat / #{pageTitle}
+    .body 
+        .main 
+            .container.mt-5(myId= user.id)
+                .row.justify-content-center
+                    .col-md-8
+                    .card
+                        .card-body.chat-body
+                            .chat-messages.mb-3
+                                each chat in chats
+                                    if(chat.user_id == user.id)
+                                        .message-bubble.sender #{chat.content} 
+                                    else  
+                                        .message-bubble.receiver #{chat.content}  
+
+
+                        .card-footer
+                            form(action ="" id ="form-send")
+                                .input-group
+                                    input.form-control(type="text" placeholder="Type a message..." name= "content")
+                                    button.btn.btn-primary(type="submit" btn-send ) Send
+    script(src="/socket.io/socket.io.js") 
+    script(src="/js/chat.js") 

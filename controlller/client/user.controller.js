@@ -135,7 +135,7 @@ module.exports.resetPasswordPost = async (req,res) =>{
         password: password
     })
     req.flash("Success","Thay đổi mật khẩu thành công")
-    res.redirect("/user/login")
+    res.redirect("/")
 }
 
 module.exports.info = (req,res) =>{

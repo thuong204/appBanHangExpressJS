@@ -22,6 +22,9 @@ const database = require("./config/database.js")
 const app = express()
 const port = process.env.PORT
 
+const http = require('http')
+const { Server } = require("socket.io")
+
 app.use(methodOverride('_method'))
 app.use('/tinymce', express.static(path.join(__dirname, 'node_modules', 'tinymce')));
 
@@ -30,6 +33,13 @@ database.connect()
 
 app.set('views', `${__dirname}/views`)
 app.set('view engine', 'pug')
+
+//Socket IO
+const server = http.createServer(app)
+const io = new Server(server)
+global._io = io
+
+
 
 //App local variable
 app.locals.prefixAdmin =  systemConfig.prefixAdmin
@@ -48,6 +58,6 @@ routeAdmin(app);
 app.use(express.static(`${__dirname}/public`))
 
 
-app.listen(port, () => {
+server.listen(port, () => {
     console.log(`Example app listening on port ${port}`)
 })
