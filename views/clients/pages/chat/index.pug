@@ -7,21 +7,25 @@ block main
         .main 
             .container.mt-5(myId= user.id)
                 .row.justify-content-center
-                    .col-md-8
+                    div(class="name-send fw-bold fs-5") Tran cong Thuong
                     .card
                         .card-body.chat-body
                             .chat-messages.mb-3
                                 each chat in chats
                                     if(chat.user_id == user.id)
                                         .message-bubble.sender #{chat.content} 
-                                    else  
-                                        .message-bubble.receiver #{chat.content}  
-
-
+                                    else
+                                        div(class="") #{chat.infoUser.fullName}
+                                        .message-bubble.receiver #{chat.content}
+                                div(class="inner-list-typing")
                         .card-footer
                             form(action ="" id ="form-send")
                                 .input-group
-                                    input.form-control(type="text" placeholder="Type a message..." name= "content")
-                                    button.btn.btn-primary(type="submit" btn-send ) Send
+                                    input.form-control(type="text" placeholder="Type a message..." name= "content" input-chat style="margin-right:10px" )
+                                    div(class="custom-file-container" data-upload-id="my-unique-id")
+                                    i(class="far fa-smile btn-icon" width="20px")
+                                    button.btn.btn-primary(type="submit" btn-send) Send
+        div(class="tooltip" role="tooltip")
+            emoji-picker
     script(src="/socket.io/socket.io.js") 
-    script(src="/js/chat.js") 
+    script(type="module" src="/js/chat.js") 

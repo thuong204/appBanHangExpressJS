@@ -4,7 +4,6 @@ module.exports.index = async(req,res) =>{
     const userId=  res.locals.user.id
     const fullName= res.locals.user.fullName
     _io.once('connection', (socket) => {
-        console.log("a user connected", socket.id)
         socket.on('CLIENT_SEND_MESSAGE', async(data)  =>{
             const chat = new Chat({
                 user_id: userId,
@@ -16,6 +15,13 @@ module.exports.index = async(req,res) =>{
                 userId: userId,
                 fullName: fullName,
                 content: data
+            })
+        })
+        socket.on("CLIENT_SEND_TYPING", (type) =>{
+            socket.broadcast.emit('SERVER_RETURN_TYPING',{
+                userId: userId,
+                fullName: fullName,
+                type: type
             })
         })
 

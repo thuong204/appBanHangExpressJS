@@ -1156,7 +1156,7 @@ chat-body {
     overflow-y: auto;
 }
 
-.chat-messages {
+.chat-messages  {
     display: flex;
     flex-direction: column;
     gap: 15px;
@@ -1180,6 +1180,12 @@ chat-body {
     position: relative;
 }
 
+.message-bubble span {
+    max-width: 60%;
+    padding: 10px 15px;
+    border-radius: 15px;
+    position: relative;
+}
 .message-bubble.sender {
     background-color: #0084ff;
     color: white;
@@ -1192,7 +1198,8 @@ chat-body {
     color: black;
     border-bottom-left-radius: 0;
     align-self: flex-start;
-}
+} 
+
 
 .input-group input {
     border-top-right-radius: 0;
@@ -1203,4 +1210,92 @@ chat-body {
     border-top-left-radius: 0;
     border-bottom-left-radius: 0;
 }
+.tooltip{
+    visibility: hidden;
+}
+.btn-icon{
+    width: 25px;
+    font-size: 24px;
+    margin-right: 10px;
+    color: blue;
+    margin-top: 8px;
+    border: 1px solid #fff;
+
+}
+.tooltip.shown{
+    visibility: visible;
+    opacity: 1;
+}
  /* end chat  */
+
+ /* typing */
+ .inner-list-typing {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.box-typing {
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    border-radius: 10px;
+    max-width: 300px;
+}
+
+.inner-name {
+    font-weight: bold;
+    height: 30px;
+    margin-left: 10px;
+    padding-left: 8px;
+    margin-top: 2px;
+    margin-right: 10px;
+    border-radius: 50px;
+    background-color: #f0f0f0;
+}
+
+.inner-dots {
+    display: flex;
+    background-color: #f0f0f0;
+    gap: 4px;
+    width: 50px;
+    padding-left: 8px;
+    border-radius: 15px;
+    border-bottom-left-radius: 0;
+    align-self: flex-start;
+    height: 30px;
+}
+
+.inner-dots span {
+    display: block;
+    width: 8px;
+    height: 8px;
+    margin-top: 10px;
+    background-color: #555;
+    border-radius: 50%;
+    animation: typing 1.5s infinite ease-in-out;
+}
+
+.inner-dots span:nth-child(1) {
+    animation-delay: 0s;
+}
+
+.inner-dots span:nth-child(2) {
+    animation-delay: 0.3s;
+}
+
+.inner-dots span:nth-child(3) {
+    animation-delay: 0.6s;
+}
+
+@keyframes typing {
+    0%, 60%, 100% {
+        transform: translateY(0);
+        opacity: 1;
+    }
+    30% {
+        transform: translateY(-6px);
+        opacity: 0.5;
+    }
+}
+/* end typing  */
