@@ -1174,7 +1174,6 @@ chat-body {
 }
 
 .message-bubble {
-    max-width: 60%;
     padding: 10px 15px;
     border-radius: 15px;
     position: relative;
@@ -1186,20 +1185,60 @@ chat-body {
     border-radius: 15px;
     position: relative;
 }
-.message-bubble.sender {
-    background-color: #0084ff;
-    color: white;
-    border-bottom-right-radius: 0;
+.sender  {
     align-self: flex-end;
 }
+.sender .message-bubble{
+    color: white;
+    background: #FE5DA3;
+    border-radius: 20px;
 
-.message-bubble.receiver {
-    background-color: #f1f0f0;
-    color: black;
-    border-bottom-left-radius: 0;
+}
+.sender .inner-images img{
+    width: 80px;
+    height: 80px;
+    object-fit: contain;
+    background: #efefef;
+    padding: 10px;
+    margin: 5px 5px 5px 0;
+    border-radius: 5px;
+}
+.sender .inner-images {
+    margin-left: auto;
+    text-align: right;
+
+}
+.receiver .inner-images img{
+    width: 80px;
+    height: 80px;
+    object-fit: contain;
+    background: #efefef;
+    padding: 10px;
+    margin: 5px 5px 5px 0;
+    border-radius: 5px;
+}
+.receiver .inner-images {
+    margin-left: auto;
+    text-align: left;
+
+}
+
+.receiver {
     align-self: flex-start;
 } 
-
+.receiver .message-bubble{
+    background-color: #f1f0f0;
+    color: black;
+    border-radius: 20px;
+}
+.card-footer .input-group button.btn-send{
+    background: #FE5DA3;
+    border: 1px solid #FE5DA3;
+    width: 30px;
+    height: 30px;
+    margin-top: 8px;
+    border-radius:  15px 15px 15px 15px !important;
+}
 
 .input-group input {
     border-top-right-radius: 0;
@@ -1217,10 +1256,38 @@ chat-body {
     width: 25px;
     font-size: 24px;
     margin-right: 10px;
-    color: blue;
-    margin-top: 8px;
+    color: #FE5DA3;
+    margin-top: 10px;
     border: 1px solid #fff;
 
+}
+.btn-image{
+    width: 25px;
+    font-size: 24px;
+    margin-right: 10px;
+    color: #FE5DA3;
+    margin-top: 5px;
+    margin-bottom: 5px;
+    border: 1px solid #fff;
+
+}
+.inner-preview-images{
+    position: relative;
+}
+.inner-preview-images .label-container{
+    display: none !important;
+}
+.inner-preview-images .input-container{
+    display: none !important;
+}
+.inner-preview-images .image-preview{
+    height: auto !important;
+    padding: 0 !important;
+    border-radius: 0 !important  ;
+}
+.inner-preview-images .image-preview-item{
+    background-size: contain !important;
+    width: 90px !important; 
 }
 .tooltip.shown{
     visibility: visible;

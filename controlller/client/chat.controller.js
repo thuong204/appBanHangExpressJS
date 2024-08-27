@@ -1,32 +1,12 @@
 const Chat = require("../../models/chat.model")
 const User = require("../../models/users.model")
+const chatSocket =require("../../socket/client/chat.socket")
 module.exports.index = async(req,res) =>{
-    const userId=  res.locals.user.id
-    const fullName= res.locals.user.fullName
-    _io.once('connection', (socket) => {
-        socket.on('CLIENT_SEND_MESSAGE', async(data)  =>{
-            const chat = new Chat({
-                user_id: userId,
-                content: data
-            }); 
-            await chat.save()
-            //Trả vể tin nhắn cho A B C
-            _io.emit('SERVER_RETURN_MESSAGE',{
-                userId: userId,
-                fullName: fullName,
-                content: data
-            })
-        })
-        socket.on("CLIENT_SEND_TYPING", (type) =>{
-            socket.broadcast.emit('SERVER_RETURN_TYPING',{
-                userId: userId,
-                fullName: fullName,
-                type: type
-            })
-        })
+    //Socket
 
-
-    });
+    chatSocket(res)
+    //Socket
+   
     const chats = await Chat.find({
         deleted: false
     })

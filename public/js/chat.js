@@ -1,9 +1,9 @@
 var socket = io()
 
 //file upload preview
-const upload = new FileUploadWithPreview.FileUploadWithPreview('my-unique-id',{
+const upload = new FileUploadWithPreview.FileUploadWithPreview('my-unique-id', {
     multiple: true,
-    maxFileCount:6
+    maxFileCount: 6
 });
 
 const form = document.getElementById("form-send")
@@ -12,11 +12,17 @@ if (form) {
         e.preventDefault()
         const images = upload.cachedFileArray || []
         const content = e.target.elements.content.value
-        console.log(images)
-        if (content) {
-            socket.emit('CLIENT_SEND_MESSAGE', content);
-            e.target.elements.content.value = ""
+        if (content || images.length > 0) {
+            socket.emit('CLIENT_SEND_MESSAGE',
+                {
+                    content: content,
+                    images: images
+
+                });
+            e.target.elements.content.value = "";
+            upload.resetPreviewPanel()
         }
+
 
     })
 }
@@ -26,16 +32,35 @@ socket.on('SERVER_RETURN_MESSAGE', (data) => {
     const message = document.querySelector(".chat-messages")
     const div = document.createElement("div")
     const boxTyping = document.querySelector(".inner-list-typing")
-    div.classList.add("message-bubble")
+    let htmlFullName = "";
+    let htmlContent = "";
+    let htmlImages = "";
     if (data.userId == userId.getAttribute("myId")) {
         div.classList.add("sender")
-        div.innerHTML = data.content
+
     }
     else {
         div.classList.add("receiver")
-        div.innerHTML = data.content
+        htmlFullName = data.fullName
 
     }
+    if (data.content) {
+        htmlContent = ` <div class="message-bubble">${data.content}</div>`
+    }
+    if (data.images.length>0) {
+        htmlImages += ` <div class="inner-images">`;
+        for (const image of data.images) {
+            htmlImages += `<img src= "${image}">`;
+
+        }
+        htmlImages += '</div>';
+
+    }
+    div.innerHTML = `
+    ${htmlFullName}
+    ${htmlContent}
+    ${htmlImages} 
+    `
     message.insertBefore(div, boxTyping)
     message.scrollTop = message.scrollHeight
 })
