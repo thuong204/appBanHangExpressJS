@@ -47,7 +47,7 @@ socket.on('SERVER_RETURN_MESSAGE', (data) => {
     if (data.content) {
         htmlContent = ` <div class="message-bubble">${data.content}</div>`
     }
-    if (data.images.length>0) {
+    if (data.images.length > 0) {
         htmlImages += ` <div class="inner-images">`;
         for (const image of data.images) {
             htmlImages += `<img src= "${image}">`;
@@ -63,6 +63,12 @@ socket.on('SERVER_RETURN_MESSAGE', (data) => {
     `
     message.insertBefore(div, boxTyping)
     message.scrollTop = message.scrollHeight
+
+    const boxImages = div.querySelector(".inner-images");
+    if(boxImages){
+        const gallery = new Viewer(boxImages);
+
+    }
 })
 
 var timeOut
@@ -138,3 +144,10 @@ if (elementListTyping) {
 
     })
 }
+
+//Preview image
+const chat = document.querySelector(".card-body .chat-messages")
+if(chat) {
+    const gallery = new Viewer(chat);
+}
+//End Preview image
