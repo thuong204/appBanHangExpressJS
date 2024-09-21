@@ -1,6 +1,6 @@
 const express = require('express')
 var path = require('path');
-require("dotenv").config()
+require("dotenv").config()  
 
 const methodOverride=  require("method-override")
 const multer = require('multer');

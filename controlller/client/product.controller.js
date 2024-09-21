@@ -48,6 +48,7 @@ module.exports.category = async (req,res) =>{
     }).sort({position:"desc"})
 
 
+
     const productsNewCategory = priceNew(productsCategory)
     res.render("clients/pages/products/index", {
         pageTitle: category.title,

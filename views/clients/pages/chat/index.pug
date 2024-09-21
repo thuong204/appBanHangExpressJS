@@ -12,7 +12,7 @@ block main
                         .card-body.chat-body
                             .chat-messages.mb-3
                                 each chat in chats
-                                    if(chat.user_id == user.id)
+                                    if(chat.sender == user.id)
                                         .sender 
                                             if(chat.content)
                                                 .message-bubble #{chat.content} 
@@ -20,9 +20,8 @@ block main
                                                 .inner-images 
                                                     each image in chat.images   
                                                         img(src=image width= "100px")
-                                    else
+                                    if(chat.sender == store.id)
                                         .receiver
-                                            |#{chat.infoUser.fullName}
                                             if(chat.content)
                                                 .message-bubble #{chat.content} 
                                             if(chat.images)
@@ -34,7 +33,7 @@ block main
                                 div(class="custom-file-container" data-upload-id="my-unique-id")
 
                         .card-footer
-                            form(action ="" id ="form-send")
+                            form(id ="form-send")
                                 .input-group
                                     input.form-control(type="text" placeholder="Type a message..." name= "content" input-chat style="margin-right:10px" )
                                     label(for ="file-upload-with-preview-my-unique-id" class="btn-image mt-1") <i class="fas fa-image"></i>

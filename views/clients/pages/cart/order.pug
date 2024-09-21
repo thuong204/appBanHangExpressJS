@@ -98,6 +98,12 @@ block main
                                 tr 
                                     th Tổng tiền thanh toán: 
                                     td.text-end.text-danger.text-uppercase.fw-bold.fs-5 #{cart.total}$
+                    .qr-code 
+                        .row 
+                            .col-6 
+                            .col-6
+                                img(src=`${qr}` width="90%")
+            
                                 
                                 
 

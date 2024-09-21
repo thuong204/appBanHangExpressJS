@@ -17,7 +17,7 @@ module.exports = (app) =>{
     app.use('/',  homeRouter)
     app.use("/products",productRouter)
     app.use("/search", searchRouter)
-    app.use("/cart", cartRouter)
+    app.use("/cart",authMiddleware.requireAuth, cartRouter)
     app.use("/user", userRouter)
     app.use("/chat",authMiddleware.requireAuth, chatRouter)
 }

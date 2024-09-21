@@ -1,5 +1,6 @@
 const Cart = require("../../models/carts.model")
 const productsHelper= require("../../helpers/products")
+const {VietQR}  = require("vietqr")
 const Product = require("../../models/product.model")
 const Order = require("../../models/order.model")
 module.exports.index = async (req, res) => {
@@ -93,6 +94,30 @@ module.exports.order = async(req,res) =>{
     const cart = await Cart.findOne({
         _id: cartId
     })
+
+
+
+    //tao ma qr thanh toan
+    const vietQR = new VietQR({
+        clientID: 'de8a0804-a76d-41e5-8ad6-31503ce7d5f4',
+        apiKey: '17c29f09-4ea2-4417-b9c2-7f020d35de42',
+    });
+
+    let qr = {
+
+    }
+    vietQR.genQRCodeBase64({
+        bank: '970405',
+        accountName: 'TRAN CONG THUONG',
+        accountNumber: '20152220051510',
+        amount: '1000',
+        memo: 'Xin tien uong Cafe',
+        template: 'compact'
+    }).then((data)=>{
+        qr=data.data;
+    })
+
+
     if (cart.products.length > 0) {
         for (const cartproduct of cart.products) {
             const productInCart = await Product.findOne({
@@ -108,7 +133,8 @@ module.exports.order = async(req,res) =>{
     cart.total = cart.products.reduce((sum,item) => sum + item.totalPrice, 0)
     res.render("clients/pages/cart/order",{
         pageTitle: "Trang đặt hàng",
-        cart: cart
+        cart: cart,
+        qr: qr.data.qrDataURL
     }
     )
 }
