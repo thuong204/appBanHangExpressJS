@@ -678,6 +678,7 @@ body {
     }
 }
 
+
 @media (max-width: 767.98px) {
     .header {
         padding: 10px;
@@ -1365,4 +1366,11 @@ chat-body {
         opacity: 0.5;
     }
 }
+@media (max-width: 768px) {
+    .header-item .inner-menu {
+        flex-direction: column; /* Thay đổi hướng nếu cần thiết trên màn hình nhỏ */
+    }
+    /* Các thay đổi phong cách khác cho thiết bị di động */
+}
+
 /* end typing  */

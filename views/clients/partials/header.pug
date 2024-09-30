@@ -15,37 +15,36 @@ header.header
                                 placeholder="Hôm nay bạn tìm gì ...."
                                 class="form-control"
                                 name="keyword"
-                                value= keyword
+                                value=keyword
                             )
                             button(
                                 type="submit"
                                 class="btn btn-warning"
                             )  <i class="fas fa-search"></i>  
-            .col-3
+            .col-4.text-end  
                 .inner-menu
-                    ul
+                    ul.d-flex.justify-content-end 
                         li.nav-item
-                            a.border-warning.border.border-2.btn(href="/cart") <i class="fas fa-cart-plus fs-5 "></i>  
+                            a.border-warning.border.border-2.btn(href="/cart") <i class="fas fa-cart-plus fs-5"></i>  
                         li.nav-item
                             a.text-hotline(href="/phone") <i class="fas fa-phone-alt btn-phone btn"></i> 
                             span.text-phone 0812299913
-            .col-1
-                .dropdown.text-center
-                    if(user)
-                        i.fas.fa-user#dropdownMenuButton.btn.btn-warning(type="button" data-bs-toggle="dropdown" aria-expanded="false")
-                        ul.dropdown-menu(aria-labelledby="dropdownMenuButton")
-                            li
-                                a.dropdown-item(href="/user/info") Thông tin tài khoản
-                            li
-                                a.dropdown-item(href="/user/logout") Đăng xuất
-                    else
-                        button#dropdownMenuButton.btn.btn-warning(type="button" data-bs-toggle="dropdown" aria-expanded="false")
-                            | Tài khoản
-                        ul.dropdown-menu(aria-labelledby="dropdownMenuButton")
-                            li
-                                a.dropdown-item(href="/user/login") Đăng nhập
-                            li
-                                a.dropdown-item(href="/user/register") Đăng ký
+                        li.nav-item.dropdown
+                            if(user)
+                                i.fas.fa-user#dropdownMenuButton.btn.btn-warning(type="button" data-bs-toggle="dropdown" aria-expanded="false")
+                                ul.dropdown-menu(aria-labelledby="dropdownMenuButton")
+                                    li
+                                        a.dropdown-item(href="/user/info") Thông tin tài khoản
+                                    li
+                                        a.dropdown-item(href="/user/logout") Đăng xuất
+                            else
+                                button#dropdownMenuButton.btn.btn-warning(type="button" data-bs-toggle="dropdown" aria-expanded="false")
+                                    | Tài khoản
+                                ul.dropdown-menu(aria-labelledby="dropdownMenuButton")
+                                    li
+                                        a.dropdown-item(href="/user/login") Đăng nhập
+                                    li
+                                        a.dropdown-item(href="/user/register") Đăng ký
 
     .header-item
         .row 
@@ -54,12 +53,11 @@ header.header
                 .inner-menu
                     ul
                         li.nav-item.dropdown <i class="fas fa-home"></i>
-
                             a.ms-2(href="/") Trang chủ
                         each item in categoryProducts
                             li.nav-item.dropdown.sub-menu
                                 -const pathProduct = "/products"
-                                a(href= `/products/${item.slug}`) #{item.title}
+                                a(href=`/products/${item.slug}`) #{item.title}
                         li.nav-item.dropdown
                             a(href="/") Tin tức
                         li.nav-item.dropdown
