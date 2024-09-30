@@ -116,6 +116,7 @@ module.exports.order = async(req,res) =>{
     }).then((data)=>{
         qr=data.data;
     })
+    let qrCode =""
 
 
     if (cart.products.length > 0) {
@@ -130,11 +131,14 @@ module.exports.order = async(req,res) =>{
             cartproduct.totalPrice = cartproduct.quantity * productInCart.priceNew
         }
     }
+    if(qr.data.qrDataURL){
+        qrCode=qr.data.qrDataURL
+    }
     cart.total = cart.products.reduce((sum,item) => sum + item.totalPrice, 0)
     res.render("clients/pages/cart/order",{
         pageTitle: "Trang đặt hàng",
         cart: cart,
-        qr: qr.data.qrDataURL
+        qr: qrCode
     }
     )
 }
