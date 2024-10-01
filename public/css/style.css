@@ -754,7 +754,7 @@ body {
     }
     .nav-item-toggle {
         display: block !important;
-        margin-left: 90px; /* Hiển thị thẻ khi màn hình nhỏ */
+        margin-left: 60px; /* Hiển thị thẻ khi màn hình nhỏ */
     }
 
     .header .inner-menu.active {
