@@ -122,7 +122,7 @@ i.test {
 
 
 /* satrt menu */
-/* .sub-menu {
+.sub-menu {
     position: relative;
     z-index: 999;
 }
@@ -176,7 +176,7 @@ i.test {
 
 .sub-menu ul li:hover {
     background: #eae9e9;
-} */
+}
 
 
 /* end menu  */
@@ -660,6 +660,15 @@ body {
     .header .icon-search {
         font-size: 24px;
     }
+    .inner-menu>ul>li>a{
+        font-size: 14px !important;
+    }
+    .inner-menu>ul>li.nav-item-info,  .inner-menu>ul>li.nav-item-shop {
+        display: none;
+    }
+    .btn-account,.btn-login{
+        margin-left: 125px !important;
+    }
 
     .header .btn-account {
         font-size: 16px;
@@ -745,7 +754,7 @@ body {
     }
     .nav-item-toggle {
         display: block !important;
-        margin-left: 70px; /* Hiển thị thẻ khi màn hình nhỏ */
+        margin-left: 110px; /* Hiển thị thẻ khi màn hình nhỏ */
     }
 
     .header .inner-menu.active {

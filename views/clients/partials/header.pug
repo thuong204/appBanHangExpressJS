@@ -6,7 +6,7 @@ header.header
                 .inner-logo
                     a(href="/")
                         img(src="/images/dina.png" alt="Logo")
-            .col-lg-7.col-sm-6.col-md-4.col-7
+            .col-lg-7.col-sm-6.col-md-6.col-6
                 .inner-search.mt-3
                     form(action="/search" method="GET")
                         div(class="mb-3 d-flex")
@@ -21,7 +21,7 @@ header.header
                                 type="submit"
                                 class="btn btn-warning"
                             )  <i class="fas fa-search"></i>  
-            .col-lg-3.text-end.col-sm-5.col-md-6.col-5
+            .col-lg-3.text-end.col-sm-5.col-md-4.col-6
                 .inner-menu-log
                     ul.d-flex
                         li.nav-item.nav-item-cart.text-start
@@ -59,9 +59,9 @@ header.header
                             li.nav-item.dropdown.sub-menu
                                 -const pathProduct = "/products"
                                 a(href=`/products/${item.slug}`) #{item.title}
-                        li.nav-item.dropdown
+                        li.nav-item.dropdown.sub-menu.nav-item-info
                             a(href="/") Tin tức
-                        li.nav-item.dropdown
+                        li.nav-item.dropdown.sub-menu.item-call
                             a(href="/chat") Liên hệ
-                        li.nav-item.dropdown
+                        li.nav-item.dropdown.sub-menu.nav-item-shop
                             a(href="/") Hệ thống cưa hàng
