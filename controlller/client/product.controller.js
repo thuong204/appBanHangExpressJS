@@ -1,7 +1,8 @@
 const Product = require("../../models/product.model")
 const priceNew= require("../../helpers/priceNew")
 const CategoryProduct = require("../../models/category-product.model")
-const productsCategoryHelper = require("../../helpers/products-category")
+const productsCategoryHelper = require("../../helpers/products-category");
+const formatPrice = require("../../helpers/formatPrice");
 
 module.exports.index = async (req, res) => {
 
@@ -9,7 +10,7 @@ module.exports.index = async (req, res) => {
         status:"active",
         delete:false
     }).sort({position:"asc"})
-    
+
     const productsNewPrice = priceNew(products)
     res.render("clients/pages/products/index",{
         pageTitle:"Danh sách sản phẩm",
@@ -21,17 +22,20 @@ module.exports.index = async (req, res) => {
 module.exports.detailItem = async (req, res) => {
     try {
         const product_detail = await Product.findOne({slug: req.params.slug, delete: false })
-        if(product_detail == undefined) 
+        if(product_detail == undefined) {
             res.redirect('/products')
-        product_detail.priceNew = (product_detail.price*(100-product_detail.discountPercentage)/100).toFixed(0)
+        }
+        const productPriceNew = formatPrice.formatPrice(product_detail)
+       
         res.render("clients/pages/products/detail", {
             pageTitle: "Detail Product",
-            product: product_detail,
+            product: productPriceNew,
             status:"active"
         })
             
     } catch (error) {
         req.flash("Error", "Không tồn tại sản phẩm này")
+        console.log(error)
         res.redirect('/products')
     }
 

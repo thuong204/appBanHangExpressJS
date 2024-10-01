@@ -1,6 +1,6 @@
 mixin grid-products(products)
     each item in products
-        .col-sm-6.mb-3.col-md-6.col-lg-3
+        .col-12.mb-3.col-12.col-lg-4.col-md-6
             .single-item
                 .row.row-option
                     .col-6
@@ -14,5 +14,7 @@ mixin grid-products(products)
                     p.single-item-title.text-center
                         a(class="text-decoration-none" href=`products/detail/${item.slug}`) #{item.title}
                     p.single-item-price.text-center
-                        span.price-payment  #{item.priceNew}$
+                        span.price #{item.priceInter}đ  
+                        span.price-payment  #{item.priceNew}đ
+              
                 .clearfix

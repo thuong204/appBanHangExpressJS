@@ -12,10 +12,10 @@ block main
                             .card 
                                 .card-header
                                     img(src=`${product.thumbnail}`, alt='' style="width:100%")
-                                .card-body
+                                .card-body.card-description
                                     .card-title.text-success.text-title ĐẶC ĐIỂM NỔI BẬT
                                     .card-text.text-description !{product.content}
-                            .card 
+                            .card.card-info 
                                 .card-body
                                     .card-title.text-title THÔNG TIN CHI TIẾT
 
@@ -25,8 +25,8 @@ block main
                                     .single-item-body
                                         p.single-item-title.text-left(style='font-size: 30px;') #{product.title}
                                         p.single-item-price
-                                            span.price-details #{product.price}$
-                                            span.price-payment-details #{product.priceNew}$
+                                            span.price-details #{product.priceInter}đ
+                                            span.price-payment-details #{product.priceNew}đ
                                     .clearfix
                                     .single-item-options
                                         form(action=`/cart/add/${product.id}` method="POST")

@@ -97,8 +97,11 @@ i.test {
 }
 
 .header .inner-menu>ul>li {
-    margin-left: 30px;
+    margin-left: 20px;
     margin-right: 10px;
+}
+.header .inner-menu>ul>li.nav-item-home {
+    margin-left: 80px;
 }
 
 .footer {
@@ -360,14 +363,14 @@ body {
 }
 
 .single-item-price span.price-payment-details {
-    font-size: 30px;
+    font-size: 18px;
     color: red;
     font-weight: bold;
     margin-right: 30px;
 }
 
 .single-item-price span.price-details {
-    font-size: 30px;
+    font-size: 18px;
     color: rgb(20, 151, 99);
     font-weight: bold;
     text-decoration: line-through;
@@ -638,7 +641,7 @@ body {
 }
 
 .card .card-body .text-title {
-    font-size: 30px;
+    font-size: 20px;
     font-weight: bold;
     color: #157c15;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -1381,9 +1384,15 @@ chat-body {
     .header-item{
         background: none;
         display: none;
+    }
         
-    
+    p.page-title{
+        margin-top: -50px !important;
+    }
      
+    
+    .inner-category{
+        display: none;
     }
 
     .inner-logo{
@@ -1417,6 +1426,12 @@ body {
 .btn {
     padding: 10px 20px; /* Kích thước mặc định */
 }
+.singer-item-title{
+    font-size: 25px;
+}
+.singer-item-price{
+    font-size: 20px;
+}
 
 /* Khi chiều rộng màn hình nhỏ hơn 768px */
 @media (max-width: 768px) {
@@ -1443,6 +1458,39 @@ body {
         font-size: 10px; /* Giảm thêm kích thước chữ trên nút */
     }
 }
+@media (max-width: 450px) {
+    .main-products{
+        margin-top: -20px !important;
+    }
+    .card .card-body .text-title{
+        font-size: 15px;
+    }
+    .card-header img{
+        width: 80%  !important;
+        padding-left: 52px;
+        
+
+    }
+    .card-info{
+        display: none !important;
+    }
+    .card-body.card-description{
+        display: none;
+    }
+    .single-item-title{
+        font-size: 18px !important;
+    }
+    .price-details{
+        font-size: 15px !important;
+    }
+    .price-payment-details{
+        font-size: 15px !important;
+
+    }
+    .single-item-options{
+        font-size: 15px !important;
+    }
+    }
 
 
 
