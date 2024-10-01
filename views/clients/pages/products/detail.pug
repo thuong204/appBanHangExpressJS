@@ -6,14 +6,12 @@ block main
     .main-products
         #content
             .row
-                .col-sm-9
+                .col-lg-9.col-md-8.col-sm-12
                     .row
-                        .col-5.bg-light
+                        .col-lg-5.col-md-6.col-sm-12.bg-light
                             .card 
                                 .card-header
-                                    img(src=`${product.thumbnail}`, alt='' style="width:200px")
-                                    img(src=`${product.thumbnail}`, alt='' style="width:200px")
-
+                                    img(src=`${product.thumbnail}`, alt='' style="width:100%")
                                 .card-body
                                     .card-title.text-success.text-title ĐẶC ĐIỂM NỔI BẬT
                                     .card-text.text-description !{product.content}
@@ -21,8 +19,7 @@ block main
                                 .card-body
                                     .card-title.text-title THÔNG TIN CHI TIẾT
 
-
-                        .col-7.bg-light
+                        .col-lg-7.col-md-6.col-sm-12.bg-light
                             .card
                                 .card-body
                                     .single-item-body
@@ -32,10 +29,7 @@ block main
                                             span.price-payment-details #{product.priceNew}$
                                     .clearfix
                                     .single-item-options
-                                        form(
-                                            action=`/cart/add/${product.id}`
-                                            method ="POST"
-                                        )
+                                        form(action=`/cart/add/${product.id}` method="POST")
                                             label(for="quantity") Số lượng
                                             input(
                                                 class="form-control"
@@ -43,7 +37,7 @@ block main
                                                 name="quantity"
                                                 value="1"
                                                 min="1"
-                                                max= product.stock
+                                                max=product.stock
                                             )
                                             button.btn.btn-success.mt-3 Thêm vào giỏ hàng
                                             button.btn.btn-danger.mt-3.ms-3 Mua ngay 
@@ -51,7 +45,8 @@ block main
                             .card.mt-3
                                 .card-body
                                     .card-title.text-title MÔ TẢ SẢN PHẨM
-                                    .card-text.text-description !{product.description}
+                                    .card-text.text-description.card-hide !{product.description}
+                                    button.btn.btn-link.mt-2#show-more Xem thêm
 
                     .space50
                         | &nbsp;
@@ -59,7 +54,7 @@ block main
                     .beta-products-list
                         h4 Sản phẩm tương tự
                         .row
-                            .col-sm-4
+                            .col-sm-12.col-md-4
                                 .single-item
                                     .single-item-header
                                         a(href='product.html')
@@ -69,8 +64,7 @@ block main
                                         .single-item-price
                                             span
 
-
-                .col-3.aside
+                .col-lg-3.col-md-4.col-sm-12.aside
                     .widget
                         h3.widget-title Sản phẩm nổi bật
                         .widget-body
@@ -82,5 +76,3 @@ block main
                                         p.beta-sales-name
                                             p Airpode 12
                                         p.beta-sales-price   
-
-

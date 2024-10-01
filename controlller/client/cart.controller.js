@@ -131,7 +131,8 @@ module.exports.order = async(req,res) =>{
             cartproduct.totalPrice = cartproduct.quantity * productInCart.priceNew
         }
     }
-    if(qr.data.qrDataURL){
+    console.log(qr.data)
+    if(qr.data){
         qrCode=qr.data.qrDataURL
     }
     cart.total = cart.products.reduce((sum,item) => sum + item.totalPrice, 0)

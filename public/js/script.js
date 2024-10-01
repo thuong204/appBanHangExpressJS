@@ -122,3 +122,18 @@ rows.forEach(row => {
     })
     
 })
+document.addEventListener("DOMContentLoaded", function() {
+    const showMoreButton = document.getElementById("show-more");
+    const descriptionText = document.querySelector(".card-text.text-description.card-hide");
+
+    showMoreButton.addEventListener("click", function() {
+        descriptionText.classList.toggle("card-hide");
+        
+        if (descriptionText.classList.contains("card-hide")) {
+            showMoreButton.textContent = "Xem thêm";
+        } else {
+            showMoreButton.textContent = "Ẩn bớt";
+        }
+    });
+});
+

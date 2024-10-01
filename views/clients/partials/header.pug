@@ -2,11 +2,11 @@ include ../mixins/sub-menu.pug
 header.header
     .header-search
         .row.align-items-center
-            .col-2
+            .col-lg-2.col-md-2.col-sm-1
                 .inner-logo
                     a(href="/")
                         img(src="/images/dina.png" alt="Logo")
-            .col-6
+            .col-lg-7.col-sm-6.col-md-4.col-7
                 .inner-search.mt-3
                     form(action="/search" method="GET")
                         div(class="mb-3 d-flex")
@@ -21,35 +21,36 @@ header.header
                                 type="submit"
                                 class="btn btn-warning"
                             )  <i class="fas fa-search"></i>  
-            .col-4.text-end  
-                .inner-menu
-                    ul.d-flex.justify-content-end 
-                        li.nav-item
-                            a.border-warning.border.border-2.btn(href="/cart") <i class="fas fa-cart-plus fs-5"></i>  
-                        li.nav-item
-                            a.text-hotline(href="/phone") <i class="fas fa-phone-alt btn-phone btn"></i> 
-                            span.text-phone 0812299913
-                        li.nav-item.dropdown
+            .col-lg-3.text-end.col-sm-5.col-md-6.col-5
+                .inner-menu-log
+                    ul.d-flex
+                        li.nav-item.nav-item-cart.text-start
+                            a(href="/cart") <i class="fas fa-cart-plus fs-5 btn-cart"></i>  
+                        li.nav-item.nav-item-toggle
+                            button#navbarToggle.btn.btn-warning(type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation")
+                                 i.fas.fa-bars
+                      
+                                
+                        li.nav-item.dropdown.nav-item-account
                             if(user)
-                                i.fas.fa-user#dropdownMenuButton.btn.btn-warning(type="button" data-bs-toggle="dropdown" aria-expanded="false")
+                                i.fas.fa-user#dropdownMenuButton.btn.btn-warning.btn-account(type="button" data-bs-toggle="dropdown" aria-expanded="false")
                                 ul.dropdown-menu(aria-labelledby="dropdownMenuButton")
                                     li
                                         a.dropdown-item(href="/user/info") Thông tin tài khoản
                                     li
                                         a.dropdown-item(href="/user/logout") Đăng xuất
                             else
-                                button#dropdownMenuButton.btn.btn-warning(type="button" data-bs-toggle="dropdown" aria-expanded="false")
+                                button#dropdownMenuButton.btn.btn-warning.btn-login(type="button" data-bs-toggle="dropdown" aria-expanded="false")
                                     | Tài khoản
                                 ul.dropdown-menu(aria-labelledby="dropdownMenuButton")
                                     li
                                         a.dropdown-item(href="/user/login") Đăng nhập
                                     li
                                         a.dropdown-item(href="/user/register") Đăng ký
-
     .header-item
         .row 
-            .col-1
-            .col-10.text-center
+           
+            .col-11.text-center.ml-3
                 .inner-menu
                     ul
                         li.nav-item.dropdown <i class="fas fa-home"></i>

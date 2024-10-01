@@ -51,12 +51,22 @@ i.test {
     font-size: 20px;
     text-decoration: none;
     font-weight: bold;
-    background: yellow;
+    background: #ffc107;
 }
 
-.header i.btn-phone {
-    font-size: 22.5px;
-    border: 2px solid #e9b226;
+.header i.btn-cart {
+    font-size: 20px !important;
+    color:#ffc107;
+    margin-left: 20px;
+    border:2px solid #ffc107;
+    border-radius: 50px;
+    padding: 10px;
+}
+.header .btn-login{
+    margin-left: 190px;
+}
+.header .btn-account{
+    margin-left: 220px;
 }
 
 .header span.text-phone {
@@ -75,6 +85,15 @@ i.test {
     justify-self: flex-end;
     flex-wrap: wrap;
     margin-left: 50px;
+}
+.header .inner-menu-log>ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  
+    align-items: center;
+    flex-wrap: wrap;
+    
 }
 
 .header .inner-menu>ul>li {
@@ -292,7 +311,7 @@ body {
     padding: 15px;
     transition: all 0.3s ease-in-out;
     background-color: #fff;
-    height: 98%;
+    height: 5%;
     margin-bottom: 20px !important;
     margin: 10px ;
 }
@@ -310,8 +329,8 @@ body {
 .single-item-header img {
     margin-top: 20px;
     max-width: 100%;
-    width: 130px;
-    height: 130px;
+    width: 250px;
+    height: 250px;
 
 }
 
@@ -328,7 +347,7 @@ body {
 }
 
 .single-item-price span.price-payment {
-    font-size: 20px;
+    font-size: 18px;
     color: red;
     font-weight: bold;
     margin-right: 30px;
@@ -336,10 +355,8 @@ body {
 
 
 .single-item-price span.price {
-    font-size: 20px;
-    color: rgb(20, 151, 99);
-    font-weight: bold;
-    text-decoration: line-through;
+    font-size: 16px;
+    text-decoration: 1px solid line-through;
     margin-right: 30px;
 }
 
@@ -365,28 +382,24 @@ body {
 .single-item-caption a.cart {
     display: inline-block;
     margin-right: 30px;
-    color: #fff;
+    color:#ffc107;
+    font-size: 20px;
     width: 50px;
-    padding-top: 5px;
-    padding-left: -1px;
-    background-color: red;
-    border-radius: 4px;
-    height: 37px;
+    border:2px solid #ffc107;
+    padding:10px;
+    padding-left:3px;
+ 
+    border-radius: 50px;
     transition: background-color 0.3s ease-in-out;
 }
+
 
 
 .single-item-caption a:hover {
     background-color: #286090;
 }
 
-.add-to-cart {
-    background-color: #5cb85c;
-}
 
-.add-to-cart:hover {
-    background-color: #4cae4c;
-}
 
 .beta-btn.primary {
     background-color: #ffffff;
@@ -449,9 +462,8 @@ body {
 
 /* Responsive Adjustments */
 @media (max-width: 991.98px) {
-    .widget-title {
-        font-size: 16px;
-    }
+  
+
 }
 
 @media (max-width: 767.98px) {
@@ -499,13 +511,7 @@ body {
 }
 
 /* Specific styles for different breakpoints */
-@media (min-width: 576px) {
-    .featured {
-        font-size: 1.2rem;
-        top: -0.5rem;
-        left: 5rem;
-    }
-}
+
 
 @media (min-width: 768px) {
     .featured {
@@ -644,15 +650,7 @@ body {
 }
 
 @media (max-width: 991.98px) {
-    .header .inner-menu>ul {
-        flex-direction: column;
-        margin-left: 0;
-    }
-
-    .header .inner-menu>ul>li {
-        margin-left: 0;
-        margin-right: 0;
-    }
+ 
 
     .header .inner-logo img {
         height: 40px;
@@ -707,9 +705,6 @@ body {
         margin-top: 10px;
     }
 
-    .header .inner-menu>ul {
-        flex-direction: column;
-    }
 
     .header .inner-menu>ul>li {
         margin-left: 0;
@@ -719,9 +714,10 @@ body {
 
 @media (max-width: 767.98px) {
     .header {
-        flex-direction: column;
-        padding: 10px;
-        align-items: flex-start;
+
+        padding: 0px;
+        height: 70px;
+        
     }
 
     .header .inner-logo img {
@@ -738,16 +734,19 @@ body {
     }
 
     .header .inner-menu {
-        display: none;
+     
         /* Hide menu by default */
         width: 100%;
         background: white;
-        position: absolute;
-        top: 60px;
-        left: 0;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+     
+        
+       
         padding: 10px;
-        z-index: 1000;
+       
+    }
+    .nav-item-toggle {
+        display: block !important;
+        margin-left: 70px; /* Hiển thị thẻ khi màn hình nhỏ */
     }
 
     .header .inner-menu.active {
@@ -755,15 +754,11 @@ body {
         /* Show menu when toggled */
     }
 
-    .header .inner-menu>ul {
-        flex-direction: column;
-        padding: 0;
-        margin: 0;
-    }
-
-    .header .inner-menu>ul>li {
-        margin: 10px 0;
-        text-align: center;
+ 
+    .header .inner-menu>ul li.nav-item-phone, li.nav-item-account {
+        display: none;
+       
+        
     }
 
     .header .menu-toggle {
@@ -778,18 +773,25 @@ body {
         font-size: 24px;
     }
 
-    .header .inner-menu>ul>li>a {
+    .header .inner-menu>ul li.nav-item-cart {
         display: block;
-        padding: 10px;
+        margin-left: 5px;
+        padding-right: 10px;
+        width: 70px;
         color: black;
         text-decoration: none;
         font-weight: bold;
         font-size: 18px;
     }
 
+
     .header .inner-menu>ul>li>a:hover {
         background: #f0f0f0;
     }
+}
+
+li.nav-item-toggle{
+    display: none;
 }
 
 /* login and régister */
@@ -1367,10 +1369,76 @@ chat-body {
     }
 }
 @media (max-width: 768px) {
-    .header-item .inner-menu {
-        flex-direction: column; /* Thay đổi hướng nếu cần thiết trên màn hình nhỏ */
+   
+    .header-item{
+        background: none;
+        display: none;
+        
+    
+     
     }
+
+    .inner-logo{
+        display: none;
+    }
+    .slider{
+        margin-top: -40px !important;
+    }
+    .inner-search{
+        margin-left: 20px;
+    }
+   
+    
+ 
+    
     /* Các thay đổi phong cách khác cho thiết bị di động */
 }
+.card-text.card-hide {
+    display: -webkit-box; /* Hỗ trợ cho trình duyệt Webkit */
+    overflow: hidden;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 5; /* Số dòng hiển thị trước khi ẩn */
+}
+.inner-menu .nav-item-near{
+    margin-right: 20px;
+}
+body {
+    font-size: 16px; /* Kích thước mặc định */
+}
+
+.btn {
+    padding: 10px 20px; /* Kích thước mặc định */
+}
+
+/* Khi chiều rộng màn hình nhỏ hơn 768px */
+@media (max-width: 768px) {
+    body {
+        font-size: 14px; /* Giảm kích thước chữ */
+    }
+    .nav-item-cart{
+        border:none !important;
+    }
+
+    .inner-menu{
+        font-size: 5px !important;
+    }
+}
+
+/* Khi chiều rộng màn hình nhỏ hơn 576px */
+@media (max-width: 576px) {
+    body {
+        font-size: 12px; /* Giảm thêm kích thước chữ */
+    }
+
+    .btn {
+        padding: 6px 12px; /* Giảm thêm kích thước nút */
+        font-size: 10px; /* Giảm thêm kích thước chữ trên nút */
+    }
+}
+
+
+
+
+
 
 /* end typing  */
