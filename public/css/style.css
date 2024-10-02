@@ -377,8 +377,10 @@ a.truncate-text {
     margin-top: 2px;
     text-decoration: 1px solid line-through;
 }
-.single-item-price .price.price-margin {
-    margin-right: 20px;
+ .price-margin {
+    margin-left:30px !important;
+    font-size: 14px;
+    text-decoration: line-through;
 }
 
 
@@ -412,6 +414,7 @@ a.truncate-text {
     list-style: none;
     margin-right: 35px;
     margin-left: -30px;
+    background:#FFFFE0;
 
     height: 22px;
     font-size: 10px !important;
@@ -506,18 +509,41 @@ a.truncate-text {
     text-align: left;
 }
 section.detail{
-    margin-left: 100px;
+    margin-left: 120px;
+    margin-right: 120px;
 }
 .detail .page-title{
-    margin-left: 50px !important;
+    margin-left: 30px !important;
 
 }
 .detail .product-name{
     font-size: 30px;
+    margin-top:-10px;
     display: flex;
-
     font-weight: bold;
-    margin-left: 50px !important;
+    margin-left: 30px !important;
+}
+.main-products .product-avatar{
+    text-align: center !important;
+}
+.main-products .product-avatar img{
+    border-radius: 30px;
+    
+}
+
+.product-avatar ul.list-product-avatar{
+    padding-top:20px;
+    border-top: 1px solid #fff;
+    display: flex;
+}
+.product-avatar ul.list-product-avatar li{
+
+    margin-right: 5px;
+    list-style: none;
+}
+.product-avatar ul.list-product-avatar li.item-first{
+
+    margin-left: 0px;
 }
 
 
@@ -737,7 +763,7 @@ section.detail{
 
 /* detail products */
 .main-products {
-    margin: 50px;
+    margin: 20px 30px 10px 30px;
 }
 
 .card .card-body .text-title {
@@ -1536,6 +1562,7 @@ body {
 .singer-item-price{
     font-size: 20px;
 }
+
 
 /* Khi chiều rộng màn hình nhỏ hơn 768px */
 @media (max-width: 768px) {

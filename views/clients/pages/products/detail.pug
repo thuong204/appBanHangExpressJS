@@ -8,36 +8,43 @@ block main
 
         .product-name 
             h1 iPhone 16 Promax
-            .box-option 
-                .detail-rate  thông số
-                .detail-rate-title 
-            .like-fanpage 
-                | like
-
         .main-products
             #content
                 .row
-                    .col-lg-12.col-md-12.col-sm-12
-                        .row
-                            .col-lg-5.col-md-6.col-sm-12.bg-light
-                                .card 
-                                    .card-header
-                                        img(src=`${product.thumbnail}`, alt='' style="width:100%")
-                                    .card-body.card-description
-                                        .card-title.text-success.text-title ĐẶC ĐIỂM NỔI BẬT
-                                        .card-text.text-description !{product.content}
-                                .card.card-info 
-                                    .card-body
-                                        .card-title.text-title THÔNG TIN CHI TIẾT
+                    .col-lg-5.col-md-6.col-sm-12.bg-light.product-info
+                        .card 
+                            .card-header.product-avatar
+                                img(src=`${product.thumbnail}`, alt='' style="width:80%")              
+                                ul.list-product-avatar
+                                    li.item-product-avatar.item-first
+                                        img(src="https://via.placeholder.com/100" alt="Placeholder 1" width="75" height="100")
+                                    li.item-product-avatar
+                                        img(src="https://via.placeholder.com/100" alt="Placeholder 2" width="75" height="100")
+                                    li.item-product-avatar
+                                        img(src="https://via.placeholder.com/100" alt="Placeholder 3" width="75" height="100")
+                                    li.item-product-avatar
+                                        img(src="https://via.placeholder.com/100" alt="Placeholder 3" width="75" height="100")
+                                    li.item-product-avatar
+                                        img(src="https://via.placeholder.com/100" alt="Placeholder 3" width="75" height="100")
 
-                            .col-lg-7.col-md-6.col-sm-12.bg-light
-                                .card
+
+                            .card-body.card-description
+                                .card-title.text-success.text-title ĐẶC ĐIỂM NỔI BẬT
+                                .card-text.text-description !{product.content}
+                        .card.card-info 
+                            .card-body
+                                .card-title.text-title THÔNG TIN CHI TIẾT
+
+                    .col-lg-7.col-md-6.col-sm-12.bg-light.product-description
+                        .card
+                            .row  
+                                .col-6
                                     .card-body
-                                        .single-item-body
+                                        .single-item-body                
                                             p.single-item-detail-title(style='font-size: 30px;') #{product.title}
-                                            p.single-item-detail-price
-                                                span.price-details #{product.priceInter}đ
-                                                span.price-payment-details #{product.priceNew}đ
+                                            p.single-item-price
+                                                span.price-payment #{product.priceInter}đ
+                                                span.price-margin #{product.priceNew}đ
                                         .clearfix
                                         .single-item-options
                                             form(action=`/cart/add/${product.id}` method="POST")
@@ -53,26 +60,29 @@ block main
                                                 button.btn.btn-success.mt-3 Thêm vào giỏ hàng
                                                 button.btn.btn-danger.mt-3.ms-3 Mua ngay 
                                             .clearfix
-                                .card.mt-3
-                                    .card-body
-                                        .card-title.text-title MÔ TẢ SẢN PHẨM
-                                        .card-text.text-description.card-hide !{product.description}
-                                        button.btn.btn-link.mt-2#show-more Xem thêm
+                                .col-6
+                              
 
-                        .space50
-                            | &nbsp;
+                        .card.mt-3
+                            .card-body
+                                .card-title.text-title MÔ TẢ SẢN PHẨM
+                                .card-text.text-description.card-hide !{product.description}
+                                button.btn.btn-link.mt-2#show-more Xem thêm
 
-                        .beta-products-list
-                            h4 Sản phẩm tương tự
-                            .row
-                                .col-sm-12.col-md-4
-                                    .single-item
-                                        .single-item-header
-                                            a(href='product.html')
-                                                img(src="https://cdn.dummyjson.com/products/images/mobile-accessories/Apple%20Airpods/thumbnail.png" width='270px' height='380px')
-                                        .single-item-body
-                                            p.single-item-title 100
-                                            .single-item-price
-                                                span
+                .space50
+                    | &nbsp;
 
-                
+                .beta-products-list
+                    h4 Sản phẩm tương tự
+                    .row
+                        .col-sm-12.col-md-4
+                            .single-item
+                                .single-item-header
+                                    a(href='product.html')
+                                        img(src="https://cdn.dummyjson.com/products/images/mobile-accessories/Apple%20Airpods/thumbnail.png" width='270px' height='380px')
+                                .single-item-body
+                                    p.single-item-title 100
+                                    .single-item-price
+                                        span
+
+
