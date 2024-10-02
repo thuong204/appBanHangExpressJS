@@ -8,7 +8,7 @@ block main
                     img.d-block.w-100(src='https://res.cloudinary.com/dwk6tmsmh/image/upload/v1726925743/bsquy6vj7ktij4aheyzw.jpg' alt='...')
                 .carousel-item
                     img.d-block.w-100(src='https://res.cloudinary.com/dwk6tmsmh/image/upload/v1726925866/dclwzzorvxdehvhgorzw.webp' alt='...')
-              
+
             button.carousel-control-prev(type='button' data-bs-target='#carouselExampleAutoplaying' data-bs-slide='prev')
                 span.carousel-control-prev-icon(aria-hidden='true')
                 span.visually-hidden Previous
@@ -17,11 +17,16 @@ block main
                 span.visually-hidden Next
     .container
         section 
-            div(class="text-bold mt-3 ms-3 text-center  text-category") Sản phẩm nổi bật
-            .row.mt-4
+            div(class="text-bold text-title") Sản phẩm giảm giá
+            .grid-products.row.mt-3
+                +grid-products(productDiscount)
+        section 
+            div(class="text-bold text-title") Sản phẩm nổi bật
+            .grid-products.row.mt-3
                 +grid-products(productsFeatured)
         section
-            div(class="text-bold mt-3 ms-3 text-center text-category") Sản phẩm mới
-            .row.mt-4
+            div(class="text-bold text-title") Sản phẩm mới
+            .grid-products.row.mt-3
                 +grid-products(productsNew)
+
 

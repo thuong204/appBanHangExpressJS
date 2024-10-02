@@ -1,20 +1,13 @@
 extends ../../layouts/default.pug
-include ../../mixins/grid-products-dashboard.pug
+include ../../mixins/grid-products-category.pug
 block main
     section 
         p.page-title Trang chủ / #{pageTitle}
     .body 
         .main 
-            .row 
-                .col-lg-2.col-md-2.col-sm-2.inner-category
-                    ul 
-                        li Thời trang
-                            ul 
-                                li Thời trang nam 
-                                li Thời trang nữ
-                        li Điện tử
-                        li Sức khỏe
-                .col-lg-10.col-md-2.col-sm-10
-                    h4(class="text-success") #{pageTitle}
-                    .row.mt-4
-                        +grid-products(products)
+            .container
+                .row 
+                    .col-lg-12.col-md-12.col-sm-12
+                        h4(class="text-success") #{pageTitle}
+                        .row.mt-4
+                            +grid-products(products)

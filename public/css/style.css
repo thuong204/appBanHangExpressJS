@@ -100,16 +100,15 @@ i.test {
     margin-left: 20px;
     margin-right: 10px;
 }
-.header .inner-menu>ul>li.nav-item-home {
-    margin-left: 80px;
-}
-
 .footer {
     background: black;
     color: #fff;
     padding: 10px;
 }
 
+.header .header-inner{
+    margin-left: 70px;
+}
 .header .inner-menu>ul>li>a {
     text-decoration: none;
     color: black;
@@ -207,7 +206,13 @@ i.test {
 }
 
 
-
+.container .text-title{
+    margin-top: 5px;
+    font-size: 30px;
+    font-weight: bold;
+    font-family: Arial, Helvetica, sans-serif;
+    
+}
 .container section .text-category {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     font-size: 28px;
@@ -311,11 +316,9 @@ body {
 
 .single-item {
     border: 1px solid #ddd;
-    padding: 15px;
+    padding: 10px;
     transition: all 0.3s ease-in-out;
     background-color: #fff;
-    margin-bottom: 20px !important;
-    margin: 10px ;
 }
 
 .single-item:hover {
@@ -325,44 +328,61 @@ body {
 
 .single-item-header {
     text-align: center;
-    margin-bottom: 15px;
+    margin-bottom: 5px;
 }
 
 .single-item-header img {
     margin-top: 20px;
     max-width: 100%;
-    width: 250px;
-    height: 250px;
+    width: 130px;
+    height: 130px;
 
 }
 
 .single-item-body {
-    margin-bottom: 15px;
+    margin-bottom: 10px;
 }
 
 
 .single-item .single-item-body .single-item-title a {
-    font-size: 20px;
-    font-weight: bold;
+    font-size: 16px;
+    text-align: center;
     color: black;
-    margin-bottom: 10px;
+    font-weight: bold;
 }
+a.truncate-text {
+    display: inline-block;
+    max-width:170px; /* Chiều rộng giới hạn */
+    white-space: nowrap; /* Không xuống dòng */
+    overflow: hidden; /* Ẩn phần văn bản thừa */
+    text-overflow: ellipsis; /* Thêm dấu ba chấm */
+    vertical-align: top;
+  }
 
-.single-item-price span.price-payment {
-    font-size: 18px;
+  .single-item-price{
+    margin-bottom:10px;
+  }
+
+.single-item-price .price-payment {
+    font-size: 16px;
     color: red;
     font-weight: bold;
-    margin-right: 30px;
 }
 
 
-.single-item-price span.price {
-    font-size: 16px;
+.single-item-price .price {
+    font-size: 14px;
+    text-align: start !important;
+    float: right;
+    margin-top: 2px;
     text-decoration: 1px solid line-through;
-    margin-right: 30px;
+}
+.single-item-price .price.price-margin {
+    margin-right: 20px;
 }
 
-.single-item-price span.price-payment-details {
+
+.single-item-price .price-payment-details {
     font-size: 18px;
     color: red;
     font-weight: bold;
@@ -375,6 +395,57 @@ body {
     font-weight: bold;
     text-decoration: line-through;
     margin-right: 30px;
+}
+
+.heart-icon {
+    float: right;
+    font-size: 24px;
+    color: red;
+    cursor: pointer;
+  }
+
+  .single-item-compare ul.list-item-feature{
+    display: flex ;
+
+  }
+  .single-item-compare ul.list-item-feature li{
+    list-style: none;
+    margin-right: 35px;
+    margin-left: -30px;
+
+    height: 22px;
+    font-size: 10px !important;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 2px;
+
+}
+
+  .sing-item-storage{
+    text-align: center;
+  }
+
+.single-item-storage ul.list-item-storage{
+    display: flex ;
+    
+}
+.single-item-product{
+    height: auto !important;
+}
+
+
+
+.single-item-storage ul.list-item-storage li{
+    list-style: none;
+    width: 70px;
+    margin-top: -5px;
+    margin-right: 50px;
+    margin-left: -33px;
+    font-size: 15px;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    padding: 5px;
+
 }
 
 .single-item-caption {
@@ -401,6 +472,9 @@ body {
     background-color: #286090;
 }
 
+.sing-item .star-rating{
+    text-align: left !important;
+}
 
 
 .beta-btn.primary {
@@ -425,6 +499,27 @@ body {
 .fa-chevron-right {
     margin-left: 5px;
 }
+
+
+/* detail */
+.single-item-body .single-item-detail-title{
+    text-align: left;
+}
+section.detail{
+    margin-left: 100px;
+}
+.detail .page-title{
+    margin-left: 50px !important;
+
+}
+.detail .product-name{
+    font-size: 30px;
+    display: flex;
+
+    font-weight: bold;
+    margin-left: 50px !important;
+}
+
 
 /* footer */
 /* Custom Footer Styles */
@@ -485,18 +580,24 @@ body {
     height: 10px;
 }
 
-.row span.discount {
-    font-size: 15px;
+.single-item-discount {
     width: 70px;
-    height: 40px;
+    height: 30px;
     border: 1px solid white;
-    margin-top: 10px;
+    margin-top: -10px;
+    margin-left: -10px;
+   
     color: #fff;
     font-weight: bold;
-    border-radius: 50%;
+    border-top-right-radius: 20px;
+    border-bottom-right-radius: 20px;
     background: red;
-    padding: 10px;
     animation: blink 0.2s infinite alternate;
+}
+.single-item-discount .discount{
+    font-size: 16px;
+    padding-left: 10px;
+
 }
 
 .row span.featured {
@@ -551,17 +652,16 @@ body {
 .single-item-body img {
     margin-top: 20px;
     max-width: 100%;
-    width: 130px;
-    height: 130px;
+    width: 110px;
+    height: 110px;
 }
 
 /* Style for single item title */
 
 .single-item-body .single-item-title {
-    font-weight: bold;
-    font-size: 20sm !important;
     margin-top: 10px;
-    color: black;
+    margin-bottom: 3px;
+    color: rgb(0, 0, 0);
 }
 
 /* Style for single item price */
@@ -1410,11 +1510,15 @@ chat-body {
     
     /* Các thay đổi phong cách khác cho thiết bị di động */
 }
+
+.slider{
+    margin: 0px 5px 5px 5px;
+}
 .card-text.card-hide {
     display: -webkit-box; /* Hỗ trợ cho trình duyệt Webkit */
     overflow: hidden;
     -webkit-box-orient: vertical;
-    -webkit-line-clamp: 5; /* Số dòng hiển thị trước khi ẩn */
+    -webkit-line-clamp: 30; /* Số dòng hiển thị trước khi ẩn */
 }
 .inner-menu .nav-item-near{
     margin-right: 20px;

@@ -1,7 +1,7 @@
 mixin grid-products(products)
     each item in products
-        .col-sm-6.mb-3.col-6.col-lg-2.col-md-4
-            .single-item
+        .col-12.mb-3.col-12.col-lg-3.col-md-6
+            .single-item.text-start.single-item-product
                 .single-item-discount
                     if(item.discountPercentage!=0)
                         span.discount -#{item.discountPercentage}%
@@ -9,11 +9,21 @@ mixin grid-products(products)
                     a(href=`/products/detail/${item.slug}`)
                         img(src=item.thumbnail)
                 .single-item-body
-                    .single-item-title
-                        a.truncate-text(class="text-decoration-none" href=`products/detail/${item.slug}`) #{item.title}
+                    .single-item-title.mb-2
+                        a(class="text-decoration-none" href=`products/detail/${item.slug}`) #{item.title}
+                    .single-item-compare
+                        ul.list-item-feature
+                            li Màn hình 6.67
+                            li HD+
+                         
+                    .single-item-storage
+                        ul.list-item-storage 
+                            li.btn 256GB
+                            li.btn 512GB
+                            li.btn 1TB
                     .single-item-price
                         span.price-payment  #{item.priceNew}đ
-                        span.price #{item.priceInter}đ  
+                        span.price  #{item.priceInter}đ  
                     .star-rating
                         i.fas.fa-star.text-warning
                         i.fas.fa-star.text-warning
@@ -24,3 +34,5 @@ mixin grid-products(products)
 
 
                 .clearfix
+
+

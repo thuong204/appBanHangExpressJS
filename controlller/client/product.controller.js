@@ -26,6 +26,20 @@ module.exports.detailItem = async (req, res) => {
             res.redirect('/products')
         }
         const productPriceNew = formatPrice.formatPrice(product_detail)
+
+
+
+        const categoryProduct  =   await CategoryProduct.find({
+            delete:false,
+            status:"active",
+            _id:product_detail.categoryProduct
+        })
+
+        const productRelated = await Product.find({
+            delete:false,
+            status:"active",
+            categoryProduct: categoryProduct._id
+        }).limit(4).sort({position:-1})
        
         res.render("clients/pages/products/detail", {
             pageTitle: "Detail Product",
@@ -50,6 +64,8 @@ module.exports.category = async (req,res) =>{
         status:"active",
         categoryProduct: { $in: [category.id , ...listSubCategoryId]}
     }).sort({position:"desc"})
+
+    
 
 
 
