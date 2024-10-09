@@ -1,7 +1,7 @@
 mixin grid-products(products)
     each item in products
         .col-12.mb-3.col-12.col-lg-3.col-md-6
-            .single-item.text-start.single-item-product
+            .single-item.text-start.single-item-product.single-item-height
                 .single-item-discount
                     if(item.discountPercentage!=0)
                         span.discount -#{item.discountPercentage}%

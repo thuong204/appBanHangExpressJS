@@ -57,11 +57,11 @@ block main
             rows="5" 
             placeholder="Nhập nội dung")
         div(class="mb-3")
-          label(for="parent_id") Danh mục sản phẩm
-          select(name="parent_id" id="parent_id" class="form-select")
-            option(value="" selected) Chọn danh mục sản phẩm
-            option(value="") Danh mục lớn nhất
-            +select-tree(categoryProduct)
+          label(for="categoryProduct") Danh mục sản phẩm
+          select(name="categoryProduct" id="categoryProduct" class="form-select")
+            option(value="") Chọn danh mục sản phẩm
+            
+              +select-tree(categoryProduct)
         div(class="mb-3")
           label(for="price") Giá
           input.form-control(
@@ -136,4 +136,3 @@ block main
           button.btn.btn-primary(type="submit") Thêm mới
   else 
     h1 Bạn không có quyền truy cập
-      

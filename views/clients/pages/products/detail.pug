@@ -1,5 +1,6 @@
 extends ../../layouts/default.pug
 include ../../mixins/alert.pug
+include ../../mixins/grid-products-category.pug
 
 block main
     +alert-success(3000)
@@ -7,14 +8,14 @@ block main
         p.page-title Trang chủ / #{pageTitle}
 
         .product-name 
-            h1 iPhone 16 Promax
+            h1 #{product.title}
         .main-products
             #content
                 .row
-                    .col-lg-5.col-md-6.col-sm-12.bg-light.product-info
+                    .col-lg-7.col-md-6.col-sm-12.bg-light.product-info
                         .card 
                             .card-header.product-avatar
-                                img(src=`${product.thumbnail}`, alt='' style="width:80%")              
+                                img(src=`${product.thumbnail}`, alt='' style="width:60%")              
                                 ul.list-product-avatar
                                     li.item-product-avatar.item-first
                                         img(src="https://via.placeholder.com/100" alt="Placeholder 1" width="75" height="100")
@@ -28,61 +29,73 @@ block main
                                         img(src="https://via.placeholder.com/100" alt="Placeholder 3" width="75" height="100")
 
 
-                            .card-body.card-description
-                                .card-title.text-success.text-title ĐẶC ĐIỂM NỔI BẬT
-                                .card-text.text-description !{product.content}
-                        .card.card-info 
-                            .card-body
-                                .card-title.text-title THÔNG TIN CHI TIẾT
-
-                    .col-lg-7.col-md-6.col-sm-12.bg-light.product-description
-                        .card
-                            .row  
-                                .col-6
-                                    .card-body
-                                        .single-item-body                
-                                            p.single-item-detail-title(style='font-size: 30px;') #{product.title}
-                                            p.single-item-price
-                                                span.price-payment #{product.priceInter}đ
-                                                span.price-margin #{product.priceNew}đ
-                                        .clearfix
-                                        .single-item-options
-                                            form(action=`/cart/add/${product.id}` method="POST")
-                                                label(for="quantity") Số lượng
-                                                input(
-                                                    class="form-control"
-                                                    type="number"
-                                                    name="quantity"
-                                                    value="1"
-                                                    min="1"
-                                                    max=product.stock
-                                                )
-                                                button.btn.btn-success.mt-3 Thêm vào giỏ hàng
-                                                button.btn.btn-danger.mt-3.ms-3 Mua ngay 
-                                            .clearfix
-                                .col-6
-                              
 
                         .card.mt-3
                             .card-body
                                 .card-title.text-title MÔ TẢ SẢN PHẨM
-                                .card-text.text-description.card-hide !{product.description}
+                                .card-text.text-description.card-hide !{product.content}
                                 button.btn.btn-link.mt-2#show-more Xem thêm
+
+
+                    .col-lg-5.col-md-6.col-sm-12.bg-light.product-description
+                        .card
+                            .card-body
+                                .single-item-body                
+                                    p.single-item-detail-title(style='font-size: 35px;font-weight:bold') #{product.title}
+                                    p.single-item-price
+                                        span.price-payment #{product.priceInter}đ
+                                        span.price-margin #{product.priceNew}đ
+                                .single-item-compare
+                                    ul.list-item-feature
+                                        li Màn hình 6.67
+                                        li HD+
+
+                                .single-item-storage
+                                    ul.list-item-storage 
+                                        li.btn 256GB
+                                        li.btn 512GB
+                                        li.btn 1TB
+                                .single-item-color
+                                    ul.list-item-color
+                                        li.btn 
+                                            p Màu trắng 
+                                            img 
+                                        li.btn 
+                                            p Màu đen 
+                                            img
+                                        li.btn 
+                                            p Màu đỏ
+                                            img
+                                .single-item-options
+                                    form(action=`/cart/add/${product.id}` method="POST")
+                                        label(for="quantity") Số lượng
+                                        input(
+                                            class="form-control"
+                                            type="number"
+                                            name="quantity"
+                                            value="1"
+                                            min="1"
+                                            max=product.stock
+                                        )
+                                        button.btn.btn-success.btn-addtocart.mt-3 Thêm vào giỏ hàng
+                                        button.btn.btn-danger.btn-buynow.mt-3.ms-3 Mua ngay 
+                              
+                                .clearfix
+
+                        .card.card-info 
+                            .card-body
+                                .card-title.text-title THÔNG TIN CHI TIẾT
+                        .card  
+                            .card-body.card-description
+                                .card-title.text-success.text-title ĐẶC ĐIỂM NỔI BẬT
+                                .card-text.text-description !{product.description}
 
                 .space50
                     | &nbsp;
 
                 .beta-products-list
                     h4 Sản phẩm tương tự
-                    .row
-                        .col-sm-12.col-md-4
-                            .single-item
-                                .single-item-header
-                                    a(href='product.html')
-                                        img(src="https://cdn.dummyjson.com/products/images/mobile-accessories/Apple%20Airpods/thumbnail.png" width='270px' height='380px')
-                                .single-item-body
-                                    p.single-item-title 100
-                                    .single-item-price
-                                        span
+                    .row.mt-4
+                            +grid-products(productstRelated)
 
 

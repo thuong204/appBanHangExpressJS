@@ -9,6 +9,10 @@ const productSchema = new mongoose.Schema(
         discountPercentage: Number,
         total: Number,
         description: String,
+        listImage: [{
+            nameImage: String,
+            avatar: String
+        }],
         featured: String,
         content: String,
         position:Number,

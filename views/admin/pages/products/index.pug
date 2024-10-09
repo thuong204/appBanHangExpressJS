@@ -50,13 +50,13 @@ block main
                                 input(type="checkbox" name="checkall")
                             th STT
                             th Hình ảnh
-                            th Tiêu đề
+                            th.product-title Tiêu đề
                             th Giá
                             th Vị trí
                             th Người tạo
                             th Người cập nhật
-                            th Trạng thái
-                            th Hành động
+                            th(width="100px;") Trạng thái
+                            th(width="180px;") Hành động
                     tbody
                         each item, index in products
                             tr
@@ -65,7 +65,7 @@ block main
                                 td #{pagination.limitItems*(pagination.currentPage-1)+ (index+1)}
                                 td 
                                     img(src= item.thumbnail, alt='Hình ảnh sản phẩm' width='50')
-                                td #{item.title}
+                                td.td-title #{item.title}
                                 td #{item.price}đ
                                 td 
                                     input(
@@ -83,7 +83,7 @@ block main
                                     p #{item.updatedName}
                                     if(item.updatedName)
                                         +formatDateTime(item.timeUpdatedNew)
-                                td  
+                                td(style="padđing-top:20px;")
                                     if(item.status==="active")
                                         a(href="javascript:;" button-change-status data-status = item.status data-id = item.id class="badge bg-success text-decoration-none") Hoạt động
                                     else

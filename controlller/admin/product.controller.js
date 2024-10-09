@@ -25,7 +25,7 @@ module.exports.index = async (req, res) => {
     const countProducts = await Product.find(find).count()
     let objectPagination = paginationHelpers({
         currentPage: 1,
-        limitItems: 4,
+        limitItems: 6,
     }, req.query, countProducts)
 
 
@@ -43,6 +43,7 @@ module.exports.index = async (req, res) => {
 
     //EndSort
     const products = await Product.find(find).sort(sort).limit(objectPagination.limitItems).skip(objectPagination.skip)
+
 
     for (const product of products) {
         const userCreate = await Account.findOne({
@@ -204,6 +205,7 @@ module.exports.saveItem = async (req, res) => {
     }
 
     const product = new Product(req.body)
+    console.log(product)
     await product.save()
     res.redirect('/admin/products')
 }

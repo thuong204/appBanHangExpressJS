@@ -29,21 +29,30 @@ module.exports.detailItem = async (req, res) => {
 
 
 
-        const categoryProduct  =   await CategoryProduct.find({
+        const categoryProduct  =   await CategoryProduct.findOne({
             delete:false,
             status:"active",
             _id:product_detail.categoryProduct
         })
+   
 
         const productRelated = await Product.find({
             delete:false,
             status:"active",
-            categoryProduct: categoryProduct._id
-        }).limit(4).sort({position:-1})
+            categoryProduct: categoryProduct._id ,
+            _id: { $ne: product_detail._id }  // Loại bỏ sản phẩm hiện tại
+        }).limit(6).sort({position:-1}).select("title slug price discountPercentage thumbnail")
+
+        const productNewPriceRelated = priceNew(productRelated)
+
+        console.log(productNewPriceRelated)
+
+     
        
         res.render("clients/pages/products/detail", {
             pageTitle: "Detail Product",
             product: productPriceNew,
+            productstRelated: productNewPriceRelated,
             status:"active"
         })
             

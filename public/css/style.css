@@ -451,9 +451,34 @@ a.truncate-text {
 
 }
 
-.single-item-caption {
-    text-align: center;
+
+
+.single-item-color ul.list-item-color{
+    display: flex ;
+    
 }
+.single-item-product{
+    height: auto !important;
+}
+.single-item-height{
+    height: 400px !important;
+}
+
+
+.single-item-color ul.list-item-color li{
+    list-style: none;
+    width: 190px;
+    height: 50px;;
+    margin-left: -33px;
+    margin-right:50px;
+    font-size: 15px;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    padding: 0px;
+
+}
+
+
 
 .single-item-caption a.cart {
     display: inline-block;
@@ -477,6 +502,14 @@ a.truncate-text {
 
 .sing-item .star-rating{
     text-align: left !important;
+}
+ .star-right{
+    position: absolute;
+    top: 0px;
+    font-size: 20px;
+    right:10px;
+
+
 }
 
 
@@ -699,6 +732,7 @@ section.detail{
 
 .single-item-options {
     font-size: 15sm;
+    margin-top: -10px;
 }
 
 .single-item-options select {
@@ -721,6 +755,17 @@ section.detail{
 
 .single-item-options a.add-to-cart:hover {
     background-color: #0056b3;
+}
+.single-item-options button.btn-buynow{
+    width: 220px;
+    display: inline-block;
+}
+
+.single-item-options button.btn-addtocart{
+    width: 220px;
+}
+.single-item-caption {
+text-align: center;
 }
 
 /* WooCommerce Tabs */
@@ -773,8 +818,9 @@ section.detail{
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
-.card .card-body .text-description {
+.card-body .card-description.text-detail .text-description{
     padding-left: 20px;
+    font-size: 12px !important;
 }
 
 @media (max-width: 991.98px) {
