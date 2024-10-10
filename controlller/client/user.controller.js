@@ -58,7 +58,6 @@ module.exports.loginPost = async (req, res) => {
 
         }
         else {
-
             req.flash("Error", "Mật khẩu không chính xác")
             res.redirect("back")
 
