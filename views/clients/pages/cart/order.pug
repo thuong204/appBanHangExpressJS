@@ -87,17 +87,17 @@ block main
                                             each item in cart.products
                                                 tr 
                                                     td #{item.productInfo.title} <span class="fw-bold"> x#{item.quantity} </span>
-                                                    td.text-end #{item.totalPrice}$
+                                                    td.text-end #{item.totalPrice}đ
 
                                 tr 
                                     th  Tổng tiền: 
-                                    td.text-end #{cart.total}$
+                                    td.text-end #{cart.total}đ
                                 tr 
                                     th Phí vận chuyển 
                                     td.text-end.fs-6 Miễn phí
                                 tr 
                                     th Tổng tiền thanh toán: 
-                                    td.text-end.text-danger.text-uppercase.fw-bold.fs-5 #{cart.total}$
+                                    td.text-end.text-danger.text-uppercase.fw-bold.fs-5 #{cart.totalInter}đ
                     .qr-code 
                         .row 
                             .col-6 

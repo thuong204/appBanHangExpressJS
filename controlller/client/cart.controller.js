@@ -3,6 +3,7 @@ const productsHelper= require("../../helpers/products")
 const {VietQR}  = require("vietqr")
 const Product = require("../../models/product.model")
 const Order = require("../../models/order.model")
+const { priceInter } = require("../../helpers/priceInter")
 module.exports.index = async (req, res) => {
     const cartId = req.cookies.cartId
     const cart = await Cart.findOne({
@@ -15,12 +16,16 @@ module.exports.index = async (req, res) => {
                 delete:false,
                 status: "active"
             }).select("-description -content -createdBy -updatedBy")
+      
             productInCart.priceNew = productsHelper.priceNewProduct(productInCart)
             cartproduct.productInfo = productInCart
             cartproduct.totalPrice = cartproduct.quantity * productInCart.priceNew
+            cartproduct.totalPriceInter = priceInter(cartproduct.totalPrice)
         }
     }
     cart.total = cart.products.reduce((sum,item) => sum + item.totalPrice, 0)
+
+    cart.totalInter = priceInter(cart.total)
     res.render("clients/pages/cart/index", {
         pageTitle: "Trang giỏ hàng",
         cart: cart,
@@ -131,11 +136,11 @@ module.exports.order = async(req,res) =>{
             cartproduct.totalPrice = cartproduct.quantity * productInCart.priceNew
         }
     }
-    console.log(qr.data)
     if(qr.data){
         qrCode=qr.data.qrDataURL
     }
     cart.total = cart.products.reduce((sum,item) => sum + item.totalPrice, 0)
+    cart.totalInter = priceInter(cart.total)
     res.render("clients/pages/cart/order",{
         pageTitle: "Trang đặt hàng",
         cart: cart,
@@ -162,6 +167,7 @@ module.exports.orderPost= async (req,res) =>{
             _id: product.product_id
         })
         objectProduct.price= productInfo.price
+     
         objectProduct.discountPercentage = productInfo.discountPercentage
      
         products.push(objectProduct)
@@ -201,9 +207,11 @@ module.exports.success = async (req,res) =>{
         product.productInfo = productInfo
         product.priceNew = productsHelper.priceNewProduct(product)
         product.totalPrice = product.priceNew * product.quantity
+        product.totalPriceInter = priceInter(product.totalPrice)
     }
 
     order.totalPrice = order.products.reduce((sum,item) => sum + item.totalPrice, 0)
+    order.totalPriceInter = priceInter(order.totalPrice)
     res.render("clients/pages/cart/success",{
         pageTitle: "Đơn hàng",
         order: order

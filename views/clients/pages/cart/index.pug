@@ -32,14 +32,14 @@ block main
                                         td 
                                             a(href="" class="product-info" product_id= item.product_id) #{item.productInfo.title}
                                         td 
-                                            p(price-new value= item.productInfo.priceNew ) #{item.productInfo.priceNew}$
+                                            p(price-new value= item.productInfo.priceNew ) #{item.productInfo.priceInter}đ
                                         td 
                                             div.button-add-quantity 
                                                 input(type="button" value="-" button-decrease)  
                                                 input(type="text" class="fw-bold" value= item.quantity style="width:20px" value-quantity)
                                                 input(type="button" value="+" button-increase)
-                                        td 
-                                            p(total-price class="fw-bold text-danger") #{item.totalPrice}$
+                                        td(width="120px")
+                                            p(total-price class="fw-bold text-danger") #{item.totalPriceInter}đ
 
                     .col-5
                         table(
@@ -56,7 +56,7 @@ block main
                             tbody
                                 tr
                                     td Tổng phụ
-                                    td(class="float-end text-danger fw-bold" total-cart) #{cart.total}$
+                                    td(class="float-end text-danger fw-bold" total-cart) #{cart.totalInter}đ
 
                                 tr 
                                     td(colspan="2")
@@ -70,7 +70,7 @@ block main
                                                             li Miến phí
                                 tr 
                                     th Tổng tiền thanh toán:
-                                    td(class="float-end text-danger fw-bold" sub-total) #{cart.total}$
+                                    td(class="float-end text-danger fw-bold" sub-total) #{cart.totalInter}đ
                                 tr(class="mt-3")
                                     td(colspan="2" class="text-center")
                                         a(href="/cart/order" class="btn btn-success" style="width:100%") Tiến hành đặt hàng

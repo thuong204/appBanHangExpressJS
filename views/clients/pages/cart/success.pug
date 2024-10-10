@@ -50,19 +50,19 @@ block main
                                                 src= item.productInfo.thumbnail 
                                                 width="80px")
                                         td #{item.productInfo.title}  
-                                        td #{item.priceNew}$  
+                                        td #{item.priceInter}đ
                                         td #{item.quantity}
-                                        td #{item.totalPrice}$
+                                        td #{item.totalPriceInter}đ
                         if(order.products.length>0)
                             if(order.note)
                                 p Ghi chú :  #{order.note}
                             if(order.payments == "paymentdelivery")
-                                h4(class="text-end") Tổng đơn hàng #{order.totalPrice}$
+                                h4(class="text-end") Tổng đơn hàng #{order.totalPriceInter}đ
                                 h5(class="text-end") Thanh toán khi nhận hàng
-                                h4(class="text-end text-danger") Tổng tiền thanh toán: #{order.totalPrice}$
+                                h4(class="text-end text-danger") Tổng tiền thanh toán: #{order.totalPriceInter}đ
                             else 
                                 h4(class="text-end") Tổng đơn hàng #{order.totalPrice}$
                                 h5(class="text-end") Đã thanh toán khi đặt hàng
-                                h4(class="text-end text-danger") Tổng tiền thanh toán: 0$
+                                h4(class="text-end text-danger") Tổng tiền thanh toán: đ
 
 
