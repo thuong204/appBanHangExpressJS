@@ -18,15 +18,10 @@ block main
                                 img(src=`${product.thumbnail}`, alt='' style="width:60%")              
                                 ul.list-product-avatar
                                     li.item-product-avatar.item-first
-                                        img(src="https://via.placeholder.com/100" alt="Placeholder 1" width="75" height="100")
-                                    li.item-product-avatar
-                                        img(src="https://via.placeholder.com/100" alt="Placeholder 2" width="75" height="100")
-                                    li.item-product-avatar
-                                        img(src="https://via.placeholder.com/100" alt="Placeholder 3" width="75" height="100")
-                                    li.item-product-avatar
-                                        img(src="https://via.placeholder.com/100" alt="Placeholder 3" width="75" height="100")
-                                    li.item-product-avatar
-                                        img(src="https://via.placeholder.com/100" alt="Placeholder 3" width="75" height="100")
+                                        each item in product.listImage 
+
+                                            img(src=item alt="Placeholder 1" )
+
 
 
 
@@ -46,26 +41,23 @@ block main
                                         span.price-payment #{product.priceInter}đ
                                         span.price-margin #{product.priceNew}đ
                                 .single-item-compare
+
                                     ul.list-item-feature
-                                        li Màn hình 6.67
-                                        li HD+
+                                        if(product.screen)
+                                            li #{product.screen}
+                                        if(product.screenType)
+                                            li #{product.screenType}
 
                                 .single-item-storage
-                                    ul.list-item-storage 
-                                        li.btn 256GB
-                                        li.btn 512GB
-                                        li.btn 1TB
+                                    if product.storage && product.storage.length > 0
+                                        ul.list-item-storage 
+                                            each item in product.storage
+                                                li.btn= item
                                 .single-item-color
-                                    ul.list-item-color
-                                        li.btn 
-                                            p Màu trắng 
-                                            img 
-                                        li.btn 
-                                            p Màu đen 
-                                            img
-                                        li.btn 
-                                            p Màu đỏ
-                                            img
+                                    if product.colors && product.colors.length > 0
+                                        ul.list-item-color
+                                            each item in product.colors
+                                                li.btn= item
                                 .single-item-options
                                     form(action=`/cart/add/${product.id}` method="POST")
                                         label(for="quantity") Số lượng
@@ -79,7 +71,7 @@ block main
                                         )
                                         button.btn.btn-success.btn-addtocart.mt-3 Thêm vào giỏ hàng
                                         button.btn.btn-danger.btn-buynow.mt-3.ms-3 Mua ngay 
-                              
+
                                 .clearfix
 
                         .card.card-info 
@@ -96,6 +88,6 @@ block main
                 .beta-products-list
                     h4 Sản phẩm tương tự
                     .row.mt-4
-                            +grid-products(productstRelated)
+                        +grid-products(productstRelated)
 
 

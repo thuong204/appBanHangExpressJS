@@ -203,6 +203,13 @@ module.exports.saveItem = async (req, res) => {
     req.body.createdBy = {
         account_id: res.locals.user.id
     }
+    if(req.body.storage){
+        req.body.storage = req.body.storage.split(',').map(stor => stor.trim());
+
+    }
+    if(req.body.colors){
+        req.body.colors = req.body.colors.split(',').map(color => color.trim());
+    }
 
     const product = new Product(req.body)
     console.log(product)

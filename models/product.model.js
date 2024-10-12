@@ -10,8 +10,7 @@ const productSchema = new mongoose.Schema(
         total: Number,
         description: String,
         listImage: [{
-            nameImage: String,
-            avatar: String
+            type: String
         }],
         featured: String,
         content: String,
@@ -20,6 +19,10 @@ const productSchema = new mongoose.Schema(
             type: String,
             default:""
         },
+        screen: String,
+        screenType:String,
+        storage: [{type:String}],
+        colors:[{type:String}],
         status:String,
         delete: {type:Boolean, default:false},
         thumbnail:String,

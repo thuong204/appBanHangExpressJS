@@ -15,8 +15,11 @@ router.delete('/delete/:id', controller.deleteItem)
 router.get('/create', controller.createItem)
 router.post(
     '/create',
-    upload.single("thumbnail"),
-    uploadFile.upload,
+    upload.fields([
+        {name: "thumbnail", maxCount:1},
+        {name:"listImage"}
+    ]),
+    uploadFile.uploadFields,
     validate.createPost,
     controller.saveItem,
 )
@@ -26,8 +29,11 @@ router.get(
 )
 router.patch(
     '/edit/:id',
-    upload.single("thumbnail"),
-    uploadFile.upload,
+    upload.fields([
+        {name: "thumbnail", maxCount:1},
+        {name:"listImage"}
+    ]),
+    uploadFile.uploadFields,
     validate.createPost,
     controller.updateItem
 )

@@ -12,8 +12,6 @@ module.exports =(products) =>{
         integerPartNew = integerPartNew.replace(/\B(?=(\d{3})+(?!\d))/g, ".");
         item.priceNew = decimalPartNew ? integerPartNew + "," + decimalPartNew : integerPartNew
 
- 
-
     })
 
 

@@ -45,8 +45,6 @@ module.exports.detailItem = async (req, res) => {
 
         const productNewPriceRelated = priceNew(productRelated)
 
-        console.log(productNewPriceRelated)
-
      
        
         res.render("clients/pages/products/detail", {

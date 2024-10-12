@@ -60,7 +60,6 @@ block main
           label(for="categoryProduct") Danh mục sản phẩm
           select(name="categoryProduct" id="categoryProduct" class="form-select")
             option(value="") Chọn danh mục sản phẩm
-            
               +select-tree(categoryProduct)
         div(class="mb-3")
           label(for="price") Giá
@@ -69,12 +68,14 @@ block main
             id="price" 
             name="price" 
             value="0" 
+            required
             min="0" 
             placeholder="Nhập giá")
         div(class="mb-3")
           label(for="mb-3") Phần trăm giảm giá
           input.form-control(
             type="number" 
+            required
             id="discount" 
             name="discountPercentage" 
             value="0" min="0" 
@@ -88,6 +89,35 @@ block main
             value="0" 
             min="0" 
             placeholder="Nhập số lượng")
+        div(class="mb-3")
+          label(for="srceen") Màn hình
+          textarea.form-control(
+            id ="screen" 
+            name="screen" 
+            rows="1" 
+            placeholder="Nhập inch của màn hình")
+        div(class="mb-3")
+          label(for="srceenType") Loại màn hình
+          textarea.form-control(
+            id ="screenType" 
+            name="screenType" 
+            rows="1" 
+            placeholder="Nhập loại của màn hình")
+
+        div(class="mb-3")
+          label(for="colors") Màu sắc
+          textarea.form-control(
+            id ="colors" 
+            name="colors" 
+            rows="1" 
+            placeholder="e.g., red, blue, green")
+        div(class="mb-3")
+          label(for="storage") Dung lượng 
+          textarea.form-control(
+            id ="storage" 
+            name="storage" 
+            rows="1" 
+            placeholder="e.g., 64GB, 128GB, 256GB")
         div(class="mb-3" upload-image)
           label(for="thumbnail") Hình ảnh
           input.form-control(
@@ -101,6 +131,19 @@ block main
             src=""
             class="image-preview"
             upload-image-preview
+            )
+        div(class="mb-3" upload-list-image)
+          label(for="listImage") Danh sách hình ảnh phụ
+          input.form-control(
+            type="file" 
+            id="listImage" 
+            class="form-control-file"
+            multiple accept="image/*"
+            name="listImage" 
+            upload-list-image-input)
+          div(
+            class="list-image-preview d-flex mt-3"
+            upload-list-image-preview
             )
         div(class="mb-3")
           label(for="position") Vị trí

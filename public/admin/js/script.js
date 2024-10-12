@@ -204,6 +204,34 @@ if (uploadImage) {
         }
     })
 }
+
+//upload list image
+const uploadListImage = document.querySelector("[upload-list-image]");
+if (uploadListImage) {
+    const uploadListImageInput = document.querySelector("[upload-list-image-input]");
+    const uploadListImagePreview = document.querySelector("[upload-list-image-preview]");
+
+    uploadListImageInput.addEventListener("change", (e) => {
+        // Xóa tất cả hình ảnh trước đó trong preview
+        uploadListImagePreview.innerHTML = ""; 
+
+        const files = e.target.files;
+        if (files) {
+            Array.from(files).forEach(file => {
+                if (file) {
+                    const img = document.createElement("img");
+                    img.src = URL.createObjectURL(file);
+                    img.style.width = "100px"; // Thay đổi kích thước hình ảnh theo ý muốn
+                    img.style.margin = "5px"; // Thêm khoảng cách giữa các hình ảnh
+                    img.className="image-preview";
+                 
+                    uploadListImagePreview.appendChild(img);
+                }
+            });
+        }
+    });
+}
+
 //Sort
 // const sort = document.querySelector("[sort]")
 // if(sort){
