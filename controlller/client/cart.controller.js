@@ -9,7 +9,8 @@ module.exports.index = async (req, res) => {
     const cart = await Cart.findOne({
         _id: cartId
     })
-    if (cart.products.length > 0) {
+    console.log(req.cookies.cartId)
+    if (cart) {
         for (const cartproduct of cart.products) {
             const productInCart = await Product.findOne({
                 _id: cartproduct.product_id,
@@ -22,10 +23,11 @@ module.exports.index = async (req, res) => {
             cartproduct.totalPrice = cartproduct.quantity * productInCart.priceNew
             cartproduct.totalPriceInter = priceInter(cartproduct.totalPrice)
         }
-    }
-    cart.total = cart.products.reduce((sum,item) => sum + item.totalPrice, 0)
+        cart.total = cart.products.reduce((sum,item) => sum + item.totalPrice, 0)
 
-    cart.totalInter = priceInter(cart.total)
+        cart.totalInter = priceInter(cart.total)
+    }
+  
     res.render("clients/pages/cart/index", {
         pageTitle: "Trang giỏ hàng",
         cart: cart,
@@ -39,13 +41,17 @@ module.exports.addPost = async (req, res) => {
         product_id: req.params.productId,
         quantity: req.body.quantity
     }
+ 
     const cart = await Cart.findOne({
         _id: cartId,
-        user_id: req.locals
     })
 
+    console.log(cart)
 
     // const cartNew  = JSON.stringify(cart.products)
+    if(cart){
+
+    
     const exsistProductinCart = cart.products.find(item => item.product_id == req.params.productId)
     if (exsistProductinCart) {
         const newQuantity = parseInt(req.body.quantity) + exsistProductinCart.quantity
@@ -69,6 +75,10 @@ module.exports.addPost = async (req, res) => {
         req.flash("Success", "Thêm vào giỏ hàng thành công")
         res.redirect("back")
     }
+}else{
+    req.flash("Error", "Thêm vào giỏ hàng thất bại")
+    res.redirect("back")
+}
 
 }
 module.exports.delete = async  (req,res) =>{

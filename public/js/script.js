@@ -137,3 +137,90 @@ document.addEventListener("DOMContentLoaded", function() {
     });
 });
 
+let currentImageIndex = 0;
+const dataImageElement = document.querySelector("[data-image]");
+const mainThumbnail = document.getElementById('main-thumbnail');
+
+// Ensure the data-images attribute is not empty
+if (dataImageElement) {
+    const images = JSON.parse(dataImageElement.getAttribute("data-image"))
+    images.unshift(mainThumbnail.getAttribute("src"));
+
+    if (images && images.length > 0) {
+        const prevButton = document.querySelector('.btn-prev');
+        const nextButton = document.querySelector('.btn-next');
+        const thumbnails = document.querySelectorAll('.list-img-detail');
+    
+
+        // Function to update the main image's src
+        const updateMainImage = (index) => {
+            mainThumbnail.src = images[index];
+        };
+
+        // Handle the "Previous" button click
+        prevButton.addEventListener('click', () => {
+            currentImageIndex = (currentImageIndex === 0) ? images.length - 1 : currentImageIndex - 1;
+            updateMainImage(currentImageIndex);
+        });
+
+        // Handle the "Next" button click
+        nextButton.addEventListener('click', () => {
+            currentImageIndex = (currentImageIndex === images.length - 1) ? 0 : currentImageIndex + 1;
+            updateMainImage(currentImageIndex);
+        });
+
+        // Handle thumbnail clicks
+        thumbnails.forEach((thumbnail, index) => {
+            thumbnail.addEventListener('click', () => {
+             
+                    currentImageIndex = index;
+                updateMainImage(currentImageIndex);
+        
+                
+            });
+        });
+    } else {
+        console.error('No images found in data-images.');
+    }
+} else {
+    console.error('Data images element not found.');
+}
+
+//xu li item detail selected
+const itemTitle = document.querySelector(".single-item-detail-title")
+const title = itemTitle.getAttribute("data-title")
+const slug = itemTitle.getAttribute("data-slug")
+const storages = document.querySelectorAll("li[data-storage]")
+storages.forEach(storage =>{
+    const data = storage.getAttribute("data-storage")
+    if(title.includes(data)){
+        storage.classList.add("selected")
+    }
+    storage.addEventListener("click",()=>{
+        const storageSelected = document.querySelector(".list-item-storage .selected")
+        storageSelected.classList.remove("selected")
+        
+        storage.classList.add("selected")
+
+    })
+}
+)
+const colors = document.querySelectorAll("li[data-color]")
+colors.forEach(color=>{
+    const  colorSelected = document.querySelector("li[data-color]")
+
+    if(colorSelected){
+        colorSelected.classList.add("selected")
+    }
+    color.addEventListener("click",()=>{
+        const colorSelected = document.querySelector(".list-item-color .selected")
+        colorSelected.classList.remove("selected")
+        color.classList.add("selected")
+
+    })
+}
+)
+
+
+
+

@@ -12,8 +12,8 @@ const authMiddleware = require("../../middlewares/clients/auth.middleware")
 
 module.exports = (app) =>{
     app.use(categoryMiddledware.category)
-    app.use(cartsMiddledware.cartId)
     app.use(infoUserMiddleware.infoUser)
+    app.use(cartsMiddledware.cartId)
     app.use('/',  homeRouter)
     app.use("/products",productRouter)
     app.use("/search", searchRouter)

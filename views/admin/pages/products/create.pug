@@ -81,14 +81,19 @@ block main
             value="0" min="0" 
             placeholder="Nhập phần trăm giảm giá")
         div(class="mb-3")
-          label(for="stock") Số lượng
-          input.form-control(
-            type="number" 
-            id="quantity" 
-            name="quantity" 
-            value="0" 
-            min="0" 
-            placeholder="Nhập số lượng")
+          label(for="storage") Dung lượng 
+          textarea.form-control(
+            id ="storage" 
+            name="storage" 
+            rows="1" 
+            placeholder="e.g., 64GB, 128GB, 256GB")
+        .mb-3#variation-container
+          label(for="mb-3") Màu sắc
+          .variation
+           .variation-item.d-flex
+            input(type="text" name="colors[]" placeholder="Màu sắc" class="form-control mb-2")
+            input(type="number" name="quantities[]" placeholder="Số lượng" class="form-control mb-2")
+          button(type="button" class="btn btn-secondary" id="add-variation") Thêm màu sắc
         div(class="mb-3")
           label(for="srceen") Màn hình
           textarea.form-control(
@@ -103,21 +108,6 @@ block main
             name="screenType" 
             rows="1" 
             placeholder="Nhập loại của màn hình")
-
-        div(class="mb-3")
-          label(for="colors") Màu sắc
-          textarea.form-control(
-            id ="colors" 
-            name="colors" 
-            rows="1" 
-            placeholder="e.g., red, blue, green")
-        div(class="mb-3")
-          label(for="storage") Dung lượng 
-          textarea.form-control(
-            id ="storage" 
-            name="storage" 
-            rows="1" 
-            placeholder="e.g., 64GB, 128GB, 256GB")
         div(class="mb-3" upload-image)
           label(for="thumbnail") Hình ảnh
           input.form-control(

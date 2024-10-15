@@ -295,5 +295,27 @@ td.title{
 
 }
 
+#variation-container {
+    margin-bottom: 20px; /* Khoảng cách dưới phần tử */
+    border: 1px solid #ccc; /* Viền cho container */
+    padding: 15px; /* Khoảng cách bên trong */
+    border-radius: 5px; /* Bo góc */
+    background-color: #f9f9f9; /* Màu nền nhẹ */
+}
+
+.variation-item {
+    margin-bottom: 10px; /* Khoảng cách giữa các biến thể */
+}
+
+.variation-item input {
+    margin-right: 10px; /* Khoảng cách giữa các input */
+    flex: 1; /* Để các input giãn đều trong .d-flex */
+}
+
+#add-variation {
+    margin-top: 10px; /* Khoảng cách trên nút thêm */
+}
+
+
 /*end table permission*/
 

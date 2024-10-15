@@ -19,6 +19,7 @@ module.exports.index = async (req, res) => {
         delete:false,
         status:"active",
     }).limit(12).sort({ discountPercentage:-1})
+    
     const productDiscountNewPrice = priceNew(productDiscount)
     res.render("clients/pages/home/index",{
         pageTitle:"Trang chủ",

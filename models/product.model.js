@@ -5,7 +5,7 @@ const productSchema = new mongoose.Schema(
     {
         title: String,
         price:Number,
-        quantity: Number,
+        totalQuantity: Number,
         discountPercentage: Number,
         total: Number,
         description: String,
@@ -21,8 +21,7 @@ const productSchema = new mongoose.Schema(
         },
         screen: String,
         screenType:String,
-        storage: [{type:String}],
-        colors:[{type:String}],
+        storage: String,
         status:String,
         delete: {type:Boolean, default:false},
         thumbnail:String,
@@ -41,6 +40,16 @@ const productSchema = new mongoose.Schema(
         updatedBy:[{
             account_id: String,
             updatedAt: Date
+        }],
+        variations: [{
+            color: {
+                type: String,
+                required: true
+            },
+            quantity: {
+                type: Number,
+                required: true
+            }
         }],
         slug:{
             type:String,

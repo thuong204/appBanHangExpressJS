@@ -191,7 +191,7 @@ module.exports.saveItem = async (req, res) => {
 
     req.body.price = parseInt(req.body.price)
     req.body.discountPercentage = parseInt(req.body.discountPercentage)
-    req.body.quantity = parseInt(req.body.quantity)
+  
 
     if (req.body.position == "") {
         const countProducts = await Product.find().count()
@@ -203,16 +203,29 @@ module.exports.saveItem = async (req, res) => {
     req.body.createdBy = {
         account_id: res.locals.user.id
     }
-    if(req.body.storage){
-        req.body.storage = req.body.storage.split(',').map(stor => stor.trim());
+    req.body.totalQuantity=1
 
-    }
-    if(req.body.colors){
-        req.body.colors = req.body.colors.split(',').map(color => color.trim());
-    }
+
+    //
+    const colors = req.body.colors
+    const quantities = req.body.quantities
+    const variations = colors.map((color, index) => {
+        const quantity = parseInt(quantities[index], 10); 
+        if (color && quantity >= 1) {
+            return {
+                color: color,
+                quantity: quantity
+            };
+        }
+    }).filter(Boolean);
+    req.body.variations = variations
+    const totalQuantity = variations.reduce((total, variation) => total + variation.quantity, 0);
+    req.body.totalQuantity = totalQuantity
+    delete req.body.colors
+    delete req.body.quantities
 
     const product = new Product(req.body)
-    console.log(product)
+    
     await product.save()
     res.redirect('/admin/products')
 }
@@ -223,6 +236,7 @@ module.exports.editItem = async (req, res) => {
         const categoryProduct = await CategoryProduct.find({ delete: false })
         const newCategoryProduct = tree.createTree(categoryProduct)
         const product_edit = await Product.findOne({ _id: req.params.id, delete: false })
+        console.log(product_edit)
         res.render("admin/pages/products/edit", {
             pageTitle: "Edit Product",
             product: product_edit,
@@ -238,9 +252,30 @@ module.exports.updateItem = async (req, res) => {
     const id = req.params.id
     req.body.price = parseInt(req.body.price)
     req.body.discountPercentage = parseInt(req.body.discountPercentage)
-    req.body.quantity = parseInt(req.body.quantity)
     req.body.position = parseInt(req.body.position)
+       if(req.body.storage){
+        req.body.storage = req.body.storage
 
+    }
+    if(req.body.colors){
+        req.body.color = req.body.color
+    }
+
+    const colors = req.body.colors
+    const quantities = req.body.quantities
+
+    const variations = colors.map((color, index) => {
+        return {
+            color: color,
+            quantity: parseInt(quantities[index], 10) || 0
+        };
+    });
+    req.body.variations = variations
+    const totalQuantity = variations.reduce((total, variation) => total + variation.quantity, 0);
+    req.body.totalQuantity = totalQuantity
+
+    delete req.body.colors
+    delete req.body.quantities
 
     try {
         const updatedBy = {

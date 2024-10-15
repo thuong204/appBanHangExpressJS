@@ -1,9 +1,9 @@
 const express = require('express')
 const router = express.Router()
-
+const cartsMiddleware = require("../../middlewares/clients/carts.middleware") 
 const controller = require("../../controlller/client/cart.controller")
 
-router.get('/', controller.index)
+router.get('/', cartsMiddleware.cartId,controller.index)
 router.post('/add/:productId', controller.addPost)
 router.get('/delete/:product_id', controller.delete)
 router.get('/update/:product_id/:quantity', controller.update)

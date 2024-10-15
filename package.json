@@ -4,12 +4,14 @@
   "main": "index.js",
   "scripts": {
     "start": "nodemon --inspect index.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "tailwind:css": "postcss public/styles/tailwind.css -o public/styles/style.css"
   },
   "author": "",
   "license": "ISC",
   "description": "",
   "dependencies": {
+    "autoprefixer": "^10.4.20",
     "body-parser": "^1.20.2",
     "cloudinary": "^2.2.0",
     "cookie-parser": "^1.4.6",
@@ -25,9 +27,12 @@
     "mongoose-slug-updater": "^3.3.0",
     "multer": "^1.4.5-lts.1",
     "nodemailer": "^6.9.14",
+    "postcss": "^8.4.47",
+    "postcss-cli": "^11.0.0",
     "pug": "^3.0.3",
     "socket.io": "^4.7.5",
     "streamifier": "^0.1.1",
+    "tailwindcss": "^3.4.13",
     "tinymce": "^7.2.1",
     "vietqr": "^1.1.9"
   },

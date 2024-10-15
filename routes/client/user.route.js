@@ -4,7 +4,7 @@ const controller = require("../../controlller/client/user.controller")
 const validate = require("../../validates/admin/validate-user")
 const validateLogin = require("../../validates/admin/validate-login")
 const authMiddleware = require("../../middlewares/clients/auth.middleware")
-
+const cartMiddleware = require("../../middlewares/clients/carts.middleware")
 router.get('/register', controller.register)
 router.post('/register',
     validate.validateRegister,

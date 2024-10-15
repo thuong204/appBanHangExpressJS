@@ -295,5 +295,25 @@ if (sort) {
 
 
 }
+
+const addVariation= document.querySelector("#add-variation")
+addVariation.addEventListener("click", ()=>{
+    const variation = document.querySelector(".variation")
+    const newVariationItem = document.createElement('div');
+    newVariationItem.classList.add('variation-item');
+    newVariationItem.classList.add('d-flex');
+   
+
+    newVariationItem.innerHTML = `
+    <br>
+       <input type="text" name="colors[]" placeholder="Màu sắc" class="form-control mb-2">
+        <input type="number" name="quantities[]" placeholder="Số lượng" class="form-control mb-2">
+    `;
+    // Thêm biến thể mới vào cuối variation-container
+    variation.appendChild(newVariationItem);
+  });
+  
+  
 //end sort
+
 
