@@ -1,6 +1,6 @@
 const Cart = require("../../models/carts.model")
-const productsHelper= require("../../helpers/products")
-const {VietQR}  = require("vietqr")
+const productsHelper = require("../../helpers/products")
+const { VietQR } = require("vietqr")
 const Product = require("../../models/product.model")
 const Order = require("../../models/order.model")
 const { priceInter } = require("../../helpers/priceInter")
@@ -14,20 +14,20 @@ module.exports.index = async (req, res) => {
         for (const cartproduct of cart.products) {
             const productInCart = await Product.findOne({
                 _id: cartproduct.product_id,
-                delete:false,
+                delete: false,
                 status: "active"
             }).select("-description -content -createdBy -updatedBy")
-      
+
             productInCart.priceNew = productsHelper.priceNewProduct(productInCart)
             cartproduct.productInfo = productInCart
             cartproduct.totalPrice = cartproduct.quantity * productInCart.priceNew
             cartproduct.totalPriceInter = priceInter(cartproduct.totalPrice)
         }
-        cart.total = cart.products.reduce((sum,item) => sum + item.totalPrice, 0)
+        cart.total = cart.products.reduce((sum, item) => sum + item.totalPrice, 0)
 
         cart.totalInter = priceInter(cart.total)
     }
-  
+
     res.render("clients/pages/cart/index", {
         pageTitle: "Trang giỏ hàng",
         cart: cart,
@@ -39,72 +39,84 @@ module.exports.addPost = async (req, res) => {
     const cartId = req.cookies.cartId
     const objectCart = {
         product_id: req.params.productId,
-        quantity: req.body.quantity
+        quantity: req.body.quantity,
+        color: req.body.color
     }
- 
+    console.log(objectCart)
+
     const cart = await Cart.findOne({
         _id: cartId,
     })
 
-    console.log(cart)
 
     // const cartNew  = JSON.stringify(cart.products)
-    if(cart){
+    if (cart) {
 
-    
-    const exsistProductinCart = cart.products.find(item => item.product_id == req.params.productId)
-    if (exsistProductinCart) {
-        const newQuantity = parseInt(req.body.quantity) + exsistProductinCart.quantity
-        await Cart.updateOne({
-            _id: cartId,
-            'products.product_id': req.params.productId
-        }, {
-            'products.$.quantity': newQuantity
-        })
-        req.flash("Success", "Thêm vào giỏ hàng thành công")
+
+        const exsistProductinCart = cart.products.find(item =>
+            item.product_id == req.params.productId && item.color == req.body.color);
+        if (exsistProductinCart) {
+            const newQuantity = parseInt(req.body.quantity) + exsistProductinCart.quantity
+           
+            await Cart.updateOne({
+                _id: cartId,
+                'products.product_id': req.params.productId,
+                'products.color': req.body.color
+            }, {
+                'products.$.quantity': newQuantity
+            })
+            req.flash("Success", "Thêm vào giỏ hàng thành công")
+            res.redirect("back")
+
+        }
+
+        else {
+            await Cart.updateOne({
+                _id: cartId,
+            }, {
+                $push: { products: objectCart }
+            })
+            req.flash("Success", "Thêm vào giỏ hàng thành công")
+            res.redirect("back")
+        }
+    } else {
+        req.flash("Error", "Thêm vào giỏ hàng thất bại")
         res.redirect("back")
-
     }
 
-    else {
-        await Cart.updateOne({
-            _id: cartId,
-        }, {
-            $push: { products: objectCart }
-        })
-        req.flash("Success", "Thêm vào giỏ hàng thành công")
-        res.redirect("back")
-    }
-}else{
-    req.flash("Error", "Thêm vào giỏ hàng thất bại")
-    res.redirect("back")
 }
-
-}
-module.exports.delete = async  (req,res) =>{
+module.exports.delete = async (req, res) => {
     const productId = req.params.product_id
     await Cart.updateOne({
         _id: req.cookies.cartId,
-        'products.product_id': productId
-    },{
-        "$pull" :{products: {"product_id":productId}
-    }
+        'products.product_id': productId,
+
+    }, {
+        "$pull": {
+            products: { "product_id": productId }
+        }
     })
-    req.flash("Success","Đã xóa sản phẩm khỏi giỏ hàng")
+    req.flash("Success", "Đã xóa sản phẩm khỏi giỏ hàng")
     res.redirect("back")
 }
-module.exports.update = async(req,res) =>{
+module.exports.update = async (req, res) => {
     const productId = req.params.product_id
-    const quantity = req.params.quantity
+    const quantity = req.query.quantity
+    const cart = await Cart.findById(req.cookies.cartId);
+
+    const productIndex = cart.products.findIndex(product => 
+        product.product_id.toString() === productId && product.color === req.query.color
+    );
     await Cart.updateOne({
         _id: req.cookies.cartId,
-        'products.product_id': productId
-        },{
-            'products.$.quantity' : quantity
-        })
+        'products.product_id': productId,
+        'products.color': req.query.color
+    }, {
+        $set:{[`products.${productIndex}.quantity`]: quantity} 
+    })
     res.redirect("back")
 }
-module.exports.order = async(req,res) =>{
+module.exports.order = async (req, res) => {
     const cartId = req.cookies.cartId
     const cart = await Cart.findOne({
         _id: cartId
@@ -128,63 +140,65 @@ module.exports.order = async(req,res) =>{
         amount: '1000',
         memo: 'Xin tien uong Cafe',
         template: 'compact'
-    }).then((data)=>{
-        qr=data.data;
+    }).then((data) => {
+        qr = data.data;
     })
-    let qrCode =""
+    let qrCode = ""
 
 
     if (cart.products.length > 0) {
         for (const cartproduct of cart.products) {
             const productInCart = await Product.findOne({
                 _id: cartproduct.product_id,
-                delete:false,
+                delete: false,
                 status: "active"
             }).select("-description -content -createdBy -updatedBy")
             productInCart.priceNew = productsHelper.priceNewProduct(productInCart)
             cartproduct.productInfo = productInCart
             cartproduct.totalPrice = cartproduct.quantity * productInCart.priceNew
+            cartproduct.totalPriceInter= priceInter(cartproduct.totalPrice)
         }
     }
-    if(qr.data){
-        qrCode=qr.data.qrDataURL
+    if (qr.data) {
+        qrCode = qr.data.qrDataURL
     }
-    cart.total = cart.products.reduce((sum,item) => sum + item.totalPrice, 0)
+    
+    cart.total = cart.products.reduce((sum, item) => sum + item.totalPrice, 0)
     cart.totalInter = priceInter(cart.total)
-    res.render("clients/pages/cart/order",{
+    res.render("clients/pages/cart/order", {
         pageTitle: "Trang đặt hàng",
         cart: cart,
         qr: qrCode
     }
     )
 }
-module.exports.orderPost= async (req,res) =>{
+module.exports.orderPost = async (req, res) => {
 
     const userInfo = req.body
     const cartId = req.cookies.cartId
-
-
-    const cart = await Cart.findOne({_id:cartId})
-    let products  = []
-    for(const product of cart.products){
+    const cart = await Cart.findOne({ _id: cartId })
+    let products = []
+    for (const product of cart.products) {
         const objectProduct = {
             product_id: product.product_id,
-            price:0,
+            price: 0,
             discountPercentage: 0,
-            quantity: product.quantity
+            quantity: product.quantity,
+            color:product.color
         }
         const productInfo = await Product.findOne({
             _id: product.product_id
         })
-        objectProduct.price= productInfo.price
-     
+        objectProduct.price = productInfo.price
+
         objectProduct.discountPercentage = productInfo.discountPercentage
-     
+
+
         products.push(objectProduct)
     }
     const objOrder = new Order({
         cart_id: cartId,
-        userInfo:{
+        userInfo: {
             fullName: userInfo.fullname,
             phone: userInfo.phone,
             address: userInfo.address
@@ -198,19 +212,19 @@ module.exports.orderPost= async (req,res) =>{
     await objOrder.save()
 
     await Cart.updateOne({
-        id: cartId
-    },{
-        products:[]
+        _id: cartId
+    }, {
+        products: []
     })
-    req.flash("success","Đặt hàng thành công")
+    req.flash("success", "Đặt hàng thành công")
     res.redirect(`checkout/success/${objOrder.id}`)
 }
-module.exports.success = async (req,res) =>{
+module.exports.success = async (req, res) => {
     const order = await Order.findOne({
         _id: req.params.orderid
     })
 
-    for(const product of order.products){
+    for (const product of order.products) {
         const productInfo = await Product.findOne({
             _id: product.product_id
         }).select("title thumbnail")
@@ -220,9 +234,9 @@ module.exports.success = async (req,res) =>{
         product.totalPriceInter = priceInter(product.totalPrice)
     }
 
-    order.totalPrice = order.products.reduce((sum,item) => sum + item.totalPrice, 0)
+    order.totalPrice = order.products.reduce((sum, item) => sum + item.totalPrice, 0)
     order.totalPriceInter = priceInter(order.totalPrice)
-    res.render("clients/pages/cart/success",{
+    res.render("clients/pages/cart/success", {
         pageTitle: "Đơn hàng",
         order: order
     })

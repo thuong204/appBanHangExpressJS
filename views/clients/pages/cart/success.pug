@@ -38,6 +38,7 @@ block main
                                     th STT 
                                     th Ảnh 
                                     th Tên 
+                                    th Màu sắc
                                     th Giá 
                                     th Số lượng
                                     th Tông tiền
@@ -50,6 +51,7 @@ block main
                                                 src= item.productInfo.thumbnail 
                                                 width="80px")
                                         td #{item.productInfo.title}  
+                                        td #{item.color}  
                                         td #{item.priceInter}đ
                                         td #{item.quantity}
                                         td #{item.totalPriceInter}đ

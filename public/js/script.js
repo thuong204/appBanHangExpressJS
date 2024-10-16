@@ -106,19 +106,19 @@ rows.forEach(row => {
     const decreaseButton = row.querySelector('[button-decrease]');
     const increaseButton = row.querySelector('[button-increase]');
     const quantityInput = row.querySelector('[value-quantity]');
+    const itemColor = row.closest('tr').querySelector("[item-color]");
+    const color = itemColor.getAttribute("value");
     decreaseButton.addEventListener("click",() =>{
         const quantity = parseInt(quantityInput.value)-1
-        window.location.href =`/cart/update/${productId}/${quantity}`
+        window.location.href = `/cart/update/${productId}?color=${color}&quantity=${quantity}`;
 
     })
     increaseButton.addEventListener("click",() =>{
         const quantity = parseInt(quantityInput.value)+1
-        window.location.href =`/cart/update/${productId}/${quantity}`
-
+        window.location.href = `/cart/update/${productId}?color=${color}&quantity=${quantity}`;
     })
     quantityInput.addEventListener("change",() =>{
-        window.location.href =`/cart/update/${productId}/${quantityInput.value}`
-
+        window.location.href = `/cart/update/${productId}?color=${color}&quantity=${quantityInput.value}`;
     })
     
 })
@@ -180,15 +180,16 @@ if (dataImageElement) {
             });
         });
     } else {
-        console.error('No images found in data-images.');
+        console.log('No images found in data-images.');
     }
 } else {
-    console.error('Data images element not found.');
+    console.log('Data images element not found.');
 }
 
 //xu li item detail selected
 const itemTitle = document.querySelector(".single-item-detail-title")
-const title = itemTitle.getAttribute("data-title")
+if(itemTitle){
+    const title = itemTitle.getAttribute("data-title")
 const slug = itemTitle.getAttribute("data-slug")
 const storages = document.querySelectorAll("li[data-storage]")
 storages.forEach(storage =>{
@@ -208,18 +209,28 @@ storages.forEach(storage =>{
 const colors = document.querySelectorAll("li[data-color]")
 colors.forEach(color=>{
     const  colorSelected = document.querySelector("li[data-color]")
+    const inputColor = document.querySelector("#color-input")
 
     if(colorSelected){
         colorSelected.classList.add("selected")
+        inputColor.setAttribute("value",colorSelected.getAttribute("data-color"))
+
     }
     color.addEventListener("click",()=>{
         const colorSelected = document.querySelector(".list-item-color .selected")
         colorSelected.classList.remove("selected")
         color.classList.add("selected")
 
+        const colorSelectedNew= document.querySelector(".list-item-color .selected")
+        inputColor.setAttribute("value",colorSelectedNew.getAttribute("data-color"))
+        
+
     })
 }
 )
+
+
+}
 
 
 

@@ -60,7 +60,8 @@ block main
                                     if product.variations
                                         ul.list-item-color
                                             each item in product.variations
-                                                li.btn(data-color = item.color)  #{item.color}
+                                                li.btn(data-color = item.color class="form-control")  #{item.color}
+                                           
                                                    
                                 .single-item-options
                                     form(action=`/cart/add/${product.id}` method="POST")
@@ -73,6 +74,7 @@ block main
                                             min="1"
                                             max=product.stock
                                         )
+                                        input(type="hidden" name="color" id="color-input" class="form-control")
                                         button.btn.btn-success.btn-addtocart.mt-3 Thêm vào giỏ hàng
                                         button.btn.btn-danger.btn-buynow.mt-3.ms-3 Mua ngay 
 

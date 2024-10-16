@@ -86,12 +86,15 @@ block main
                                             tbody 
                                             each item in cart.products
                                                 tr 
-                                                    td #{item.productInfo.title} <span class="fw-bold"> x#{item.quantity} </span>
+                                                    td #{item.productInfo.title} 
+                                                        span(class="fw-bold") x#{item.quantity}
+                                                        if(item.color)
+                                                            span (#{item.color}) 
                                                     td.text-end #{item.totalPrice}đ
 
                                 tr 
                                     th  Tổng tiền: 
-                                    td.text-end #{cart.total}đ
+                                    td.text-end #{cart.totalInter}đ
                                 tr 
                                     th Phí vận chuyển 
                                     td.text-end.fs-6 Miễn phí
