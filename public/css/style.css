@@ -194,14 +194,26 @@ i.test {
     width: 70px;
     height: 70px;
 }
+.body .container table td.border-none{
+    border-left: none !important;
+border-right: none;}
+.body .container table td.border-left-none{
+    border-left: none !important;
+}
+.body .container table td.border-right-none{
+    border-right: none !important;
+}
+.body .container table td.checkbox{
+    vertical-align: middle;
+    text-align: center;
+}
 
 .body .container table td a.product-info,
-.body .container table td p {
+.body .container table td  {
     text-decoration: none;
     font-size: 16px;
-    padding-top: 20px;
+    vertical-align: middle;
     color: black;
-    display: block;
     /* or inline-block */
 }
 
@@ -280,7 +292,6 @@ body {
 .button-add-quantity {
     display: flex;
     align-items: center;
-    padding-top: 20px;
 }
 
 .button-add-quantity input[type="button"] {
@@ -364,17 +375,23 @@ a.truncate-text {
   }
 
 .single-item-price .price-payment {
-    font-size: 18px;
+    font-size: 20px;
+    color: red;
+    font-weight: bold;
+}
+.single-item-price .price-payment-home {
+    font-size: 17px;
     color: red;
     font-weight: bold;
 }
 
 
+
 .single-item-price .price {
-    font-size: 14px;
+    font-size: 12px;
     text-align: start !important;
     float: right;
-    margin-top: 2px;
+    margin-top: 4px;
     text-decoration: 1px solid line-through;
 }
  .price-margin {
@@ -1715,6 +1732,34 @@ body {
         font-size: 15px !important;
     }
     }
+
+table.table-cart th, table.table-cart td{
+    border: 1px solid #ddd;
+}
+
+.qr-code img{
+    width: 200px;
+}
+.qr-code .hint{
+    margin-top: 10px;
+    color: red;
+}
+.container-qr{
+    margin-top: 100px;
+    height:90%;
+}
+.container-qr .information{
+    padding-left: 
+    100px;
+}
+.container-qr .modal-footer{
+    display: flex;
+    justify-content: center;
+}
+.container-qr .wait-payment{
+    
+
+}
 
 
 

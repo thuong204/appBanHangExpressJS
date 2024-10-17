@@ -5,78 +5,84 @@ include ../../mixins/alert.pug
 block main 
 
     +alert-success(3000)
+    +alert-error(3000)
     +section-page(pageTitle)
     .body 
         .main 
             .container
-                .row
-                    .col-7 
-                        table(
-                            class="table table-hover table-sm mt-3"
-                            table-info
-                        )
-                            thead
-                                tr.text-center
-                                    th(class="product-name text-uppercase" colspan="3") Sản phẩm
-                                    th(class="product-price text-uppercase") Giá
-                                    th(class="product-quantity text-uppercase") Số lượng
-                                    th(class="product-color text-uppercase" width="100px" ) Màu sắc
-                                    th(class="product-total text-uppercase") Tổng
-                            tbody
-                                if(cart)
-                                    each item, index in cart.products
-                                        tr
-                                            td  
-                                                a(href=`/cart/delete/${item.product_id}`
-                                                    class="btn btn-danger mt-3") Xóa 
-                                            td
-                                                img(src= item.productInfo.thumbnail class="img-cart")
-                                            td 
-                                                a(href=`/products/detail/${item.productInfo.slug}` class="product-info" product_id= item.product_id) #{item.productInfo.title}
-                                            td 
-                                                p(price-new value= item.productInfo.priceNew ) #{item.productInfo.priceInter}đ
-                                            td 
-                                                div.button-add-quantity 
-                                                    input(type="button" value="-" button-decrease)  
-                                                    input(type="text" class="fw-bold" value= item.quantity style="width:20px" value-quantity)
-                                                    input(type="button" value="+" button-increase)
-                                            td 
-                                                p(value= item.color item-color) #{item.color}
-                                            td(width="120px")
-                                                p(total-price class="fw-bold text-danger") #{item.totalPriceInter}đ
-                               
-                    .col-5
-                        table(
-                            class="table  table-sm mt-3 fs-5  table-borderless table-danger"
-                        )
-                            thead 
-                                tr
-                                    th(class="subtotal text-uppercase") Tổng số lượng
+                form(action="/cart/cartOrder" method="post" class="form-control") 
+                    .row.mt-3
+                        .col-8 
 
-                        table(
-                            cellspacing="0"
-                            class="table  table-sm mt-3 fs-5  table-borderless"
-                        )
-                            tbody
-                                if(cart)
+                            table(
+                                class="table table-hover table-sm mt-3 table-cart"
+                                table-info
+                            )
+                                thead
+                                    tr.text-center
+                        
+                                        th(class="product-name text-uppercase" colspan="3") Sản phẩm
+                                        th(class="product-price text-uppercase") Giá
+                                        th(class="product-quantity text-uppercase") Số lượng
+                                        th(class="product-color text-uppercase" width="100px" ) Màu sắc
+                                        th(class="product-total text-uppercase") Tổng
+                                tbody
+                                    if(cart)
+                                        each item, index in cart.products
+                                            tr(data-cart)
+                                                td(class="checkbox")
+                                                    input(type="checkbox" checkedOrder priceItem= item.totalPrice  value= item.product_id checked= false)
+                                                td.border-none
+                                                    img(src= item.productInfo.thumbnail class="img-cart")
+                                                td.border-left-none 
+                                                    a(href=`/products/detail/${item.productInfo.slug}` class="product-info" product_id= item.product_id) #{item.productInfo.title}
+                                                td 
+                                                    div(price-new value= item.productInfo.priceNew ) #{item.productInfo.priceInter}đ
+                                                td 
+                                                    div.button-add-quantity 
+                                                        input(type="button" value="-" button-decrease)  
+                                                        input(type="text" class="fw-bold" value= item.quantity style="width:20px" value-quantity)
+                                                        input(type="button" value="+" button-increase)
+                                                td 
+                                                    div(value= item.color item-color) #{item.color}
+                                                td(width="120px")
+                                                    div(total-price class="fw-bold text-danger") #{item.totalPriceInter}đ
+                                                td  
+                                                    a(href=`/cart/delete/${item.product_id}` class="btn btn-danger") Xóa 
+
+
+                        .col-4
+                            table(
+                                class="table  table-sm mt-3 fs-5  table-borderless table-danger"
+                            )
+                                thead 
                                     tr
-                                        td Tổng phụ
-                                        td(class="float-end text-danger fw-bold" total-cart) #{cart.totalInter}đ
+                                        th(class="subtotal text-uppercase") Tổng số lượng
 
-                                    tr 
-                                        td(colspan="2")
-                                            table(class="table er table-sm  table-borderless")
-                                                tbody 
-                                                    tr 
-                                                        td Giao hàng 
-                                                        td(class="float-end")
-                                                            ul(class="sub-cart fs-6")
-                                                                li Phí vận chuyển 
-                                                                li Miến phí
-                                    tr 
-                                        th Tổng tiền thanh toán:
-                                        td(class="float-end text-danger fw-bold" sub-total) #{cart.totalInter}đ
-                                    tr(class="mt-3")
-                                        td(colspan="2" class="text-center")
-                                            a(href="/cart/order" class="btn btn-success" style="width:100%") Tiến hành đặt hàng
+                            table(
+                                cellspacing="0"
+                                class="table  table-sm mt-3 fs-5  table-borderless"
+                            )
+                                tbody
+                                    if(cart)
+                                        tr
+                                            td Tổng phụ
+                                            td(class="float-end text-danger fw-bold" total-cart=cart.total) 0đ
+
+                                        tr 
+                                            td(colspan="2")
+                                                table(class="table er table-sm  table-borderless")
+                                                    tbody 
+                                                        tr 
+                                                            td Giao hàng 
+                                                            td(class="float-end")
+                                                                ul(class="sub-cart fs-6")
+                                                                    li Phí vận chuyển 
+                                                                    li Miến phí
+                                        tr 
+                                            th Tổng tiền thanh toán:
+                                            td(class="float-end text-danger fw-bold" sub-total= cart.total) 0đ
+                                        tr(class="mt-3")
+                                            td(colspan="2" class="text-center")
+                                                button(type="submit" class="btn btn-success" for="form-control" style="width:100%") Tiến hành đặt hàng
 

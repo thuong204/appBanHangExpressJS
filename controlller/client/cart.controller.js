@@ -3,6 +3,7 @@ const productsHelper = require("../../helpers/products")
 const { VietQR } = require("vietqr")
 const Product = require("../../models/product.model")
 const Order = require("../../models/order.model")
+const User = require("../../models/users.model")
 const { priceInter } = require("../../helpers/priceInter")
 module.exports.index = async (req, res) => {
     const cartId = req.cookies.cartId
@@ -57,7 +58,7 @@ module.exports.addPost = async (req, res) => {
             item.product_id == req.params.productId && item.color == req.body.color);
         if (exsistProductinCart) {
             const newQuantity = parseInt(req.body.quantity) + exsistProductinCart.quantity
-           
+
             await Cart.updateOne({
                 _id: cartId,
                 'products.product_id': req.params.productId,
@@ -104,7 +105,7 @@ module.exports.update = async (req, res) => {
     const quantity = req.query.quantity
     const cart = await Cart.findById(req.cookies.cartId);
 
-    const productIndex = cart.products.findIndex(product => 
+    const productIndex = cart.products.findIndex(product =>
         product.product_id.toString() === productId && product.color === req.query.color
     );
     await Cart.updateOne({
@@ -112,20 +113,55 @@ module.exports.update = async (req, res) => {
         'products.product_id': productId,
         'products.color': req.query.color
     }, {
-        $set:{[`products.${productIndex}.quantity`]: quantity} 
+        $set: { [`products.${productIndex}.quantity`]: quantity }
     })
     res.redirect("back")
 }
 module.exports.order = async (req, res) => {
+  
+
     const cartId = req.cookies.cartId
     const cart = await Cart.findOne({
         _id: cartId
     })
+    if (!req.body.selectedProduct) {
+        req.flash("Error", "Không có sản phẩm để đặt hàng")
+        return res.redirect("back")
+    }
 
 
+    if (cart.products.length > 0) {
+        for (let i = cart.products.length - 1; i >= 0; i--) {
+            const cartproduct = cart.products[i];
 
-    //tao ma qr thanh toan
-    const vietQR = new VietQR({
+            if (!req.body.selectedProduct.includes(cartproduct.product_id.toString())) {
+                cart.products.splice(i, 1);
+                continue;
+            }
+
+            const productInCart = await Product.findOne({
+                _id: cartproduct.product_id,
+                delete: false,
+                status: "active"
+            }).select("-description -content -createdBy -updatedBy");
+
+            if (productInCart) {
+                productInCart.priceNew = productsHelper.priceNewProduct(productInCart);
+                cartproduct.productInfo = productInCart;
+                cartproduct.totalPrice = cartproduct.quantity * productInCart.priceNew;
+                cartproduct.totalPriceInter = priceInter(cartproduct.totalPrice);
+            }
+        }
+    }
+    cart.total = cart.products.reduce((sum, item) => sum + item.totalPrice, 0)
+    const total = cart.total.toString()
+    cart.totalInter = priceInter(cart.total)
+
+    const userOrder = await User.findOne({
+        _id: cart.user_id
+    })
+      //tao ma qr thanh toan
+      const vietQR = new VietQR({
         clientID: 'de8a0804-a76d-41e5-8ad6-31503ce7d5f4',
         apiKey: '17c29f09-4ea2-4417-b9c2-7f020d35de42',
     });
@@ -133,69 +169,75 @@ module.exports.order = async (req, res) => {
     let qr = {
 
     }
-    vietQR.genQRCodeBase64({
+    await vietQR.genQRCodeBase64({
         bank: '970405',
         accountName: 'TRAN CONG THUONG',
         accountNumber: '20152220051510',
-        amount: '1000',
-        memo: 'Xin tien uong Cafe',
+        amount: `5000`,
+        memo: `${userOrder.fullName} thanh toán sản phẩm`,
         template: 'compact'
     }).then((data) => {
-        qr = data.data;
+        qr = data;
     })
-    let qrCode = ""
 
-
-    if (cart.products.length > 0) {
-        for (const cartproduct of cart.products) {
-            const productInCart = await Product.findOne({
-                _id: cartproduct.product_id,
-                delete: false,
-                status: "active"
-            }).select("-description -content -createdBy -updatedBy")
-            productInCart.priceNew = productsHelper.priceNewProduct(productInCart)
-            cartproduct.productInfo = productInCart
-            cartproduct.totalPrice = cartproduct.quantity * productInCart.priceNew
-            cartproduct.totalPriceInter= priceInter(cartproduct.totalPrice)
-        }
-    }
-    if (qr.data) {
-        qrCode = qr.data.qrDataURL
+    const objectQR = {
+        image: qr.data.data.qrDataURL,
+        information: JSON.parse(qr.config.data)
     }
     
+
+
     cart.total = cart.products.reduce((sum, item) => sum + item.totalPrice, 0)
     cart.totalInter = priceInter(cart.total)
     res.render("clients/pages/cart/order", {
         pageTitle: "Trang đặt hàng",
         cart: cart,
-        qr: qrCode
+        qr: objectQR
     }
     )
 }
 module.exports.orderPost = async (req, res) => {
 
-    const userInfo = req.body
-    const cartId = req.cookies.cartId
-    const cart = await Cart.findOne({ _id: cartId })
-    let products = []
-    for (const product of cart.products) {
+
+    const userInfo = req.body;
+    const productOrders = req.body.dataOrder;  // Mảng chứa các sản phẩm được chọn từ client
+    const cartId = req.cookies.cartId;
+    const cart = await Cart.findOne({ _id: cartId });
+
+    let products = [];
+
+    // Duyệt qua các sản phẩm trong giỏ hàng
+    for (let i = cart.products.length - 1; i >= 0; i--) {
+        const cartproduct = cart.products[i];
+
+        if (!productOrders.includes(cartproduct.product_id.toString())) {
+            cart.products.splice(i, 1);
+            continue;
+        }
         const objectProduct = {
-            product_id: product.product_id,
+            product_id: cartproduct.product_id,
             price: 0,
             discountPercentage: 0,
-            quantity: product.quantity,
-            color:product.color
-        }
+            quantity: cartproduct.quantity,
+            color: cartproduct.color
+        };
+
+        // Tìm thông tin chi tiết sản phẩm
         const productInfo = await Product.findOne({
-            _id: product.product_id
-        })
-        objectProduct.price = productInfo.price
+            _id: cartproduct.product_id
+        });
 
-        objectProduct.discountPercentage = productInfo.discountPercentage
+        // Nếu sản phẩm tồn tại, cập nhật giá và giảm giá
+        if (productInfo) {
+            objectProduct.price = productInfo.price;
+            objectProduct.discountPercentage = productInfo.discountPercentage;
+        }
 
-
-        products.push(objectProduct)
+        // Thêm sản phẩm hợp lệ vào mảng products
+        products.push(objectProduct);
     }
+
+    // Tạo đơn hàng
     const objOrder = new Order({
         cart_id: cartId,
         userInfo: {
@@ -206,16 +248,10 @@ module.exports.orderPost = async (req, res) => {
         payments: userInfo.payment,
         note: userInfo.note,
         products: products
+    });
 
-    })
 
     await objOrder.save()
-
-    await Cart.updateOne({
-        _id: cartId
-    }, {
-        products: []
-    })
     req.flash("success", "Đặt hàng thành công")
     res.redirect(`checkout/success/${objOrder.id}`)
 }
@@ -240,4 +276,21 @@ module.exports.success = async (req, res) => {
         pageTitle: "Đơn hàng",
         order: order
     })
+}
+module.exports.paymentCallback = async(req,res) =>{
+    const { orderId, paymentStatus } = req.body;
+    if (paymentStatus === 'success') {
+
+        Order.updateOne({ _id: orderId }, { status: 'Paid' }, (err, result) => {
+            if (err) {
+                console.error(err);
+                return res.status(500).send('Error updating order');
+            }
+            return res.send('Payment successful');
+        });
+    } else {
+        // Xử lý khi thanh toán thất bại hoặc chưa hoàn thành
+        return res.send('Payment failed or pending');
+
+}
 }

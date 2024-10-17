@@ -62,12 +62,15 @@ block main
                                 class="form-check-input" 
                                 id="paymentcard" 
                                 name="payment" 
+
                                 value="paymentcard")
                             label(
                                 for="paymentcard" 
                                 class="form-check-label") Thanh toán bằng thẻ  
                         div(class="mb-3")
-                            button(type="submit" class="btn btn-danger mb-3") Đặt hàng
+                            input(name="dataOrder" value=cart.products type="hidden")
+                        div(class="mb-3")
+                            button(type="submit" class="btn btn-danger mb-3" button-order) Đặt hàng
                 .col-5
                     .container
                         table.table.table-hover.fs-4.text-uppercase.table-danger.table-border.custom-table
@@ -86,7 +89,7 @@ block main
                                             tbody 
                                             each item in cart.products
                                                 tr 
-                                                    td #{item.productInfo.title} 
+                                                    td.text-danger #{item.productInfo.title} 
                                                         span(class="fw-bold") x#{item.quantity}
                                                         if(item.color)
                                                             span (#{item.color}) 
@@ -101,13 +104,27 @@ block main
                                 tr 
                                     th Tổng tiền thanh toán: 
                                     td.text-end.text-danger.text-uppercase.fw-bold.fs-5 #{cart.totalInter}đ
-                    .qr-code 
-                        .row 
-                            .col-6 
-                            .col-6
-                                img(src=`${qr}` width="90%")
-            
-                                
-                                
+                    div.modal.fade.container-qr(id='qrModal' tabindex='-1' aria-labelledby='qrModalLabel' aria-hidden='true' data-order=qr)
+                        div.modal-dialog
+                            div.modal-content
+                                div.modal-header
+                                    h5#qrModalLabel.modal-title Vui lòng thanh toán trước khi đặt hàng
+                                    button.btn-close(type='button' data-bs-dismiss='modal' aria-label='Close')
+                                div.modal-body
+                                    div.text-center
+                                        img#qrImage(src=`${qr.image}` alt='QR Code' width='70%')
+                                    .information.fw-bold
+                                        div Só tài khoản: #{qr.information.accountNo}
+                                        div Chủ tài khoản: #{qr.information.accountName}
+                                        div Nội dung: #{qr.information.addInfo}
+                                        div Só tiền: #{qr.information.amount}đ
+                                div.modal-footer.text-center
+                                    .wait-payment
+                                        span Đang chờ thanh toán. 
+                                    button.btn.btn-secondary.text-center(type='button' data-bs-dismiss='modal') Close
+
+
+
+
 
 

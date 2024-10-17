@@ -7,8 +7,9 @@ router.get('/', cartsMiddleware.cartId,controller.index)
 router.post('/add/:productId', controller.addPost)
 router.get('/delete/:product_id', controller.delete)
 router.get('/update/:product_id', controller.update)
-router.get('/order', controller.order)
+router.post('/cartOrder', controller.order)
 router.post('/order', controller.orderPost)
 router.get('/checkout/success/:orderid',controller.success)
+router.post('payment-callback',controller.paymentCallback)
 
  module.exports = router;
