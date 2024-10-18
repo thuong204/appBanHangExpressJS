@@ -268,22 +268,7 @@ if (itemTitle) {
 
 
 }
-const paymentCard = document.getElementById('paymentcard');
-const paymentDelivery = document.getElementById('paymentdelivery')
-const buttonOrder = document.querySelector("[button-order]")
-if (paymentCard && paymentDelivery) {
-    paymentCard.addEventListener("change", () => {
-        if (paymentCard.checked) {
-            buttonOrder.disabled = true;
-        }
-    })
-    paymentDelivery.addEventListener("change", () => {
-        if (paymentDelivery.checked) {
-            buttonOrder.disabled = false;
-        }
-    })
-
-}
+let isSuccess = false
 document.addEventListener("DOMContentLoaded", function () {
     const paymentCard = document.getElementById("paymentcard");
     const qrModal = new bootstrap.Modal(document.getElementById('qrModal'));
@@ -295,18 +280,17 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // Event listener for payment card option
     paymentCard.addEventListener("change", () => {
-        if (paymentCard.checked) {
+        if (paymentCard.checked && isSuccess==false) {
             qrModal.show();
         }
-        setTimeout(()=>{
-             setInterval(() => {
-            checkPaid(order.information.addInfo, parseInt(order.information.amount));
-        }, 5000)
-        },10000)
-       
+        setTimeout(() => {
+            setInterval(() => {
+                checkPaid(order.information.addInfo, parseInt(order.information.amount));
+            }, 4000)
+        }, 3000)
+
     });
 });
-let isSuccess = false
 const checkPaid = async (contentOrder, priceOrder) => {
     try {
         if (isSuccess) {
@@ -318,13 +302,26 @@ const checkPaid = async (contentOrder, priceOrder) => {
             const price = lastPaid["Giá trị"]
             const content = lastPaid["Mô tả"]
             if (price >= priceOrder && content.includes(contentOrder)) {
-                alert("Thanh toán thành công")
-                buttonOrder.disabled = false;
+                const qrModal = new bootstrap.Modal(document.getElementById('qrModal'));
+                const qrModalElement = document.getElementById("qrModal")
+                qrModalElement.style.display="none"
+                qrModalElement.classList.remove('fade', 'show');
+                const backdrop = document.querySelector('.modal-backdrop');
+                if (backdrop) {
+                    backdrop.remove();
+                }
+                document.body.style.overflow = ''; 
+                document.body.style.paddingRight = ''; 
 
-                isSuccess= true
-            }
-            else{
-                alert("Thanh toán thất bại")
+                var paymentModal = new bootstrap.Modal(document.getElementById('paymentSuccessModal'))
+                paymentModal.show();
+                document.getElementById('paymentdelivery').disabled = true; 
+                document.getElementById('paymentcard').checked = true;
+                
+                buttonOrder.disabled=false
+                var cardLabel = document.querySelector('label[for="paymentcard"]');
+                cardLabel.innerHTML += ' <span style="color: green;">(Thành công)</span>';
+                isSuccess = true
             }
         }
 
@@ -333,8 +330,34 @@ const checkPaid = async (contentOrder, priceOrder) => {
     catch (err) {
         console.log("Lỗi")
         console.log(err)
+        return;
     }
 }
+const paymentCard = document.getElementById('paymentcard');
+const paymentDelivery = document.getElementById('paymentdelivery')
+const buttonOrder = document.querySelector("[button-order]")
+if (paymentCard && paymentDelivery) {
+    paymentCard.addEventListener("change", () => {
+        if (paymentCard.checked) {
+            buttonOrder.disabled = true;
+            if(isSuccess){
+                buttonOrder.disabled=false
+            }
+        }
+       
+    })
+    paymentDelivery.addEventListener("change", () => {
+        if (paymentDelivery.checked) {
+            buttonOrder.disabled = false
+        }
+       
+    })
+  
+  
+
+}
+
+
 
 
 

@@ -1746,11 +1746,10 @@ table.table-cart th, table.table-cart td{
 }
 .container-qr{
     margin-top: 100px;
-    height:90%;
+    height:70%;
 }
 .container-qr .information{
-    padding-left: 
-    100px;
+    padding-left: 100px;
 }
 .container-qr .modal-footer{
     display: flex;
@@ -1760,6 +1759,19 @@ table.table-cart th, table.table-cart td{
     
 
 }
+
+div#paymentSuccessModal {
+    vertical-align: middle;
+    margin-top: 200px;
+}
+div#paymentSuccessModal .payment-success{
+    font-size: 30px;
+}
+.hide{
+    display: none !important;
+}
+
+
 
 
 

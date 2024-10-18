@@ -122,6 +122,15 @@ block main
                                     .wait-payment
                                         span Đang chờ thanh toán. 
                                     button.btn.btn-secondary.text-center(type='button' data-bs-dismiss='modal') Close
+                    div.modal.fade#paymentSuccessModal(tabindex="-1", aria-labelledby="paymentSuccessLabel", aria-hidden="true")
+                        div.modal-dialog
+                            div.modal-content
+                                div.modal-body.text-center
+                                    i.fa.fa-check-circle.text-success(style=" font-size: 3rem")
+                                    p.payment-success.text-success Thanh toán thành công
+                                    p Đơn hàng của quý khách đã thanh toán thành công. Chúng tôi sẽ giao hàng cho bạn trong thời gian sớm nhất.
+                                div.modal-footer.d-block.text-center
+                                    button.btn.btn-primary(type="button", data-bs-dismiss="modal") OK
 
 
 

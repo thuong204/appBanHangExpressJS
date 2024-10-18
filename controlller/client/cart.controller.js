@@ -172,7 +172,7 @@ module.exports.order = async (req, res) => {
     await vietQR.genQRCodeBase64({
         bank: '970405',
         accountName: 'TRAN CONG THUONG',
-        accountNumber: '20152220051510',
+        accountNumber: '2015220051510',
         amount: `5000`,
         memo: `${userOrder.fullName} thanh toán sản phẩm`,
         template: 'compact'
@@ -249,6 +249,12 @@ module.exports.orderPost = async (req, res) => {
         note: userInfo.note,
         products: products
     });
+    if(userInfo.payment=="paymentcard"){
+        objOrder.status="Đã thanh toán";
+    }else{
+        objOrder.status="Chưa thanh toán";
+    }
+    
 
 
     await objOrder.save()

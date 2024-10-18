@@ -8,7 +8,8 @@ const orderSchema = new mongoose.Schema(
             phone: String,
             address: String,
         },
-        payments: String ,
+        payments: String,
+        status: String,
         note: String,
         products:[{
             product_id: String,
