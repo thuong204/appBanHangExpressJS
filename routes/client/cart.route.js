@@ -10,6 +10,6 @@ router.get('/update/:product_id', controller.update)
 router.post('/cartOrder', controller.order)
 router.post('/order', controller.orderPost)
 router.get('/checkout/success/:orderid',controller.success)
-router.post('payment-callback',controller.paymentCallback)
+router.get('/order/history',controller.orderHistory)
 
  module.exports = router;

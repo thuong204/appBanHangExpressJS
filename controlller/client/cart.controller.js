@@ -5,6 +5,7 @@ const Product = require("../../models/product.model")
 const Order = require("../../models/order.model")
 const User = require("../../models/users.model")
 const { priceInter } = require("../../helpers/priceInter")
+const CategoryProduct = require("../../models/category-product.model")
 module.exports.index = async (req, res) => {
     const cartId = req.cookies.cartId
     const cart = await Cart.findOne({
@@ -246,6 +247,7 @@ module.exports.orderPost = async (req, res) => {
             address: userInfo.address
         },
         payments: userInfo.payment,
+        dateOrder: new Date().toLocaleString(),
         note: userInfo.note,
         products: products
     });
@@ -299,4 +301,35 @@ module.exports.paymentCallback = async(req,res) =>{
         return res.send('Payment failed or pending');
 
 }
+}
+
+module.exports.orderHistory  = async(req,res) =>{
+    const cartId = req.cookies.cartId
+    const orderHistory = await Order.find({
+        cart_id:cartId,
+    })
+    const productOrder ={
+
+    }
+    for(const order of orderHistory){
+        for(const product of order.products){
+            const productInfo = await Product.findOne({
+                _id: product.product_id
+            }).select("title thumbnail categoryProduct slug")
+            const category = await CategoryProduct.findOne({
+                _id: productInfo.categoryProduct
+            }).select("title slug")
+            product.priceNew = productsHelper.priceNewProduct(product)
+            product.priceOldInter = priceInter(product.price)
+            product.totalPrice = product.priceNew * product.quantity
+            product.totalPriceInter = priceInter(product.totalPrice)
+            product.info = productInfo
+            product.category= category
+
+        }
+    }
+    res.render("clients/pages/cart/history",{
+        pageTitle:"Lịch sử mua hàng",
+        orderHistory:orderHistory
+    })
 }

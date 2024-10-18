@@ -1772,6 +1772,140 @@ div#paymentSuccessModal .payment-success{
 }
 
 
+/* history  */
+.order-history {
+    max-width: 1200px;
+    margin: auto;
+    padding: 20px;
+}
+
+.order-history .order-card {
+    border: 1px solid #ccc;
+    padding: 10px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+    position: relative;
+    background-color: #fff;
+}
+
+.order-history .order-header {
+    display: flex;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #ddd;
+    justify-content: space-between;
+    align-items: center;
+}
+.order-history .order-header .text-delivery{
+    float: right !important;
+}
+.order-history .pay-free-15{
+    font-size: 12px;
+    border-radius: 8px;
+    padding: 3px;
+}
+
+
+.order-history .fa-heart {
+    color: red;
+    font-size: 1.5rem;
+}
+
+.order-history .status {
+    background-color: #4caf50;
+    color: white;
+    padding: 5px 10px;
+    border-radius: 5px;
+}
+
+.order-history .order-content {
+    gap: 20px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #ddd;
+    margin-top: 15px;
+}
+.order-content .product-details{
+    margin-left: 10px;
+}
+.product-details .product-category{
+    font-size: 13px;
+    font-weight: 300;
+    color: black;   
+    display: block;
+}
+.product-details .product-quantity{
+    font-size: 14px;
+    font-weight: 700;
+}
+.product-details .product-title{
+    color: black;
+}
+.product-price-info  .product-price{
+    padding-right: 10px;
+    font-size: 14px;
+    text-decoration: line-through;
+    font-weight: 100;
+}
+.product-price-info .product-price-payment{
+    font-size: 15px;
+}
+
+.order-history .product-image {
+    width: 100px;
+    height: 100px;
+    object-fit: cover;
+    border-radius: 10px;
+}
+
+.order-history .product-details {
+    flex-grow: 1;
+}
+.order-history .product-details .flex-item{
+    justify-content: space-between;
+}
+
+.order-history .order-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 10px;
+}
+
+.order-history .actions button {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.order-history .btn-review {
+    font-size: 13px !important;
+    padding: 8px !important;
+    border-radius: 5% !important;
+}
+
+.order-history .btn-reorder {
+    margin-left: 10px;
+    font-size: 13px !important;
+    padding: 8px !important;
+    border-radius: 5% !important;
+}
+
+
+.order-history .total-price {
+    font-weight: bold;
+    vertical-align: middle;
+    font-size: 17px;
+}
+.text-history-order{
+    margin-top: -30px !important ;
+    margin-bottom: 20px;
+}
+
+
+
+/*end history */
+
+
 
 
 

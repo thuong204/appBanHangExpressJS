@@ -1,0 +1,45 @@
+extends ../../layouts/default.pug
+include ../../mixins/grid-products.pug
+include ../../mixins/section-page.pug
+include ../../mixins/alert.pug
+block main  
+    +alert-success(3000)
+    +section-page(pageTitle)
+    .body 
+        .main 
+            .container 
+                section.order-history
+                    h2.text-history-order Lịch sử mua hàng
+                    .order-list
+                        each order in orderHistory
+                            each item in order.products
+                                .order-card
+                                    .order-header
+                                        .star-rating
+                                            i.fas.fa-star.text-warning
+                                            i.fas.fa-star.text-warning
+                                            i.fas.fa-star.text-warning
+                                            i.fas.fa-star.text-warning
+                                            i.fas.fa-star.text-warning
+                                        span.text-success.text-delivery Giao hàng thành công&nbsp;
+                                    .order-content
+                                        .product-info.d-flex
+                                            a.text-decoration-none(href=`/products/detail/${item.info.slug}`)
+                                                img(src=item.info.thumbnail alt="Product Image" class="product-image")
+                                            .product-details
+                                                if(item.info.title)
+                                                    a.text-decoration-none.product-title(href=`/products/detail/${item.info.slug}`)  #{item.info.title}
+                                                .product-category.text-decoration-none Phân loại hàng: #{item.category.title}
+                                                .product-quantity.fw-bold x#{item.quantity}
+                                                .d-flex.flex-item
+                                                    .product-warranty
+                                                        small.text-success.pay-free-15.border.border-success Trả hàng miển phí 15 ngày
+                                                    .product-price-info 
+                                                        span.product-price #{item.priceOldInter}đ
+                                                        span.product-price-payment.text-danger.fw-bold #{item.priceInter}đ
+                                    .order-footer
+                                        .actions
+                                            button.btn.btn-success.btn-review Đánh giá
+                                            button.btn.btn-danger.btn-reorder Mua lại
+                                        .total-price
+                                            div.text-danger #{item.totalPriceInter}đ

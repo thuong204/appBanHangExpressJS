@@ -11,6 +11,7 @@ const orderSchema = new mongoose.Schema(
         payments: String,
         status: String,
         note: String,
+        dateOrder:Date,
         products:[{
             product_id: String,
             quantity: Number,
