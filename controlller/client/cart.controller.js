@@ -6,6 +6,7 @@ const Order = require("../../models/order.model")
 const User = require("../../models/users.model")
 const { priceInter } = require("../../helpers/priceInter")
 const CategoryProduct = require("../../models/category-product.model")
+const formatDate = require("../../helpers/formatDate")
 module.exports.index = async (req, res) => {
     const cartId = req.cookies.cartId
     const cart = await Cart.findOne({
@@ -119,7 +120,7 @@ module.exports.update = async (req, res) => {
     res.redirect("back")
 }
 module.exports.order = async (req, res) => {
-  
+
 
     const cartId = req.cookies.cartId
     const cart = await Cart.findOne({
@@ -161,8 +162,8 @@ module.exports.order = async (req, res) => {
     const userOrder = await User.findOne({
         _id: cart.user_id
     })
-      //tao ma qr thanh toan
-      const vietQR = new VietQR({
+    //tao ma qr thanh toan
+    const vietQR = new VietQR({
         clientID: 'de8a0804-a76d-41e5-8ad6-31503ce7d5f4',
         apiKey: '17c29f09-4ea2-4417-b9c2-7f020d35de42',
     });
@@ -185,7 +186,7 @@ module.exports.order = async (req, res) => {
         image: qr.data.data.qrDataURL,
         information: JSON.parse(qr.config.data)
     }
-    
+
 
 
     cart.total = cart.products.reduce((sum, item) => sum + item.totalPrice, 0)
@@ -251,12 +252,12 @@ module.exports.orderPost = async (req, res) => {
         note: userInfo.note,
         products: products
     });
-    if(userInfo.payment=="paymentcard"){
-        objOrder.status="Đã thanh toán";
-    }else{
-        objOrder.status="Chưa thanh toán";
+    if (userInfo.payment == "paymentcard") {
+        objOrder.status = "Đã thanh toán";
+    } else {
+        objOrder.status = "Chưa thanh toán";
     }
-    
+
 
 
     await objOrder.save()
@@ -267,25 +268,37 @@ module.exports.success = async (req, res) => {
     const order = await Order.findOne({
         _id: req.params.orderid
     })
+    if (order) {
+        for (const product of order.products) {
+            const productInfo = await Product.findOne({
+                _id: product.product_id
+            }).select("title thumbnail")
+            product.productInfo = productInfo
+            product.priceNew = productsHelper.priceNewProduct(product)
+            product.totalPrice = product.priceNew * product.quantity
+            product.totalPriceInter = priceInter(product.totalPrice)
+        }
 
-    for (const product of order.products) {
-        const productInfo = await Product.findOne({
-            _id: product.product_id
-        }).select("title thumbnail")
-        product.productInfo = productInfo
-        product.priceNew = productsHelper.priceNewProduct(product)
-        product.totalPrice = product.priceNew * product.quantity
-        product.totalPriceInter = priceInter(product.totalPrice)
+        if(order.dateOrder){
+             order.date = formatDate(order.dateOrder)
+        }
+       
+
+        order.totalPrice = order.products.reduce((sum, item) => sum + item.totalPrice, 0)
+        order.totalPriceInter = priceInter(order.totalPrice)
+
+        order.dateOrder
+        res.render("clients/pages/cart/success", {
+            pageTitle: "Đơn hàng",
+            order: order
+        })
+    }else{
+           res.send("Không tìm thấy trang")
+
     }
-
-    order.totalPrice = order.products.reduce((sum, item) => sum + item.totalPrice, 0)
-    order.totalPriceInter = priceInter(order.totalPrice)
-    res.render("clients/pages/cart/success", {
-        pageTitle: "Đơn hàng",
-        order: order
-    })
+ 
 }
-module.exports.paymentCallback = async(req,res) =>{
+module.exports.paymentCallback = async (req, res) => {
     const { orderId, paymentStatus } = req.body;
     if (paymentStatus === 'success') {
 
@@ -300,19 +313,19 @@ module.exports.paymentCallback = async(req,res) =>{
         // Xử lý khi thanh toán thất bại hoặc chưa hoàn thành
         return res.send('Payment failed or pending');
 
-}
+    }
 }
 
-module.exports.orderHistory  = async(req,res) =>{
+module.exports.orderHistory = async (req, res) => {
     const cartId = req.cookies.cartId
     const orderHistory = await Order.find({
-        cart_id:cartId,
+        cart_id: cartId,
     })
-    const productOrder ={
+    const productOrder = {
 
     }
-    for(const order of orderHistory){
-        for(const product of order.products){
+    for (const order of orderHistory) {
+        for (const product of order.products) {
             const productInfo = await Product.findOne({
                 _id: product.product_id
             }).select("title thumbnail categoryProduct slug")
@@ -324,12 +337,12 @@ module.exports.orderHistory  = async(req,res) =>{
             product.totalPrice = product.priceNew * product.quantity
             product.totalPriceInter = priceInter(product.totalPrice)
             product.info = productInfo
-            product.category= category
+            product.category = category
 
         }
     }
-    res.render("clients/pages/cart/history",{
-        pageTitle:"Lịch sử mua hàng",
-        orderHistory:orderHistory
+    res.render("clients/pages/cart/history", {
+        pageTitle: "Lịch sử mua hàng",
+        orderHistory: orderHistory
     })
 }

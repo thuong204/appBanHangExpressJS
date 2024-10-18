@@ -41,5 +41,6 @@ block main
                                         .actions
                                             button.btn.btn-success.btn-review Đánh giá
                                             button.btn.btn-danger.btn-reorder Mua lại
+                                            a.btn.btn-primary.btn-reorder(href=`/cart/checkout/success/${order.id}`) Chi tiết
                                         .total-price
-                                            div.text-danger #{item.totalPriceInter}đ
+                                            div.text-danger Thành tiền: #{item.totalPriceInter}đ

@@ -1,22 +1,19 @@
 extends ../../layouts/default.pug
 include ../../mixins/section-page.pug
 include ../../mixins/alert.pug
-
 block main     
     +section-page(pageTitle)
     .body 
         .container 
-            .row
-                .col-12
-                    h3.text-success Đặt hàng thành công
-            .row 
-                .col-12 
-                    div(class="alert alert-success")
-                        | Chúc mừng bạn đã đặt hàng thành công! Chúng tôi sẽ xử lí đơn hàng trong thời gian sớm nhất.
+            
+            h3.text-success Đặt hàng thành công
+         
+            div(class="alert alert-success")
+                | Chúc mừng bạn đã đặt hàng thành công! Chúng tôi sẽ xử lí đơn hàng trong thời gian sớm nhất.
             if(order)
                 .row 
                     .col-12
-                        h4.mb-2 Thông tin cá nhân 
+                        h4.mb-3.text-danger Thông tin cá nhân 
                         table(class="table table-bodered")
                             tbody 
                                 tr 
@@ -29,14 +26,17 @@ block main
                                 tr 
                                     th Địa chỉ
                                     td #{order.userInfo.address}
+                                tr 
+                                    th  Ngày đặt hàng 
+                                    td #{order.date}
                 .row 
                     .col-12
-                        h4.mb-2 Thông tin đơn hàng
-                        table(class="table table-bodered")
+                        h4.mb-3.text-danger Thông tin đơn hàng
+                        table(class="table table-bodered table-order")
                             thead 
                                 tr 
                                     th STT 
-                                    th Ảnh 
+                                    th Ảnh   
                                     th Tên 
                                     th Màu sắc
                                     th Giá 
@@ -63,7 +63,7 @@ block main
                                 h5(class="text-end") Thanh toán khi nhận hàng
                                 h4(class="text-end text-danger") Tổng tiền thanh toán: #{order.totalPriceInter}đ
                             else 
-                                h4(class="text-end") Tổng đơn hàng #{order.totalPrice}đ
+                                h4(class="text-end") Tổng đơn hàng #{order.totalPriceInter}đ
                                 h5(class="text-end") Đã thanh toán khi đặt hàng
                                 h4(class="text-end text-danger") Tổng tiền thanh toán: 0đ
 

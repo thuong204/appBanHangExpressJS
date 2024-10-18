@@ -1900,6 +1900,9 @@ div#paymentSuccessModal .payment-success{
     margin-top: -30px !important ;
     margin-bottom: 20px;
 }
+.table-order th,.table-order td{
+    border: 1px solid #ddd;
+}
 
 
 
