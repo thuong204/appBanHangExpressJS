@@ -32,7 +32,7 @@ router.get('/oauth2/redirect/google', passport.authenticate('google', {
   passport.use(new GoogleStrategy({
     clientID: process.env.GOOGLE_CLIENT_ID,
     clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-    callbackURL: '/user/oauth2/redirect/google',
+    callbackURL: 'http://thuongelectronics.vercel.app/user/oauth2/redirect/google',
     scope: ['profile', 'email'],
   }, async (accessToken, refreshToken, profile, cb) => {
     try {
