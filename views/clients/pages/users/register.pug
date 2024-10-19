@@ -20,11 +20,10 @@ block main
                 .input-box
                     input.input-field(type="text" name="email" autocomplete="off" )
                     label(for="email") Email
-                .input-box
+                .input-box.mb-3
                     input.input-field(type="password" name="password" autocomplete="off" )
                     label(for="password") Mật khẩu
-                    small(class="form-text text-muted") 
-                        | Mật khẩu phải có ít nhất 8 ký tự, bao gồm chữ hoa, chữ thường, số và ký tự đặc biệt.
+                    i(class="" style="font-size:10px;top:0px;color:red")  Mật khẩu phải có ít nhất 8 ký tự, bao gồm chữ hoa, chữ thường, số và ký tự đặc biệt.
                 .input-box
                     input.input-field(type="text" name="phone" autocomplete="off" )
                     label(for="phone") Số điện thoại
@@ -36,11 +35,11 @@ block main
                 .input-box
                     a.input-social.btn.btn-light
                         img(src="https://res.cloudinary.com/dwk6tmsmh/image/upload/v1722602737/jnwhzzq4939gb1gl7edy.png" alt="")
-                        p.fw-bold.text-uppercase Đăng kí với Google
+                        p.fw-bold.text-uppercase Đăng nhập  với Google
                 .input-box
                     a.btn.input-social.btn-light
                         img(src="https://res.cloudinary.com/dwk6tmsmh/image/upload/v1722595810/s5duvlhqarv7xfrtedfl.png" alt="")
-                        p.fw-bold.text-uppercase Đăng kí với Twitter
+                        p.fw-bold.text-uppercase Đăng nhập với Twitter
                 .sign-up
                     p Bạn đã có tài khoản
                         a(href="login") Đăng nhập

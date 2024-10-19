@@ -2,6 +2,12 @@ const express = require('express')
 var path = require('path');
 require("dotenv").config()  
 
+const passport= require("passport")
+
+
+const session = require('express-session');
+const MongoStore = require('connect-mongo')
+
 const methodOverride=  require("method-override")
 const multer = require('multer');
 
@@ -15,7 +21,6 @@ const bodyParser = require("body-parser")
 const flash = require("express-flash")
 const moment = require("moment")
 const cookieParser =require("cookie-parser")
-const session = require("express-session")
 
 const database = require("./config/database.js")
 
@@ -23,7 +28,8 @@ const app = express()
 const port = process.env.PORT
 
 const http = require('http')
-const { Server } = require("socket.io")
+const { Server } = require("socket.io");
+const User = require('./models/users.model.js');
 
 app.use(methodOverride('_method'))
 app.use('/tinymce', express.static(path.join(__dirname, 'node_modules', 'tinymce')));
@@ -57,6 +63,39 @@ route(app);
 routeAdmin(app);
 app.use(express.static(`${__dirname}/public`))
 
+
+app.use(session({
+    secret: 'keyboard cat',  
+    resave: false,
+    saveUninitialized: false,
+    store: MongoStore.create({
+      mongoUrl: process.env.MONGO_URL,  
+      collectionName: 'sessions',       
+      ttl: 14 * 24 * 60 * 60           
+    })
+  }));
+
+app.use(passport.authenticate('session'));
+passport.serializeUser(function(user, cb) {
+    if (user && user.id) {
+      cb(null, user.id); 
+    } else {
+      cb(new Error('User object is invalid or missing id'));
+    }
+  });
+  
+  passport.deserializeUser(async function(id, cb) {
+    try {
+      const user = await User.findById(id);
+      if (!user) {
+        return cb(new Error('User not found'));
+      }
+      cb(null, user); // Trả về người dùng đã tìm thấy
+      console.log(user)
+    } catch (err) {
+      cb(err); // Xử lý lỗi
+    }
+  });
 
 server.listen(port, () => {
     console.log(`Example app listening on port ${port}`)

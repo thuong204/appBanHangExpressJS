@@ -5,6 +5,7 @@ const userSchema = new mongoose.Schema(
         fullName: String,
         email: String,
         password: String,
+        googleId:String,
         userToken:{
             type:String,
             default: generate.generateRandomString(20)
@@ -22,6 +23,9 @@ const userSchema = new mongoose.Schema(
         timestamps: true
     }
 )
+
+
+
 
 const User = mongoose.model('User',userSchema,"users")
 module.exports = User
