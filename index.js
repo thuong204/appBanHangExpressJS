@@ -30,6 +30,7 @@ const port = process.env.PORT
 const http = require('http')
 const { Server } = require("socket.io");
 const User = require('./models/users.model.js');
+const { configureSession, configurePassport } = require('./config/passportConfig.js');
 
 app.use(methodOverride('_method'))
 app.use('/tinymce', express.static(path.join(__dirname, 'node_modules', 'tinymce')));
@@ -75,28 +76,9 @@ app.use(session({
     })
   }));
 
-app.use(passport.authenticate('session'));
-passport.serializeUser(function(user, cb) {
-    if (user && user.id) {
-      cb(null, user.id); 
-    } else {
-      cb(new Error('User object is invalid or missing id'));
-    }
-  });
-  
-  passport.deserializeUser(async function(id, cb) {
-    try {
-      const user = await User.findById(id);
-      if (!user) {
-        return cb(new Error('User not found'));
-      }
-      cb(null, user); // Trả về người dùng đã tìm thấy
-      console.log(user)
-    } catch (err) {
-      cb(err); // Xử lý lỗi
-    }
-  });
-
+// Cấu hình session và Passport
+configureSession(app);
+configurePassport(app);
 server.listen(port, () => {
     console.log(`Example app listening on port ${port}`)
 })

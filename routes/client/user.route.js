@@ -6,9 +6,7 @@ const validateLogin = require("../../validates/admin/validate-login")
 const authMiddleware = require("../../middlewares/clients/auth.middleware")
 const cartMiddleware = require("../../middlewares/clients/carts.middleware")
 const passport = require('passport');
-const GoogleStrategy = require('passport-google-oauth20').Strategy;
-const User = require("../../models/users.model")
-const FederatedCredential = require("../../models/federatedCredential.model")
+const passportHelper = require("../../helpers/passport-setup")
 router.get('/register', controller.register)
 router.post('/register',
     validate.validateRegister,
@@ -28,35 +26,17 @@ router.get("/login/federated/google",passport.authenticate('google'))
 router.get('/oauth2/redirect/google', passport.authenticate('google', {
     failureRedirect: '/login'
   }),controller.loginSuccessGoogle);
-  
-  passport.use(new GoogleStrategy({
-    clientID: process.env.GOOGLE_CLIENT_ID,
-    clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-    callbackURL: '/user/oauth2/redirect/google',
-    scope: ['profile', 'email'],
-  }, async (accessToken, refreshToken, profile, cb) => {
-    try {
-      let user = await User.findOne({ googleId: profile.id });
-      if (!user) {
-        // Tạo người dùng mới nếu không tìm thấy
-        user = await User.create({
-          googleId: profile.id,
-          fullName: profile.displayName,
-          email: profile.emails ? profile.emails[0].value : '',
-          avatar: profile.photos ? profile.photos[0].value : ''
-        });
-      }
+router.get('/login/federated/facebook', passport.authenticate('facebook'));
 
-  
-      if (!user.id) {
-        return cb(new Error('User ID is missing'));
-      }
-  
-      return cb(null, user); // Trả về người dùng
-    } catch (err) {
-      return cb(err); // Xử lý lỗi
-    }
-  }));
+router.get('/oauth2/redirect/facebook', passport.authenticate('facebook', {
+  failureRedirect: '/login',
+
+}),controller.loginSuccessFacebook);
+
+passportHelper.setupGoogleStrategy()
+passportHelper.setupFacebookStrategy()
+
+
   
   
 

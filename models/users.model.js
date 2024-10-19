@@ -6,6 +6,7 @@ const userSchema = new mongoose.Schema(
         email: String,
         password: String,
         googleId:String,
+        facebookId:String,
         userToken:{
             type:String,
             default: generate.generateRandomString(20)

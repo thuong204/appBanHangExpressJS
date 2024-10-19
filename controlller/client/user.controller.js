@@ -165,3 +165,24 @@ module.exports.loginSuccessGoogle = async(req,res) =>{
    
 
 }
+module.exports.loginSuccessFacebook = async(req,res) =>{
+
+    console.log(req.user)
+    if (req.user) {
+        if (req.user.status == "inactive") {
+            req.flash("Tài khoản đã bị khóa")
+        }
+        else {
+            res.cookie("tokenUser", req.user.userToken)
+            
+            res.redirect("/")
+        }
+
+    }else{
+        res.redirect("/user/login")
+
+    }
+
+   
+
+}
