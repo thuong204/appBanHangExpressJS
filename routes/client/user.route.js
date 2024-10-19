@@ -32,7 +32,7 @@ router.get('/oauth2/redirect/google', passport.authenticate('google', {
   passport.use(new GoogleStrategy({
     clientID: process.env.GOOGLE_CLIENT_ID,
     clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-    callbackURL: 'http://thuongelectronics.vercel.app/user/oauth2/redirect/google',
+    callbackURL: '/user/oauth2/redirect/google',
     scope: ['profile', 'email'],
   }, async (accessToken, refreshToken, profile, cb) => {
     try {
@@ -46,6 +46,8 @@ router.get('/oauth2/redirect/google', passport.authenticate('google', {
           avatar: profile.photos ? profile.photos[0].value : ''
         });
       }
+
+  
       if (!user.id) {
         return cb(new Error('User ID is missing'));
       }
