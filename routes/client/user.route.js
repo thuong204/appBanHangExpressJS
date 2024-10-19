@@ -46,8 +46,6 @@ router.get('/oauth2/redirect/google', passport.authenticate('google', {
           avatar: profile.photos ? profile.photos[0].value : ''
         });
       }
-
-  
       if (!user.id) {
         return cb(new Error('User ID is missing'));
       }
