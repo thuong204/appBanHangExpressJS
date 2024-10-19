@@ -26,7 +26,7 @@ router.post('/password/reset', validate.resetPassword, controller.resetPasswordP
 router.get('/info',authMiddleware.requireAuth,controller.info)
 router.get("/login/federated/google",passport.authenticate('google'))
 router.get('/oauth2/redirect/google', passport.authenticate('google', {
-    failureRedirect: '/user/login'
+    failureRedirect: '/login'
   }),controller.loginSuccessGoogle);
   
   passport.use(new GoogleStrategy({
