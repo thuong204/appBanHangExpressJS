@@ -1,68 +1,293 @@
 include ../mixins/sub-menu.pug
 header.header
-    .header-search
-        .row.align-items-center
-            .col-lg-2.col-md-2.col-sm-1
-                .inner-logo
-                    a(href="/")
-                        img(src="/images/dina.png" alt="Logo")
-            .col-lg-7.col-sm-6.col-md-6.col-6
-                .inner-search.mt-3
-                    form(action="/search" method="GET")
-                        div(class="mb-3 d-flex")
-                            input(
+    // Upper header section with logo, search, and account
+    .header-top.py-2.border-bottom
+        .container
+            .row.align-items-center
+                // Logo
+                .col-3.col-sm-3.col-md-2
+                    .logo
+                        a(href="/")
+                            img.img-fluid(src="/images/dina.png" alt="Logo" style="max-height: 38px;")
+                
+                // Search bar
+                .col-6.col-sm-6.col-md-7
+                    form.search-form(action="/search" method="GET")
+                        .input-group.input-group-sm
+                            input.form-control.rounded-start.border-warning(
                                 type="text"
-                                placeholder="Hôm nay bạn tìm gì ...."
-                                class="form-control"
+                                placeholder="Hôm nay bạn tìm gì..."
                                 name="keyword"
                                 value=keyword
                             )
-                            button(
-                                type="submit"
-                                class="btn btn-warning"
-                            )  <i class="fas fa-search"></i>  
-            .col-lg-3.text-end.col-sm-5.col-md-4.col-6
-                .inner-menu-log
-                    ul.d-flex
-                        li.nav-item.nav-item-cart.text-start
-                            a(href="/cart") <i class="fas fa-cart-plus fs-5 btn-cart"></i>  
-                        li.nav-item.nav-item-toggle
-                            button#navbarToggle.btn.btn-warning(type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation")
-                                 i.fas.fa-bars
-                      
-                                
-                        li.nav-item.dropdown.nav-item-account
-                            if(user)
-                                i.fas.fa-user#dropdownMenuButton.btn.btn-warning.btn-account(type="button" data-bs-toggle="dropdown" aria-expanded="false")
-                                ul.dropdown-menu(aria-labelledby="dropdownMenuButton")
+                            button.btn.btn-warning.rounded-end(type="submit")
+                                i.fas.fa-search
+                
+                // Account and cart icons
+                .col-3.col-sm-3.col-md-3
+                    .d-flex.justify-content-end.align-items-center
+                        // Cart
+                        a.icon-link.me-3(href="/cart" title="Giỏ hàng")
+                            i.fas.fa-shopping-cart
+                            span.badge.bg-danger.rounded-circle.position-absolute.top-0.start-100.translate-middle 0
+                        
+                        // User account
+                        if(user)
+                            .dropdown
+                                button.btn.btn-sm.btn-warning.dropdown-toggle.d-flex.align-items-center(type="button" data-bs-toggle="dropdown")
+                                    i.fas.fa-user.me-1
+                                    span.d-none.d-md-inline.small= user.name
+                                ul.dropdown-menu.dropdown-menu-end.shadow-sm
                                     li
-                                        a.dropdown-item(href="/user/info") Thông tin tài khoản
+                                        a.dropdown-item.py-2(href="/user/info")
+                                            i.fas.fa-user-circle.me-2.text-warning
+                                            | Thông tin
                                     li 
-                                        a.dropdown-item(href="/cart/order/history") Lịch sử mua hàng
+                                        a.dropdown-item.py-2(href="/cart/order/history")
+                                            i.fas.fa-history.me-2.text-warning
+                                            | Đơn hàng
+                                    li.border-top
+                                        a.dropdown-item.py-2(href="/user/logout")
+                                            i.fas.fa-sign-out-alt.me-2.text-warning
+                                            | Đăng xuất
+                        else
+                            .dropdown
+                                button.btn.btn-sm.btn-warning.dropdown-toggle(type="button" data-bs-toggle="dropdown")
+                                    i.fas.fa-user.me-1
+                                    span.d-none.d-md-inline.small Tài khoản
+                                ul.dropdown-menu.dropdown-menu-end.shadow-sm
                                     li
-                                        a.dropdown-item(href="/user/logout") Đăng xuất
-                            else
-                                button#dropdownMenuButton.btn.btn-warning.btn-login(type="button" data-bs-toggle="dropdown" aria-expanded="false")
-                                    | Tài khoản
-                                ul.dropdown-menu(aria-labelledby="dropdownMenuButton")
+                                        a.dropdown-item.py-2(href="/user/login")
+                                            i.fas.fa-sign-in-alt.me-2.text-warning
+                                            | Đăng nhập
                                     li
-                                        a.dropdown-item(href="/user/login") Đăng nhập
-                                    li
-                                        a.dropdown-item(href="/user/register") Đăng ký
-    .header-item
-        .row 
-            .col-12.text-center.header-inner
-                .inner-menu
-                    ul
-                        li.nav-item.dropdown.sub-menu.nav-item-home <i class="fas fa-home"></i>
-                            a.ms-2(href="/") Trang chủ
-                        each item in categoryProducts
-                            li.nav-item.dropdown.sub-menu
-                                -const pathProduct = "/products"
-                                a(href=`/products/${item.slug}`) #{item.title}
-                        li.nav-item.dropdown.sub-menu.nav-item-info
-                            a(href="/") Tin tức
-                        li.nav-item.dropdown.sub-menu.item-call
-                            a(href="/chat") Liên hệ
-                        li.nav-item.dropdown.sub-menu.nav-item-shop
-                            a(href="/") Hệ thống cưa hàng
+                                        a.dropdown-item.py-2(href="/user/register")
+                                            i.fas.fa-user-plus.me-2.text-warning
+                                            | Đăng ký
+    
+    // Main navigation
+    .header-nav.bg-warning.sticky-top
+        .container
+            .row
+                .col-12.position-relative.p-0
+                    // Mobile toggle button
+                    button.navbar-toggler.d-lg-none(type="button" data-bs-toggle="offcanvas" data-bs-target="#mainNavOffcanvas")
+                        i.fas.fa-bars
+                    
+                    // Desktop navigation
+                    .main-navigation.d-none.d-lg-block
+                        ul.nav.nav-fill.nav-justified
+                            li.nav-item
+                                a.nav-link.text-dark.py-2.d-flex.align-items-center.justify-content-center(href="/")
+                                    i.fas.fa-home.me-2
+                                    span Trang chủ
+                            each item in categoryProducts
+                                li.nav-item
+                                    a.nav-link.text-dark.py-2(href=`/products/${item.slug}`) #{item.title}
+                            li.nav-item
+                                a.nav-link.text-dark.py-2(href="/") 
+                                    i.fas.fa-newspaper.me-2
+                                    span Tin tức
+                            li.nav-item
+                                a.nav-link.text-dark.py-2(href="/chat")
+                                    i.fas.fa-comment.me-2
+                                    span Liên hệ
+                            li.nav-item
+                                a.nav-link.text-dark.py-2(href="/")
+                                    i.fas.fa-store.me-2
+                                    span Hệ thống
+
+// Mobile sidebar menu
+.offcanvas.offcanvas-start#mainNavOffcanvas(tabindex="-1")
+    .offcanvas-header.bg-warning
+        h5.offcanvas-title
+            i.fas.fa-bars.me-2
+            | Danh mục
+        button.btn-close(type="button" data-bs-dismiss="offcanvas" aria-label="Close")
+    .offcanvas-body.p-0
+        .list-group.list-group-flush
+            a.list-group-item.list-group-item-action.py-3(href="/")
+                i.fas.fa-home.me-2.text-warning
+                | Trang chủ
+            each item in categoryProducts
+                a.list-group-item.list-group-item-action.py-3(href=`/products/${item.slug}`)
+                    i.fas.fa-box.me-2.text-warning
+                    | #{item.title}
+            a.list-group-item.list-group-item-action.py-3(href="/")
+                i.fas.fa-newspaper.me-2.text-warning
+                | Tin tức
+            a.list-group-item.list-group-item-action.py-3(href="/chat")
+                i.fas.fa-comment.me-2.text-warning
+                | Liên hệ
+            a.list-group-item.list-group-item-action.py-3(href="/")
+                i.fas.fa-store.me-2.text-warning
+                | Hệ thống cửa hàng
+        
+        // User account shortcuts in mobile menu
+        .p-3.mt-2.bg-light
+            h6.text-uppercase.fw-bold.small.mb-3
+                i.fas.fa-user-circle.me-2
+                | Tài khoản
+            if(user)
+                .d-grid.gap-2
+                    a.btn.btn-sm.btn-outline-warning.d-flex.align-items-center(href="/user/info")
+                        i.fas.fa-user-circle.me-2
+                        | Thông tin tài khoản
+                    a.btn.btn-sm.btn-outline-warning.d-flex.align-items-center(href="/cart/order/history")
+                        i.fas.fa-history.me-2
+                        | Lịch sử mua hàng
+                    a.btn.btn-sm.btn-outline-warning.d-flex.align-items-center(href="/user/logout")
+                        i.fas.fa-sign-out-alt.me-2
+                        | Đăng xuất
+            else
+                .d-grid.gap-2
+                    a.btn.btn-sm.btn-warning.d-flex.align-items-center.justify-content-center(href="/user/login")
+                        i.fas.fa-sign-in-alt.me-2
+                        | Đăng nhập
+                    a.btn.btn-sm.btn-outline-warning.d-flex.align-items-center.justify-content-center(href="/user/register")
+                        i.fas.fa-user-plus.me-2
+                        | Đăng ký
+
+style.
+    /* Header styling */
+   .header-top {
+        box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        position: relative;
+        z-index: 1050; /* Higher than sticky nav */
+    }
+    
+    /* Navigation styling */
+    .header-nav {
+        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        z-index: 1030; /* Lower than dropdowns but still high */
+    }
+    
+    /* Dropdown menu fixes */
+    .dropdown {
+        position: relative;
+    }
+    
+    .dropdown-menu {
+        border-radius: 0;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        min-width: auto;
+        z-index: 1060 !important; /* Force higher z-index */
+    }
+    
+    .nav-item {
+        position: relative;
+        transition: all 0.2s ease;
+    }
+    
+    .nav-link {
+        color: #333 !important;
+        font-weight: 500;
+        white-space: nowrap;
+    }
+    
+    .nav-link:hover {
+        color: #000 !important;
+        background-color: rgba(255,255,255,0.2);
+    }
+    
+    .navbar-toggler {
+        position: absolute;
+        left: 15px;
+        top: 50%;
+        transform: translateY(-50%);
+        border: none;
+        background-color: transparent;
+        color: #333;
+        font-size: 1.2rem;
+        z-index: 10;
+    }
+    
+    /* Icons styling */
+    .icon-link {
+        position: relative;
+        color: #333;
+        font-size: 1.1rem;
+        padding: 5px;
+        transition: all 0.2s ease;
+    }
+    
+    .icon-link:hover {
+        color: #000;
+    }
+    
+    .badge {
+        font-size: 0.6rem;
+        font-weight: 400;
+        width: 18px;
+        height: 18px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    /* Form styling */
+    .search-form {
+        width: 100%;
+    }
+    
+    .search-form .form-control {
+        border-color: #ffc107;
+    }
+    
+    .search-form .form-control:focus {
+        box-shadow: 0 0 0 0.25rem rgba(255, 193, 7, 0.25);
+    }
+    
+    /* Mobile menu styling */
+    .offcanvas {
+        max-width: 280px;
+    }
+    
+    .offcanvas-header {
+        padding: 0.75rem 1rem;
+    }
+    
+    .list-group-item-action:hover {
+        background-color: #fff9e6;
+    }
+    
+    /* Responsive adjustments */
+    @media (max-width: 576px) {
+        .search-form .form-control {
+            height: 32px;
+            font-size: 0.875rem;
+        }
+        .search-form .btn {
+            height: 32px;
+            padding: 0.25rem 0.5rem;
+        }
+        .icon-link {
+            font-size: 1rem;
+        }
+        .navbar-toggler {
+            font-size: 1rem;
+            left: 10px;
+        }
+    }
+    
+    @media (min-width: 992px) {
+        .main-navigation {
+            height: 100%;
+        }
+        .nav-justified > .nav-item {
+            flex: 1;
+            text-align: center;
+        }
+        .nav-item:not(:last-child) {
+            border-right: 1px solid rgba(0,0,0,0.1);
+        }
+        .nav-item:hover::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background-color: #fff;
+        }
+    }

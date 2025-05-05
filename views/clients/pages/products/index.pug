@@ -1,8 +1,8 @@
 extends ../../layouts/default.pug
 include ../../mixins/grid-products-category.pug
+include ../../mixins/section-page.pug
 block main
-    section 
-        p.page-title Trang chủ / #{pageTitle}
+    +section-page(pageTitle)
     .body 
         .main 
             .container
