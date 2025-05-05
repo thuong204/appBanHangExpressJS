@@ -1,3 +1,44 @@
 mixin section-page(pageTitle)
-    section(pageTitle)
-        p Trang chủ / #{pageTitle}
+  style.
+    .breadcrumb-container {
+      border-bottom: 1px solid #e9ecef;
+    }
+    
+    .breadcrumb {
+      padding: 0.5rem 0;
+      background: transparent;
+      justify-content: flex-start;
+      text-align: left;
+    }
+    
+    .breadcrumb-item + .breadcrumb-item::before {
+      content: "›";
+      font-size: 1.2rem;
+      line-height: 1;
+      color: #6c757d;
+    }
+    
+    .breadcrumb-item a {
+      color: #6c757d;
+      transition: color 0.2s ease;
+    }
+    
+    .breadcrumb-item a:hover {
+      color: #ffc107;
+    }
+    
+    .breadcrumb-item.active {
+      color: #343a40;
+      font-weight: 500;
+    }
+
+  .breadcrumb-container.bg-light.py-2.mb-4
+    .container
+      nav.text-start(aria-label="breadcrumb")
+        ol.breadcrumb.m-0.align-items-center.justify-content-start
+          li.breadcrumb-item
+            a.text-decoration-none(href="/")
+              i.fas.fa-home.me-1
+              span Trang chủ
+          if pageTitle
+            li.breadcrumb-item.active.text-dark(aria-current="page") #{pageTitle}

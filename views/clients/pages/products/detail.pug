@@ -1,11 +1,13 @@
 extends ../../layouts/default.pug
 include ../../mixins/alert.pug
 include ../../mixins/grid-products-category.pug
+include ../../mixins/section-page.pug
 
 block main
     +alert-success(3000)
     section.detail 
-        p.page-title Trang chủ / #{pageTitle}
+        +section-page(product.title) 
+    .container
 
         .product-name 
             h1 #{product.title}
