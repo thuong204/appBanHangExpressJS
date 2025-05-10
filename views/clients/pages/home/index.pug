@@ -1,9 +1,11 @@
 extends ../../layouts/default.pug
 include ../../mixins/grid-products.pug
+
 block main 
-    div(class="slider")
+    // Hero Slider Section
+    section.hero-slider.mb-4
         #carouselExampleAutoplaying.carousel.slide(data-bs-ride='carousel')
-            .carousel-inner
+            .carousel-inner.rounded-4.overflow-hidden.shadow-sm
                 .carousel-item.active
                     img.d-block.w-100(src='https://res.cloudinary.com/dwk6tmsmh/image/upload/v1726925743/bsquy6vj7ktij4aheyzw.jpg' alt='...')
                 .carousel-item
@@ -15,18 +17,42 @@ block main
             button.carousel-control-next(type='button' data-bs-target='#carouselExampleAutoplaying' data-bs-slide='next')
                 span.carousel-control-next-icon(aria-hidden='true')
                 span.visually-hidden Next
-    .container
-        section 
-            div(class="text-bold text-title") Sản phẩm giảm giá
-            .grid-products.row.mt-3
-                +grid-products(productDiscount)
-        section 
-            div(class="text-bold text-title") Sản phẩm nổi bật
-            .grid-products.row.mt-3
-                +grid-products(productsFeatured)
-        section
-            div(class="text-bold text-title") Sản phẩm mới
-            .grid-products.row.mt-3
-                +grid-products(productsNew)
 
+    // Main Content
+    .container
+        // Discounted Products Section
+        section.product-section.mb-5
+            .section-header.d-flex.align-items-center.justify-content-between.mb-4
+                h2.section-title.mb-0
+                    i.fas.fa-tags.text-warning.me-2
+                    | Sản phẩm giảm giá
+                a.btn.btn-outline-warning.btn-sm(href="/products/discount")
+                    | Xem tất cả
+                    i.fas.fa-chevron-right.ms-2
+            .grid-products.row.g-4
+                +grid-products(productDiscount)
+
+        // Featured Products Section
+        section.product-section.mb-5
+            .section-header.d-flex.align-items-center.justify-content-between.mb-4
+                h2.section-title.mb-0
+                    i.fas.fa-star.text-warning.me-2
+                    | Sản phẩm nổi bật
+                a.btn.btn-outline-warning.btn-sm(href="/products/featured")
+                    | Xem tất cả
+                    i.fas.fa-chevron-right.ms-2
+            .grid-products.row.g-4
+                +grid-products(productsFeatured)
+
+        // New Products Section
+        section.product-section.mb-5
+            .section-header.d-flex.align-items-center.justify-content-between.mb-4
+                h2.section-title.mb-0
+                    i.fas.fa-bolt.text-warning.me-2
+                    | Sản phẩm mới
+                a.btn.btn-outline-warning.btn-sm(href="/products/new")
+                    | Xem tất cả
+                    i.fas.fa-chevron-right.ms-2
+            .grid-products.row.g-4
+                +grid-products(productsNew)
 

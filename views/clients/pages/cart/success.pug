@@ -1,70 +1,102 @@
 extends ../../layouts/default.pug
 include ../../mixins/section-page.pug
 include ../../mixins/alert.pug
+
 block main     
     +section-page(pageTitle)
-    .body 
+    .order-success-container
         .container 
-            
-            h3.text-success Đặt hàng thành công
-         
-            div(class="alert alert-success")
-                | Chúc mừng bạn đã đặt hàng thành công! Chúng tôi sẽ xử lí đơn hàng trong thời gian sớm nhất.
-            if(order)
-                .row 
-                    .col-12
-                        h4.mb-3.text-danger Thông tin cá nhân 
-                        table(class="table table-bodered")
-                            tbody 
-                                tr 
-                                    th Họ tên 
-                                    td #{order.userInfo.fullName}
+            .success-header
+                i.fas.fa-check-circle.success-icon
+                h3.success-title Đặt hàng thành công
+                .success-message
+                    | Chúc mừng bạn đã đặt hàng thành công! Chúng tôi sẽ xử lí đơn hàng trong thời gian sớm nhất.
 
-                                tr 
-                                    th Số điện thoại 
-                                    td #{order.userInfo.phone}
-                                tr 
-                                    th Địa chỉ
-                                    td #{order.userInfo.address}
-                                tr 
-                                    th  Ngày đặt hàng 
-                                    td #{order.date}
-                .row 
-                    .col-12
-                        h4.mb-3.text-danger Thông tin đơn hàng
-                        table(class="table table-bodered table-order")
-                            thead 
-                                tr 
-                                    th STT 
-                                    th Ảnh   
-                                    th Tên 
-                                    th Màu sắc
-                                    th Giá 
-                                    th Số lượng
-                                    th Tông tiền
-                            tbody 
-                                each item, index  in order.products
-                                    tr 
-                                        td #{index+1}
-                                        td 
-                                            img(
-                                                src= item.productInfo.thumbnail 
-                                                width="80px")
-                                        td #{item.productInfo.title}  
-                                        td #{item.color}  
-                                        td #{item.priceInter}đ
-                                        td #{item.quantity}
-                                        td #{item.totalPriceInter}đ
-                        if(order.products.length>0)
-                            if(order.note)
-                                p Ghi chú :  #{order.note}
-                            if(order.payments == "paymentdelivery")
-                                h4(class="text-end") Tổng đơn hàng #{order.totalPriceInter}đ
-                                h5(class="text-end") Thanh toán khi nhận hàng
-                                h4(class="text-end text-danger") Tổng tiền thanh toán: #{order.totalPriceInter}đ
-                            else 
-                                h4(class="text-end") Tổng đơn hàng #{order.totalPriceInter}đ
-                                h5(class="text-end") Đã thanh toán khi đặt hàng
-                                h4(class="text-end text-danger") Tổng tiền thanh toán: 0đ
+            if(order)
+                .order-details
+                    .order-section
+                        h4.section-title
+                            i.fas.fa-user
+                            | Thông tin cá nhân
+                        .info-card
+                            .info-row
+                                .info-label Họ tên
+                                .info-value #{order.userInfo.fullName}
+                            .info-row
+                                .info-label Số điện thoại
+                                .info-value #{order.userInfo.phone}
+                            .info-row
+                                .info-label Địa chỉ
+                                .info-value #{order.userInfo.address}
+                            .info-row
+                                .info-label Ngày đặt hàng
+                                .info-value #{order.date}
+
+                    .order-section
+                        h4.section-title
+                            i.fas.fa-shopping-bag
+                            | Thông tin đơn hàng
+                        .order-table-wrapper
+                            table.order-table
+                                thead
+                                    tr
+                                        th STT
+                                        th Ảnh
+                                        th Tên
+                                        th Màu sắc
+                                        th Giá
+                                        th Số lượng
+                                        th Tổng tiền
+                                tbody
+                                    each item, index in order.products
+                                        tr
+                                            td #{index+1}
+                                            td
+                                                img.product-image-success(
+                                                    src=item.productInfo.thumbnail
+                                                    alt=item.productInfo.title
+                                                )
+                                            td #{item.productInfo.title}
+                                            td #{item.color}
+                                            td #{item.priceInter}đ
+                                            td #{item.quantity}
+                                            td #{item.totalPriceInter}đ
+
+                        if(order.products.length > 0)
+                            .order-summary
+                                if(order.note)
+                                    .note-section
+                                        i.fas.fa-sticky-note
+                                        span Ghi chú: #{order.note}
+
+                                .payment-summary
+                                    if(order.payments == "paymentdelivery")
+                                        .summary-row
+                                            span Tổng đơn hàng
+                                            span #{order.totalPriceInter}đ
+                                        .summary-row
+                                            span Phương thức thanh toán
+                                            span Thanh toán khi nhận hàng
+                                        .summary-row.total
+                                            span Tổng tiền thanh toán
+                                            span #{order.totalPriceInter}đ
+                                    else
+                                        .summary-row
+                                            span Tổng đơn hàng
+                                            span #{order.totalPriceInter}đ
+                                        .summary-row
+                                            span Phương thức thanh toán
+                                            span Đã thanh toán khi đặt hàng
+                                        .summary-row.total
+                                            span Tổng tiền thanh toán
+                                            span 0đ
+
+                .action-buttons
+                    a.btn-continue-shopping(href="/products")
+                        i.fas.fa-arrow-left
+                        | Tiếp tục mua sắm
+                    a.btn-view-orders(href="/account/orders")
+                        i.fas.fa-list
+                        | Xem đơn hàng của tôi
 
 

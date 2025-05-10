@@ -1,38 +1,62 @@
 mixin grid-products(products)
     each item in products
-        .col-12.mb-3.col-12.col-lg-3.col-md-6
-            .single-item.text-start.single-item-product.single-item-height
-                .single-item-discount
-                    if(item.discountPercentage!=0)
-                        span.discount -#{item.discountPercentage}%
-                .single-item-header
+        .col-12.col-lg-3.col-md-6.mb-4
+            .product-card
+                // Discount Badge
+                if(item.discountPercentage != 0)
+                    .product-badge
+                        span.badge-text -#{item.discountPercentage}%
+                
+                // Product Image
+                .product-image
                     a(href=`/products/detail/${item.slug}`)
-                        img(src=item.thumbnail)
-                .single-item-body
-                    .single-item-title.mb-2
-                        a(class="text-decoration-none" href=`products/detail/${item.slug}`) #{item.title}
-                    .single-item-compare
-                        ul.list-item-feature
-                            li Màn hình 6.67
-                            li HD+
-                         
-                    .single-item-storage
-                        ul.list-item-storage 
-                            li.btn 256GB
-                            li.btn 512GB
-                            li.btn 1TB
-                    .single-item-price
-                        span.price-payment  #{item.priceNew}đ
-                        span.price  #{item.priceInter}đ  
-                    .star-rating
-                        i.fas.fa-star.text-warning
-                        i.fas.fa-star.text-warning
-                        i.fas.fa-star.text-warning
-                        i.fas.fa-star.text-warning
-                        i.fas.fa-star.text-warning
-                        i.far.fa-heart.text-danger.heart-icon
-
-
-                .clearfix
-
+                        img.img-fluid(src=item.thumbnail alt=item.title)
+                    // Quick Actions
+                    .product-actions
+                        button.btn-action.wishlist-btn(type="button" title="Thêm vào yêu thích")
+                            i.far.fa-heart
+                        button.btn-action.quick-view-btn(type="button" title="Xem nhanh")
+                            i.fas.fa-eye
+                
+                // Product Info
+                .product-info
+                    // Title
+                    .product-title
+                        a(href=`/products/detail/${item.slug}`) #{item.title}
+                    
+                    // Specifications
+                    .product-specs
+                        ul.specs-list
+                            li
+                                i.fas.fa-mobile-alt.me-2
+                                | Màn hình 6.67" HD+
+                    
+                    // Storage Options
+                    .product-storage
+                        .storage-title Dung lượng:
+                        .storage-options
+                            button.storage-btn.active 256GB
+                            button.storage-btn 512GB
+                            button.storage-btn 1TB
+                    
+                    // Price
+                    .product-price
+                        if(item.discountPercentage != 0)
+                            .price-new #{item.priceNew}đ
+                            .price-old #{item.priceInter}đ
+                        else
+                            .price-new #{item.priceInter}đ
+                    
+                    // Rating
+                    .product-rating
+                        .stars
+                            - for (let i = 0; i < 5; i++)
+                                i.fas.fa-star
+                        .rating-count (12)
+                    
+                    // Add to Cart Button
+                    .product-cta
+                        button.btn-add-cart(type="button")
+                            i.fas.fa-shopping-cart.me-2
+                            | Thêm vào giỏ
 
