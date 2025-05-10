@@ -9,7 +9,7 @@ block main
         .container 
             .row 
                 .col-7
-                    h3 Thông tin đặt hàng
+                    h3(class="text-warning") Thông tin đặt hàng
                     form(
                         action="order"
                         method="POST"
@@ -70,10 +70,10 @@ block main
                         div(class="mb-3")
                             input(name="dataOrder" value=cart.products type="hidden")
                         div(class="mb-3")
-                            button(type="submit" class="btn btn-danger mb-3" button-order) Đặt hàng
+                            button(type="submit" class="btn btn-warning mb-3" button-order) Đặt hàng
                 .col-5
                     .container
-                        table.table.table-hover.fs-4.text-uppercase.table-danger.table-border.custom-table
+                        table.table.table-hover.fs-4.text-uppercase.table-warning.table-border.custom-table
                             thead
                                 tr 
                                     th Đơn hàng của bạn
@@ -89,7 +89,7 @@ block main
                                             tbody 
                                             each item in cart.products
                                                 tr 
-                                                    td.text-danger #{item.productInfo.title} 
+                                                    td.text-warning #{item.productInfo.title} 
                                                         span(class="fw-bold") x#{item.quantity}
                                                         if(item.color)
                                                             span (#{item.color}) 
@@ -103,7 +103,7 @@ block main
                                     td.text-end.fs-6 Miễn phí
                                 tr 
                                     th Tổng tiền thanh toán: 
-                                    td.text-end.text-danger.text-uppercase.fw-bold.fs-5 #{cart.totalInter}đ
+                                    td.text-end.text-warning.text-uppercase.fw-bold.fs-5 #{cart.totalInter}đ
                     div.modal.fade.container-qr(id='qrModal' tabindex='-1' aria-labelledby='qrModalLabel' aria-hidden='true' data-order=qr)
                         div.modal-dialog
                             div.modal-content

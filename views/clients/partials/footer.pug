@@ -1,41 +1,312 @@
-#footer.bg-footer.py-5
-    .container
-        .row.g-4
-            .col-md-5
-                .widget
-                    h4.widget-title.text-uppercase Công ty TNHH Vô Thường
-                    p.footer-text Mã Số Thuế: 01064848679
-                    p.footer-text Địa chỉ: Phường Hòa Quý - Quận Ngũ Hành Sơn - TP Đà Nẵng.
+footer.footer-modern
+    // Newsletter Section
+    .newsletter-section.py-2
+        .container
+            .row.align-items-center
+                .col-lg-6.mb-2.mb-lg-0
+                    .d-flex.align-items-center
+                        i.fas.fa-paper-plane.fa-lg.text-warning.me-2
+                        div
+                            h5.mb-0.fw-bold.text-white Đăng ký nhận thông tin
+                            p.mb-0.text-white-50.small Nhận thông tin về sản phẩm mới và khuyến mãi đặc biệt
+                .col-lg-6
+                    form.d-flex
+                        input.form-control.rounded-start-pill(type="email" placeholder="Email của bạn")
+                        button.btn.btn-warning.rounded-end-pill.px-2(type="submit") Đăng ký
 
-                .widget
-                    h4.widget-title.text-uppercase(style="color: red; font-size: 20px;") Tham gia bảng tin
-                    form(action="#" method="post")
-                        .mb-3
-                            input.form-control(type="email" name="your_email" style="width:80%" placeholder="Nhập email của bạn")
-                        button.btn.btn-success(type="submit") Đăng kí
+    // Main Footer Content
+    .footer-content.py-3
+        .container
+            .row.g-3
+                // Company Info
+                .col-lg-4.col-md-6
+                    .footer-brand.mb-3
+                        h4.fw-bold.text-white.mb-2 Công ty TNHH Vô Thường
+                        p.text-white-50.mb-3.small Chuyên cung cấp các sản phẩm công nghệ chất lượng cao với giá cả phải chăng.
+                    
+                    .company-details.mb-3
+                        .detail-item.d-flex.align-items-center.mb-2
+                            .icon-box.bg-warning.bg-opacity-10.rounded-circle.p-2.me-2
+                                i.fas.fa-file-invoice.text-warning
+                            span.text-white-50.small Mã Số Thuế: 01064848679
+                        
+                        .detail-item.d-flex.align-items-center.mb-2
+                            .icon-box.bg-warning.bg-opacity-10.rounded-circle.p-2.me-2
+                                i.fas.fa-map-marker-alt.text-warning
+                            span.text-white-50.small Phường Hòa Quý - Quận Ngũ Hành Sơn - TP Đà Nẵng
+                    
+                    .social-links
+                        h6.text-white.mb-2 Kết nối với chúng tôi
+                        .d-flex.gap-2
+                            a.social-btn(href="#" title="Facebook")
+                                i.fab.fa-facebook-f
+                            a.social-btn(href="#" title="Instagram")
+                                i.fab.fa-instagram
+                            a.social-btn(href="#" title="Twitter")
+                                i.fab.fa-twitter
+                            a.social-btn(href="#" title="Youtube")
+                                i.fab.fa-youtube
+                            a.social-btn(href="#" title="TikTok")
+                                i.fab.fa-tiktok
 
-            .col-md-4
-                .widget
-                    h4.widget-title.text-uppercase Chính sách khách hàng
-                    ul.list-unstyled.footer-list
-                        li: a(href="blog_fullwidth_2col.html") Chính sách khách hàng thân thiết
-                        li: a(href="blog_fullwidth_2col.html") Chính sách đổi trả
-                        li: a(href="blog_fullwidth_2col.html") Chính sách bảo hành
-                        li: a(href="blog_fullwidth_2col.html") Chính sách bảo mật
-                        li: a(href="blog_fullwidth_2col.html") Câu hỏi thường gặp
-                        li: a(href="blog_fullwidth_2col.html") Hướng dẫn mua hàng online
-                        li: a(href="blog_fullwidth_2col.html") Hướng dẫn kiểm tra hạng thẻ thành viên
+                // Quick Links
+                .col-lg-2.col-md-6
+                    .footer-links
+                        h5.text-white.mb-3 Về chúng tôi
+                        ul.list-unstyled
+                            li.mb-2: a(href="#") Giới thiệu
+                            li.mb-2: a(href="#") Tuyển dụng
+                            li.mb-2: a(href="#") Tin tức
+                            li.mb-2: a(href="#") Liên hệ
+                            li.mb-2: a(href="#") Hệ thống cửa hàng
 
-            .col-md-3
-                .widget
-                    h4.widget-title.text-uppercase Thông tin cửa hàng
-                    .contact-info
-                        p.footer-text Phường Hòa Quý - Quận Ngũ Hành Sơn - TP Đà Nẵng
-                        p.footer-text Triệu Sơn - Triệu Phong - Quảng Trị
-                        p.footer-text Phường Nam Hải - Quận 1 - Hồ Chí Minh
+                // Customer Service
+                .col-lg-3.col-md-6
+                    .footer-links
+                        h5.text-white.mb-3 Chính sách
+                        ul.list-unstyled
+                            li.mb-2: a(href="#") Chính sách khách hàng thân thiết
+                            li.mb-2: a(href="#") Chính sách đổi trả
+                            li.mb-2: a(href="#") Chính sách bảo hành
+                            li.mb-2: a(href="#") Chính sách bảo mật
+                            li.mb-2: a(href="#") Câu hỏi thường gặp
 
-.copyright.bg-dark.pt-3.text-center.text-md-start
-    .container
-        .row.align-items-center
-            .col-md-6
-                p.text-white Privacy policy. (&copy;) 2024
+                // Contact Info
+                .col-lg-3.col-md-6
+                    .footer-links
+                        h5.text-white.mb-3 Liên hệ
+                        .contact-info
+                            .contact-item.d-flex.align-items-center.mb-2
+                                .icon-box.bg-warning.bg-opacity-10.rounded-circle.p-2.me-2
+                                    i.fas.fa-phone.text-warning
+                                div
+                                    p.mb-0.text-white-50.small Hotline
+                                    p.mb-0.text-white.fw-bold 1900 1234
+                            
+                            .contact-item.d-flex.align-items-center.mb-2
+                                .icon-box.bg-warning.bg-opacity-10.rounded-circle.p-2.me-2
+                                    i.fas.fa-envelope.text-warning
+                                div
+                                    p.mb-0.text-white-50.small Email
+                                    p.mb-0.text-white.fw-bold support@vothuong.com
+                            
+                            .contact-item.d-flex.align-items-center.mb-2
+                                .icon-box.bg-warning.bg-opacity-10.rounded-circle.p-2.me-2
+                                    i.fas.fa-clock.text-warning
+                                div
+                                    p.mb-0.text-white-50.small Giờ làm việc
+                                    p.mb-0.text-white.fw-bold 8:00 - 22:00
+
+    // Copyright & Payment
+    .footer-bottom
+        .container
+            .row.align-items-center.py-2
+                .col-md-6.text-center.text-md-start.mb-2.mb-md-0
+                    p.text-white-50.mb-0.small &copy; 2024 Công ty TNHH Vô Thường. Tất cả quyền được bảo lưu.
+                .col-md-6.text-center.text-md-end
+                    .payment-methods
+                        span.text-white-50.me-2.small Thanh toán:
+                        img.me-2(src="/images/payment/visa.png" alt="Visa" height="20")
+                        img.me-2(src="/images/payment/mastercard.png" alt="Mastercard" height="20")
+                        img.me-2(src="/images/payment/momo.png" alt="Momo" height="20")
+                        img.me-2(src="/images/payment/zalopay.png" alt="ZaloPay" height="20")
+                        img(src="/images/payment/vnpay.png" alt="VNPay" height="20")
+
+style.
+    /* Modern Footer Styling */
+    .footer-modern {
+        background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+        color: #fff;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .footer-modern::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: url('/images/pattern.png');
+        opacity: 0.03;
+        pointer-events: none;
+    }
+    
+    /* Newsletter Section */
+    .newsletter-section {
+        background: linear-gradient(90deg, #ffc107 0%, #ff9800 100%);
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .newsletter-section::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        right: 0;
+        width: 300px;
+        height: 100%;
+        background: url('/images/pattern.png');
+        opacity: 0.1;
+        transform: rotate(180deg);
+    }
+    
+    .newsletter-section input {
+        border: none;
+        padding: 0.5rem 1rem;
+        font-size: 0.9rem;
+        height: auto;
+    }
+    
+    .newsletter-section button {
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        padding: 0.5rem 0.75rem;
+        font-size: 0.9rem;
+        white-space: nowrap;
+        min-width: 90px;
+    }
+    
+    /* Footer Content */
+    .footer-content {
+        position: relative;
+        z-index: 1;
+    }
+    
+    .footer-brand h4 {
+        font-size: 1.2rem;
+        position: relative;
+        display: inline-block;
+    }
+    
+    .footer-brand h4::after {
+        content: '';
+        position: absolute;
+        left: 0;
+        bottom: -5px;
+        width: 40px;
+        height: 2px;
+        background: #ffc107;
+        border-radius: 2px;
+    }
+    
+    .icon-box {
+        width: 32px;
+        height: 32px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    .social-btn {
+        width: 32px;
+        height: 32px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: rgba(255, 255, 255, 0.1);
+        color: #fff;
+        border-radius: 50%;
+        transition: all 0.3s ease;
+    }
+    
+    .social-btn:hover {
+        background: #ffc107;
+        color: #000;
+        transform: translateY(-3px);
+    }
+    
+    .footer-links h5 {
+        font-size: 1.1rem;
+        position: relative;
+        padding-bottom: 10px;
+    }
+    
+    .footer-links h5::after {
+        content: '';
+        position: absolute;
+        left: 0;
+        bottom: 0;
+        width: 25px;
+        height: 2px;
+        background: #ffc107;
+    }
+    
+    .footer-links ul li a {
+        color: rgba(255, 255, 255, 0.7);
+        text-decoration: none;
+        transition: all 0.3s ease;
+        display: block;
+        padding: 3px 0;
+        font-size: 0.9rem;
+    }
+    
+    .footer-links ul li a:hover {
+        color: #ffc107;
+        transform: translateX(5px);
+    }
+    
+    .contact-item p {
+        font-size: 0.85rem;
+    }
+    
+    /* Footer Bottom */
+    .footer-bottom {
+        background: rgba(0, 0, 0, 0.2);
+        border-top: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    
+    .payment-methods img {
+        filter: brightness(0) invert(1);
+        opacity: 0.7;
+        transition: opacity 0.3s ease;
+    }
+    
+    .payment-methods img:hover {
+        opacity: 1;
+    }
+    
+    /* Responsive Adjustments */
+    @media (max-width: 991px) {
+        .footer-brand {
+            text-align: center;
+        }
+        
+        .footer-brand h4::after {
+            left: 50%;
+            transform: translateX(-50%);
+        }
+        
+        .social-links {
+            justify-content: center;
+        }
+        
+        .footer-links {
+            text-align: center;
+        }
+        
+        .footer-links h5::after {
+            left: 50%;
+            transform: translateX(-50%);
+        }
+        
+        .contact-info {
+            text-align: center;
+        }
+        
+        .contact-item {
+            justify-content: center;
+        }
+    }
+    
+    @media (max-width: 768px) {
+        .newsletter-section {
+            text-align: center;
+        }
+        
+        .newsletter-section .d-flex {
+            justify-content: center;
+        }
+    }

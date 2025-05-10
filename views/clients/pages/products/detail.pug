@@ -5,97 +5,154 @@ include ../../mixins/section-page.pug
 
 block main
     +alert-success(3000)
-    section.detail 
-        +section-page(product.title) 
-    .container
+    
+    // Breadcrumb
+    .container.mt-3
+       +section-page(pageTitle)
+        
 
-        .product-name 
-            h1 #{product.title}
-        .main-products
-            #content
-                .row
-                    .col-lg-7.col-md-6.col-sm-12.bg-light.product-info
-                        .card 
-                            .card-header.product-avatar
-                                .image-container
-                                    button.btn.btn-prev <i class="fas fa-chevron-left"></i>
-                                    button.btn.btn-next <i class="fas fa-chevron-right"></i>
-                                    img#main-thumbnail(src=`${product.thumbnail}`, alt='', style="width:60%")
-         
-                                ul.list-product-avatar
-                                    li.item-product-avatar.item-first(data-image= product.listImage)
-                                        img.list-img-detail(src=product.thumbnail alt="Hình ảnh" style="cursor:pointer")
-                                        each item in product.listImage 
-                                            img.list-img-detail(src=item alt="Hình ảnh" style="cursor:pointer")
+    // Product Detail Section
+    section.product-detail.py-4
+        .container
+            .row.g-4
+                // Product Gallery
+                .col-lg-7.col-md-6
+                    .product-gallery
+                        .main-image-wrapper
+                            .main-image
+                                img#main-thumbnail.img-fluid.rounded-3(src=product.thumbnail alt=product.title)
+                            .image-controls
+                                button.btn-control.prev(type="button")
+                                    i.fas.fa-chevron-left
+                                button.btn-control.next(type="button")
+                                    i.fas.fa-chevron-right
+                        
+                        .thumbnail-list
+                            .thumbnail-item.active
+                                img.thumbnail-img(src=product.thumbnail alt="Thumbnail")
+                            each image in product.listImage
+                                .thumbnail-item
+                                    img.thumbnail-img(src=image alt="Thumbnail")
 
-                        .card.mt-3
-                            .card-body
-                                .card-title.text-title MÔ TẢ SẢN PHẨM
-                                .card-text.text-description.card-hide !{product.content}
-                                button.btn.btn-link.mt-2#show-more Xem thêm
-
-
-                    .col-lg-5.col-md-6.col-sm-12.bg-light.product-description
-                        .card
-                            .card-body
-                                .single-item-body                
-                                    .single-item-detail-title(style='font-size: 30px;font-weight:bold' data-title= product.title data-slug=product.slug) #{product.title}
-                                    .single-item-price.mt-3
-                                        .price-title Giá chính thức: 
-                                        span.price-payment #{product.priceInter}đ
-                                        span.price-margin #{product.priceNew}đ
-                                .single-item-compare
-
-                                    ul.list-item-feature
-                                        if(product.screen)
-                                            li #{product.screen}
-                                        if(product.screenType)
-                                            li #{product.screenType}
-
-                                .single-item-storage
-                                    if productList && productList.length > 0
-                                        ul.list-item-storage 
-                                            each item in productList
-                                                li.btn(data-storage = item.storage) 
-                                                    a.text-decoration-none.text-dark(href=item.slug) #{item.storage}
-                                .single-item-color
-                                    if product.variations
-                                        ul.list-item-color
-                                            each item in product.variations
-                                                li.btn(data-color = item.color class="form-control")  #{item.color}
-                                           
-                                                   
-                                .single-item-options
-                                    form(action=`/cart/add/${product.id}` method="POST")
-                                        label(for="quantity") Số lượng
-                                        input(
-                                            class="form-control"
-                                            type="number"
-                                            name="quantity"
-                                            value="1"
-                                            min="1"
-                                            max=product.stock
+                // Product Info
+                .col-lg-5.col-md-6
+                    .product-info
+                        // Title and Price
+                        .product-header.mb-4
+                            h1.product-title #{product.title}
+                            .product-price.mt-3
+                                if product.priceNew
+                                    .price-new #{product.priceNew}đ
+                                    .price-old #{product.priceInter}đ
+                                else
+                                    .price-new #{product.priceInter}đ
+                        
+                        // Specifications
+                        .product-specs.mb-4
+                            if product.screen || product.screenType
+                                .specs-group
+                                    h5.specs-title Thông số kỹ thuật
+                                    ul.specs-list
+                                        if product.screen
+                                            li
+                                                i.fas.fa-mobile-alt.me-2
+                                                | #{product.screen}
+                                        if product.screenType
+                                            li
+                                                i.fas.fa-desktop.me-2
+                                                | #{product.screenType}
+                        
+                        // Storage Options
+                        if productList && productList.length > 0
+                            .storage-options.mb-4
+                                h5.storage-title Dung lượng
+                                .storage-buttons
+                                    each item in productList
+                                        a.storage-btn(
+                                            href=item.slug
+                                            class=item.storage === product.storage ? 'active' : ''
+                                        ) #{item.storage}
+                        
+                        // Color Options
+                        if product.variations
+                            .color-options.mb-4
+                                h5.color-title Màu sắc
+                                .color-buttons
+                                    each item in product.variations
+                                        button.color-btn(
+                                            data-color=item.color
+                                            style=`background-color: ${item.color}`
+                                            class=item.color === product.color ? 'active' : ''
                                         )
-                                        input(type="hidden" name="color" id="color-input" class="form-control")
-                                        button.btn.btn-success.btn-addtocart.mt-3 Thêm vào giỏ hàng
-                                        button.btn.btn-danger.btn-buynow.mt-3.ms-3 Mua ngay 
+                        
+                        // Add to Cart Form
+                        form.add-to-cart-form(action=`/cart/add/${product.id}` method="POST")
+                            .quantity-selector.mb-4
+                                label.form-label(for="quantity") Số lượng
+                                .quantity-input-group
+                                    button.quantity-btn.decrease(type="button") -
+                                    input#quantity.form-control(
+                                        type="number"
+                                        name="quantity"
+                                        value="1"
+                                        min="1"
+                                        max=product.stock
+                                    )
+                                    button.quantity-btn.increase(type="button") +
+                            
+                            input(type="hidden" name="color" id="color-input")
+                            
+                            .action-buttons
+                                button.btn.btn-warning.btn-lg.btn-add-cart(type="submit")
+                                    i.fas.fa-shopping-cart.me-2
+                                    | Thêm vào giỏ
+                                button.btn.btn-danger.btn-lg.btn-buy-now(type="button")
+                                    i.fas.fa-bolt.me-2
+                                    | Mua ngay
 
-                                .clearfix
+    // Product Description
+    section.product-description.py-4
+        .container
+            .row
+                .col-12
+                    .description-tabs
+                        ul.nav.nav-tabs#productTabs(role="tablist")
+                            li.nav-item
+                                a.nav-link.active#description-tab(
+                                    data-bs-toggle="tab"
+                                    href="#description"
+                                    role="tab"
+                                ) Mô tả sản phẩm
+                            li.nav-item
+                                a.nav-link#features-tab(
+                                    data-bs-toggle="tab"
+                                    href="#features"
+                                    role="tab"
+                                ) Đặc điểm nổi bật
+                            li.nav-item
+                                a.nav-link#specs-tab(
+                                    data-bs-toggle="tab"
+                                    href="#specs"
+                                    role="tab"
+                                ) Thông số kỹ thuật
+                        
+                        .tab-content#productTabsContent
+                            .tab-pane.fade.show.active#description(role="tabpanel")
+                                .content-wrapper !{product.content}
+                            
+                            .tab-pane.fade#features(role="tabpanel")
+                                .content-wrapper !{product.description}
+                            
+                            .tab-pane.fade#specs(role="tabpanel")
+                                .content-wrapper
+                                    // Add technical specifications here
 
-                        .card.card-info 
-                            .card-body
-                                .card-title.text-title THÔNG TIN CHI TIẾT
-                        .card  
-                            .card-body.card-description
-                                .card-title.text-success.text-title ĐẶC ĐIỂM NỔI BẬT
-                                .card-text.text-description !{product.description}
-
-                .space50
-                    | &nbsp;
-
-                .beta-products-list
-                    h4 Sản phẩm tương tự
-                    .row.mt-4
-                        +grid-products(productstRelated)
-
+    // Related Products
+    section.related-products.py-4
+        .container
+            h2.section-title.mb-4
+                i.fas.fa-sync-alt.me-2
+                | Sản phẩm tương tự
+            .row.g-4
+                +grid-products(productstRelated)
 

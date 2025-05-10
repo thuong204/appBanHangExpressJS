@@ -2,45 +2,76 @@ extends ../../layouts/default.pug
 include ../../mixins/grid-products.pug
 include ../../mixins/section-page.pug
 include ../../mixins/alert.pug
+
 block main  
     +alert-success(3000)
     +section-page(pageTitle)
-    .body 
-        .main 
-            .container 
-                section.order-history
-                    h2.text-history-order Lịch sử mua hàng
-                    .order-list
-                        each order in orderHistory
-                            each item in order.products
-                                .order-card
-                                    .order-header
-                                        .star-rating
-                                            i.fas.fa-star.text-warning
-                                            i.fas.fa-star.text-warning
-                                            i.fas.fa-star.text-warning
-                                            i.fas.fa-star.text-warning
-                                            i.fas.fa-star.text-warning
-                                        span.text-success.text-delivery Giao hàng thành công&nbsp;
-                                    .order-content
-                                        .product-info.d-flex
-                                            a.text-decoration-none(href=`/products/detail/${item.info.slug}`)
-                                                img(src=item.info.thumbnail alt="Product Image" class="product-image")
-                                            .product-details
-                                                if(item.info.title)
-                                                    a.text-decoration-none.product-title(href=`/products/detail/${item.info.slug}`)  #{item.info.title}
-                                                .product-category.text-decoration-none Phân loại hàng: #{item.category.title}
-                                                .product-quantity.fw-bold x#{item.quantity}
-                                                .d-flex.flex-item
-                                                    .product-warranty
-                                                        small.text-success.pay-free-15.border.border-success Trả hàng miển phí 15 ngày
-                                                    .product-price-info 
-                                                        span.product-price #{item.priceOldInter}đ
-                                                        span.product-price-payment.text-danger.fw-bold #{item.priceInter}đ
-                                    .order-footer
-                                        .actions
-                                            button.btn.btn-success.btn-review Đánh giá
-                                            button.btn.btn-danger.btn-reorder Mua lại
-                                            a.btn.btn-primary.btn-reorder(href=`/cart/checkout/success/${order.id}`) Chi tiết
-                                        .total-price
-                                            div.text-danger Thành tiền: #{item.totalPriceInter}đ
+    .order-history-container
+        .container 
+            .order-history-header
+                h2.page-title
+                    i.fas.fa-history
+                    | Lịch sử mua hàng
+                .order-stats
+                    .stat-item
+                        i.fas.fa-shopping-bag
+                        span.stat-value #{orderHistory.length}
+                        span.stat-label Đơn hàng
+                    .stat-item
+                        i.fas.fa-box
+                        span.stat-value #{orderHistory.filter(order => order.status === 'completed').length}
+                        span.stat-label Đã giao
+                    .stat-item
+                        i.fas.fa-clock
+                        span.stat-value #{orderHistory.filter(order => order.status === 'pending').length}
+                        span.stat-label Đang xử lý
+
+            .order-list
+                each order in orderHistory
+                    each item in order.products
+                        .order-card
+                            .order-header
+                                .order-status
+                                    i.fas.fa-check-circle
+                                    span.status-text Giao hàng thành công
+                                .order-date
+                                    i.fas.fa-calendar-alt
+                                    span #{order.date}
+                            
+                            .order-content
+                                .product-info
+                                    a.product-image-link(href=`/products/detail/${item.info.slug}`)
+                                        .product-image-wrapper
+                                            img.product-image-success(src=item.info.thumbnail alt=item.info.title)
+                                    .product-details
+                                        if(item.info.title)
+                                            a.product-title(href=`/products/detail/${item.info.slug}`) #{item.info.title}
+                                        .product-meta
+                                            .product-category
+                                                i.fas.fa-tag
+                                                span #{item.category.title}
+                                            .product-quantity
+                                                i.fas.fa-shopping-cart
+                                                span x#{item.quantity}
+                                        .product-features
+                                            .warranty-badge
+                                                i.fas.fa-shield-alt
+                                                span Trả hàng miễn phí 15 ngày
+                                        .product-pricing
+                                            .price-old #{item.priceOldInter}đ
+                                            .price-new #{item.priceInter}đ
+                            
+                            .order-footer
+                                .order-total
+                                    span.label Thành tiền:
+                                    span.amount #{item.totalPriceInter}đ
+                                .order-actions
+                                    button.btn-review
+                                        i.fas.fa-star
+                                        span Đánh giá
+                                    button.btn-reorder
+                                        i.fas.fa-redo
+                                        span Mua lại
+                                    a.btn-details(href=`/cart/checkout/success/${order.id}`)
+                                        i.fas.fa-info-circle
+                                        span Chi tiết
