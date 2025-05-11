@@ -3527,3 +3527,255 @@ div#paymentSuccessModal .payment-success {
     justify-content: center;
   }
 }
+
+/* Chatbot Widget Styles */
+.chatbot-widget {
+  position: fixed;
+  bottom: 100px;
+  right: 30px;
+  z-index: 1000;
+}
+
+.chatbot-button {
+  width: 60px;
+  height: 60px;
+  background: #ffc107;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.chatbot-button i {
+  font-size: 24px;
+  color: #000;
+}
+
+.chatbot-button:hover {
+  transform: scale(1.1);
+  background: #ff9800;
+}
+
+.chatbot-button .badge {
+  position: absolute;
+  top: -5px;
+  right: -5px;
+  background: #dc3545;
+  color: white;
+  border-radius: 50%;
+  padding: 5px 8px;
+  font-size: 12px;
+}
+
+.chatbot-container {
+  position: absolute;
+  bottom: 70px;
+  right: 0;
+  width: 350px;
+  background: white;
+  border-radius: 15px;
+  box-shadow: 0 5px 25px rgba(0, 0, 0, 0.2);
+  display: none;
+  overflow: hidden;
+}
+
+.chatbot-container.active {
+  display: block;
+  animation: slideUp 0.3s ease;
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.chatbot-header {
+  background: #ffc107;
+  padding: 15px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.chatbot-title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: #000;
+  font-weight: 600;
+}
+
+.chatbot-title i {
+  font-size: 20px;
+}
+
+.chatbot-close {
+  background: none;
+  border: none;
+  color: #000;
+  cursor: pointer;
+  font-size: 18px;
+  padding: 5px;
+}
+
+.chatbot-body {
+  height: 300px;
+  padding: 15px;
+  overflow-y: auto;
+}
+
+.chatbot-messages {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.message-chat {
+  display: flex;
+  flex-direction: column;
+  max-width: 80%;
+}
+
+.message-chat.bot {
+  align-self: flex-start;
+}
+
+.message-chat.user {
+  align-self: flex-end;
+}
+
+.message-content {
+  padding: 10px 15px;
+  border-radius: 15px;
+  background: #f8f9fa;
+}
+
+.message-chat.bot .message-content {
+  background: #f8f9fa;
+  border-bottom-left-radius: 5px;
+  color: #000;
+}
+
+.message-chat.user .message-content {
+  background: #ffc107;
+  color: #000;
+  border-bottom-right-radius: 5px;
+}
+
+.message-content p {
+  margin: 0;
+  font-size: 14px;
+}
+
+.chatbot-footer {
+  padding: 15px;
+  border-top: 1px solid #eee;
+}
+
+.chatbot-form {
+  display: flex;
+  gap: 10px;
+}
+
+.chatbot-form input {
+  flex: 1;
+  border: 1px solid #ddd;
+  border-radius: 20px;
+  padding: 8px 15px;
+  font-size: 14px;
+}
+
+.chatbot-form button {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+  .chatbot-widget {
+    bottom: 80px;
+    right: 20px;
+  }
+
+  .chatbot-container {
+    width: 300px;
+    right: -10px;
+  }
+
+  .chatbot-button {
+    width: 50px;
+    height: 50px;
+  }
+
+  .chatbot-button i {
+    font-size: 20px;
+  }
+}
+
+/* Thêm vào phần style của chatbot */
+.typing-indicator {
+  display: flex;
+  gap: 4px;
+  padding: 5px 0;
+}
+
+.typing-indicator span {
+  width: 8px;
+  height: 8px;
+  background: #ffc107;
+  border-radius: 50%;
+  animation: typing 1s infinite ease-in-out;
+}
+
+.typing-indicator span:nth-child(1) {
+  animation-delay: 0.2s;
+}
+
+.typing-indicator span:nth-child(2) {
+  animation-delay: 0.4s;
+}
+
+.typing-indicator span:nth-child(3) {
+  animation-delay: 0.6s;
+}
+
+@keyframes typing {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-5px);
+  }
+}
+
+/* Thêm hiệu ứng cho tin nhắn mới */
+.message-chat {
+  animation: messageSlide 0.3s ease;
+}
+
+@keyframes messageSlide {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
