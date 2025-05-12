@@ -1,33 +1,93 @@
 header.header 
-    .container-fluid 
-        .row.align-items-center
-            .col-9
-                h1 Admin
-            .col-3
-                .row 
-                    .col-10
-                        ul.navbar-nav.mt-1
-                            .row
-                                .col-6.text-end
-                                    li.nav-item.dropdown.no-arrow.mx-1
-                                        a.nav-link(href='#' id='alertsDropdown' role='button' data-bs-toggle='dropdown' aria-expanded='false')
-                                            i.fas.fa-bell.fa-fw
-                                            span.badge.bg-danger.text-white.badge-counter 3
-
-                                .col-6.text-start
-                                    li.nav-item.dropdown.no-arrow.mx-1
-                                        a.nav-link(href='#' id='messagesDropdown' role='button' data-bs-toggle='dropdown' aria-expanded='false')
-                                            i.fas.fa-envelope.fa-fw
-                                        ul.dropdown-menu.dropdown-menu-end.shadow(aria-labelledby='messagesDropdown')
-
-                    .col-2
-                        .text-end.img-right
-                            img#userAvatar(src=user.avatar, alt="User Avatar" data-bs-toggle="dropdown" aria-expanded="false")
-
-
-                            .dropdown-menu.dropdown-menu-end(aria-labelledby="userAvatar")
-                                a.dropdown-item(href=`${prefixAdmin}/my-account`) Thông tin cá nhân
-                                a.dropdown-item(href="#") Cài đặt
-                                a.dropdown-item(href=`${prefixAdmin}/auth/logout`) Đăng xuất
+    .container-fluid.p-0 
+        .header-wrapper
+            .header-left
+                button.sidebar-toggle#sidebarToggle
+                    i.fas.fa-bars
+                h1.admin-title 
+                    span.page-title Dashboard
+            
+            .header-center
+                .search-bar
+                    form(action="", method="GET")
+                        .input-group
+                            span.input-group-text
+                                i.fas.fa-search
+                            input.form-control(type="text", placeholder="Tìm kiếm...")
+                            button.btn.btn-primary(type="submit")
+                                i.fas.fa-arrow-right
+            
+            .header-right
+                .header-actions
+                    .action-item
+                        a.notification-toggle(href='#', data-bs-toggle='dropdown', aria-expanded='false')
+                            i.fas.fa-bell
+                            span.badge.badge-dot.badge-danger
+                        .dropdown-menu.dropdown-menu-end.notification-dropdown
+                            .notification-header
+                                h6 Thông báo
+                                a(href="#") Đánh dấu đã đọc
+                            .notification-body
+                                .notification-item.unread
+                                    .notification-icon.bg-primary
+                                        i.fas.fa-user-plus
+                                    .notification-content
+                                        p Có 5 đơn hàng mới
+                                        small 5 phút trước
+                                .notification-item
+                                    .notification-icon.bg-success
+                                        i.fas.fa-check
+                                    .notification-content
+                                        p Bài viết đã được phê duyệt
+                                        small 1 giờ trước
+                            .notification-footer
+                                a(href="#") Xem tất cả
+                    
+                    .action-item
+                        a.message-toggle(href='#', data-bs-toggle='dropdown', aria-expanded='false')
+                            i.fas.fa-envelope
+                            span.badge.badge-dot.badge-primary
+                        .dropdown-menu.dropdown-menu-end.message-dropdown
+                            .message-header
+                                h6 Tin nhắn
+                            .message-body
+                                .message-item.unread
+                                    .message-user
+                                        img(src="/images/avatar-default.png" alt="User")
+                                    .message-content
+                                        h6 Nguyễn Văn A
+                                        p Xin chào Admin, tôi cần hỗ trợ...
+                                        small 10 phút trước
+                            .message-footer
+                                a(href="#") Xem tất cả
+                    
+                    .action-item
+                        a.user-toggle(href='#', data-bs-toggle='dropdown', aria-expanded='false')
+                            .user-avatar
+                                if user && user.avatar
+                                    img(src=user.avatar, alt="User Avatar")
+                                else
+                                    img(src="/images/avatar-default.png", alt="User Avatar")
+                            .user-info.d-none.d-md-block
+                                span.user-name= user ? user.fullName : "Admin"
+                                span.user-role= role ? role.title : "Administrator"
+                            i.fas.fa-chevron-down.ms-1
+                        
+                        .dropdown-menu.dropdown-menu-end.user-dropdown
+                            .user-dropdown-header
+                                .user-info
+                                    h6= user ? user.fullName : "Admin"
+                                    p= user ? user.email : "admin@example.com"
+                            .user-dropdown-body
+                                a.dropdown-item(href=`${prefixAdmin}/my-account`)
+                                    i.fas.fa-user
+                                    span Thông tin cá nhân
+                                a.dropdown-item(href=`${prefixAdmin}/settings`)
+                                    i.fas.fa-cog
+                                    span Cài đặt hệ thống
+                            .user-dropdown-footer
+                                a.dropdown-item(href=`${prefixAdmin}/auth/logout`)
+                                    i.fas.fa-sign-out-alt
+                                    span Đăng xuất
 
 

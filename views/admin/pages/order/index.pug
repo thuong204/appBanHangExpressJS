@@ -1,0 +1,112 @@
+extends ../../layouts/default.pug
+include ../../mixins/alert.pug
+include ../../mixins/formatDateTime.pug
+block main 
+       
+        +alert-success(3000)
+        +alert-error(3000)
+        
+        .d-flex.justify-content-between.align-items-center.mb-4
+            h1.m-0 
+                i.fas.fa-shopping-cart.me-2.text-primary
+                | Quản lý đơn hàng
+
+        .card.shadow-sm.mb-4
+            .card-header.bg-white.py-3
+                h5.card-title.m-0
+                    i.fas.fa-list.me-2.text-primary
+                    | Danh sách đơn hàng
+            .card-body.p-0
+                .table-responsive
+                    table.table.table-hover.align-middle.mb-0
+                        thead.bg-light
+                            tr
+                                th.py-3 STT
+                                th.py-3 Mã đơn hàng
+                                th.py-3 Khách hàng
+                                th.py-3 Số điện thoại
+                                th.py-3 Địa chỉ
+                                th.py-3 Thanh toán
+                                th.py-3 Ngày đặt
+                                th.py-3 Trạng thái
+                                th.py-3.text-end Thao tác
+                        tbody
+                            if(orders && orders.length > 0)
+                                each item, index in orders
+                                    tr
+                                        td.py-3 #{index+1}
+                                        td.py-3 
+                                            span.text-primary.fw-medium #{item._id.toString().slice(-6).toUpperCase()}
+                                        td.py-3 #{item.userInfo.fullName}
+                                        td.py-3 #{item.userInfo.phone}
+                                        td.py-3 #{item.userInfo.address}
+                                        td.py-3 
+                                            if(item.payments === "ship-cod")
+                                                span.badge.bg-info.text-white
+                                                    i.fas.fa-truck.me-1
+                                                    | Thanh toán khi nhận hàng
+                                            else
+                                                span.badge.bg-success.text-white
+                                                    i.fas.fa-credit-card.me-1
+                                                    | Thanh toán trực tuyến
+                                        td.py-3 
+                                            small.text-muted
+                                                i.far.fa-calendar-alt.me-1.text-secondary
+                                                if(item.dateOrder)
+                                                    +formatDateTime(item.dateOrder)
+                                                else
+                                                    +formatDateTime(item.createdAt)
+                                        td.py-3
+                                            case item.status
+                                                when "pending"
+                                                    span.badge.bg-warning.text-white.px-3.py-2
+                                                        i.fas.fa-clock.me-1
+                                                        | Chờ xác nhận
+                                                when "processing"
+                                                    span.badge.bg-primary.text-white.px-3.py-2
+                                                        i.fas.fa-cog.me-1
+                                                        | Đang xử lý
+                                                when "shipping"
+                                                    span.badge.bg-info.text-white.px-3.py-2
+                                                        i.fas.fa-truck.me-1
+                                                        | Đang giao hàng
+                                                when "delivered"
+                                                    span.badge.bg-success.text-white.px-3.py-2
+                                                        i.fas.fa-check-circle.me-1
+                                                        | Đã giao hàng
+                                                when "canceled"
+                                                    span.badge.bg-danger.text-white.px-3.py-2
+                                                        i.fas.fa-times-circle.me-1
+                                                        | Đã hủy
+                                                default
+                                                    span.badge.bg-secondary.text-white.px-3.py-2
+                                                        i.fas.fa-question-circle.me-1
+                                                        | Không xác định
+                                        td.py-3.text-end
+                                            .btn-group
+                                                a(
+                                                    href=`${prefixAdmin}/orders/detail/${item.id}`
+                                                    class="btn btn-outline-info btn-sm"
+                                                    title="Xem chi tiết"
+                                                )
+                                                    i.fas.fa-eye.text-info
+                                                
+                                                button.btn.btn-outline-danger.btn-sm.ms-1(
+                                                    button-delete
+                                                    data-id=item.id
+                                                    title="Xóa"
+                                                )
+                                                    i.fas.fa-trash-alt.text-danger
+                            else 
+                                tr 
+                                    td(colspan=9 class="text-center py-4")
+                                        .text-muted
+                                            i.fas.fa-info-circle.me-2.text-info
+                                            | Chưa có đơn hàng nào
+
+        form(
+            action=""
+            method="POST"
+            id="form-delete-item"
+            data-path=`${prefixAdmin}/orders/delete`
+        )

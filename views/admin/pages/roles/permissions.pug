@@ -4,132 +4,203 @@ block main
     if(role.permissions.includes("roles-permissions")) 
         +alert-success(3000)
         +alert-error(3000)
-        h1(class="mb-3") Phân quyền 
-        div(data-records =records)
-        if(records)
-            .container
-                div(class="text-end")
-                    button(
-                        type="submit"
-                        class="btn btn-primary mb-3"
-                        button-submit
-                    ) Cập nhật 
-                table(
-                    class= "table table-hover table-sm table-custom"
-                    table-permission
+        
+        .d-flex.justify-content-between.align-items-center.mb-4
+            h1.m-0 Phân quyền người dùng
+            if(records)
+                button(
+                    type="submit"
+                    class="btn btn-primary"
+                    button-submit
                 )
-                    thead 
-                        tr 
-                            th Tính năng 
-                            each item in records
-                                th(class="text-center") #{item.title}
-                    tbody 
-                        tr(data-name="id" class="d-none")
-                            td 
-                            each item in records 
-                                td(class="text-center ")
-                                    input(type="text" value=item.id)
-                        tr     
-                            td(colspan="4")
-                                b Danh mục sản phẩm
-                        tr(data-name="products-category-view")
-                            td Xem
-                            each item in records
-                                td(class="text-center")
-                                    input(type="checkbox")
-                        tr(data-name="products-category-create")
-                            td Thêm mới
-                            each item in records
-                                td(class="text-center")
-                                    input(type="checkbox")
-                        tr(data-name="products-category-edit")
-                            td Chỉnh sửa 
-                            each item in records
-                                td(class="text-center")
-                                    input(type="checkbox")
-                        tr(data-name="products-category-delete")
-                            td Xóa
-                            each item in records
-                                td(class="text-center")
-                                    input(type="checkbox")
+                    i.fas.fa-save.me-2.text-white
+                    | Cập nhật
+                    
+        div(data-records=records)
+        if(records)
+            .card.shadow-sm.mb-4
+                .card-header.bg-white.py-3
+                    h5.card-title.m-0
+                        i.fas.fa-shield-alt.me-2.text-primary
+                        | Bảng phân quyền
+                .card-body.p-0
+                    .table-responsive
+                        table(
+                            class="table table-hover table-sm align-middle mb-0"
+                            table-permission
+                        )
+                            thead.bg-light
+                                tr 
+                                    th.py-3 Tính năng 
+                                    each item in records
+                                        th(class="text-center py-3") #{item.title}
+                            tbody 
+                                tr(data-name="id" class="d-none")
+                                    td 
+                                    each item in records 
+                                        td(class="text-center")
+                                            input(type="text" value=item.id)
+                                
+                                tr.table-group-divider     
+                                    td(colspan="4" class="bg-light py-2")
+                                        strong
+                                            i.fas.fa-folder.me-2.text-warning
+                                            | Danh mục sản phẩm
+                                tr(data-name="products-category-view")
+                                    td
+                                        i.fas.fa-eye.me-2.text-info
+                                        | Xem
+                                    each item in records
+                                        td(class="text-center")
+                                            .form-check.d-flex.justify-content-center
+                                                input(type="checkbox" class="form-check-input")
+                                tr(data-name="products-category-create")
+                                    td
+                                        i.fas.fa-plus.me-2.text-success
+                                        | Thêm mới
+                                    each item in records
+                                        td(class="text-center")
+                                            .form-check.d-flex.justify-content-center
+                                                input(type="checkbox" class="form-check-input")
+                                tr(data-name="products-category-edit")
+                                    td
+                                        i.fas.fa-edit.me-2.text-primary
+                                        | Chỉnh sửa 
+                                    each item in records
+                                        td(class="text-center")
+                                            .form-check.d-flex.justify-content-center
+                                                input(type="checkbox" class="form-check-input")
+                                tr(data-name="products-category-delete")
+                                    td
+                                        i.fas.fa-trash-alt.me-2.text-danger
+                                        | Xóa
+                                    each item in records
+                                        td(class="text-center")
+                                            .form-check.d-flex.justify-content-center
+                                                input(type="checkbox" class="form-check-input")
 
-                        //- san pham
-                        tr     
-                            td(colspan="4")
-                                b Sản phẩm
-                        tr(data-name="products-view")
-                            td Xem
-                            each item in records
-                                td(class="text-center")
-                                    input(type="checkbox")
-                        tr(data-name="products-create")
-                            td Thêm mới
-                            each item in records
-                                td(class="text-center")
-                                    input(type="checkbox")
-                        tr(data-name="products-edit")
-                            td Chỉnh sửa 
-                            each item in records
-                                td(class="text-center")
-                                    input(type="checkbox")
-                        tr(data-name="products-delete")
-                            td Xóa
-                            each item in records
-                                td(class="text-center")
-                                    input(type="checkbox")
-                        //- nhom quyen
-                        tr     
-                            td(colspan="4")
-                                b Nhóm quyền
-                        tr(data-name="roles-view")
-                            td Xem
-                            each item in records
-                                td(class="text-center")
-                                    input(type="checkbox")
-                        tr(data-name="roles-create")
-                            td Thêm mới
-                            each item in records
-                                td(class="text-center")
-                                    input(type="checkbox")
-                        tr(data-name="roles-edit")
-                            td Chỉnh sửa 
-                            each item in records
-                                td(class="text-center")
-                                    input(type="checkbox")
-                        tr(data-name="roles-delete")
-                            td Xóa
-                            each item in records
-                                td(class="text-center")
-                                    input(type="checkbox")
-                        tr(data-name="roles-permissions")
-                            td Phân quyền
-                            each item in records
-                                td(class="text-center")
-                                    input(type="checkbox")
-                        //- danh sach tai khoan
-                        tr     
-                            td(colspan="4")
-                                b Danh sách tài khoản
-                        tr(data-name="accounts-view")
-                            td Xem
-                            each item in records
-                                td(class="text-center")
-                                    input(type="checkbox")
-                        tr(data-name="accounts-create")
-                            td Thêm mới
-                            each item in records
-                                td(class="text-center")
-                                    input(type="checkbox")
-                        tr(data-name="accounts-edit")
-                            td Chỉnh sửa 
-                            each item in records
-                                td(class="text-center")
-                                    input(type="checkbox")
-                        tr(data-name="accounts-delete")
-                            td Xóa
-                            each item in records
-                                td(class="text-center")
-                                    input(type="checkbox")
+                                //- san pham
+                                tr.table-group-divider     
+                                    td(colspan="4" class="bg-light py-2")
+                                        strong
+                                            i.fas.fa-box.me-2.text-secondary
+                                            | Sản phẩm
+                                tr(data-name="products-view")
+                                    td
+                                        i.fas.fa-eye.me-2.text-info
+                                        | Xem
+                                    each item in records
+                                        td(class="text-center")
+                                            .form-check.d-flex.justify-content-center
+                                                input(type="checkbox" class="form-check-input")
+                                tr(data-name="products-create")
+                                    td
+                                        i.fas.fa-plus.me-2.text-success
+                                        | Thêm mới
+                                    each item in records
+                                        td(class="text-center")
+                                            .form-check.d-flex.justify-content-center
+                                                input(type="checkbox" class="form-check-input")
+                                tr(data-name="products-edit")
+                                    td
+                                        i.fas.fa-edit.me-2.text-primary
+                                        | Chỉnh sửa 
+                                    each item in records
+                                        td(class="text-center")
+                                            .form-check.d-flex.justify-content-center
+                                                input(type="checkbox" class="form-check-input")
+                                tr(data-name="products-delete")
+                                    td
+                                        i.fas.fa-trash-alt.me-2.text-danger
+                                        | Xóa
+                                    each item in records
+                                        td(class="text-center")
+                                            .form-check.d-flex.justify-content-center
+                                                input(type="checkbox" class="form-check-input")
+                                //- nhom quyen
+                                tr.table-group-divider     
+                                    td(colspan="4" class="bg-light py-2")
+                                        strong
+                                            i.fas.fa-users-cog.me-2.text-purple
+                                            | Nhóm quyền
+                                tr(data-name="roles-view")
+                                    td
+                                        i.fas.fa-eye.me-2.text-info
+                                        | Xem
+                                    each item in records
+                                        td(class="text-center")
+                                            .form-check.d-flex.justify-content-center
+                                                input(type="checkbox" class="form-check-input")
+                                tr(data-name="roles-create")
+                                    td
+                                        i.fas.fa-plus.me-2.text-success
+                                        | Thêm mới
+                                    each item in records
+                                        td(class="text-center")
+                                            .form-check.d-flex.justify-content-center
+                                                input(type="checkbox" class="form-check-input")
+                                tr(data-name="roles-edit")
+                                    td
+                                        i.fas.fa-edit.me-2.text-primary
+                                        | Chỉnh sửa 
+                                    each item in records
+                                        td(class="text-center")
+                                            .form-check.d-flex.justify-content-center
+                                                input(type="checkbox" class="form-check-input")
+                                tr(data-name="roles-delete")
+                                    td
+                                        i.fas.fa-trash-alt.me-2.text-danger
+                                        | Xóa
+                                    each item in records
+                                        td(class="text-center")
+                                            .form-check.d-flex.justify-content-center
+                                                input(type="checkbox" class="form-check-input")
+                                tr(data-name="roles-permissions")
+                                    td
+                                        i.fas.fa-shield-alt.me-2.text-indigo
+                                        | Phân quyền
+                                    each item in records
+                                        td(class="text-center")
+                                            .form-check.d-flex.justify-content-center
+                                                input(type="checkbox" class="form-check-input")
+                                //- danh sach tai khoan
+                                tr.table-group-divider     
+                                    td(colspan="4" class="bg-light py-2")
+                                        strong
+                                            i.fas.fa-user-friends.me-2.text-info
+                                            | Danh sách tài khoản
+                                tr(data-name="accounts-view")
+                                    td
+                                        i.fas.fa-eye.me-2.text-info
+                                        | Xem
+                                    each item in records
+                                        td(class="text-center")
+                                            .form-check.d-flex.justify-content-center
+                                                input(type="checkbox" class="form-check-input")
+                                tr(data-name="accounts-create")
+                                    td
+                                        i.fas.fa-plus.me-2.text-success
+                                        | Thêm mới
+                                    each item in records
+                                        td(class="text-center")
+                                            .form-check.d-flex.justify-content-center
+                                                input(type="checkbox" class="form-check-input")
+                                tr(data-name="accounts-edit")
+                                    td
+                                        i.fas.fa-edit.me-2.text-primary
+                                        | Chỉnh sửa 
+                                    each item in records
+                                        td(class="text-center")
+                                            .form-check.d-flex.justify-content-center
+                                                input(type="checkbox" class="form-check-input")
+                                tr(data-name="accounts-delete")
+                                    td
+                                        i.fas.fa-trash-alt.me-2.text-danger
+                                        | Xóa
+                                    each item in records
+                                        td(class="text-center")
+                                            .form-check.d-flex.justify-content-center
+                                                input(type="checkbox" class="form-check-input")
             
 
             form(
@@ -146,5 +217,7 @@ block main
 
             script(src="/admin/js/roles.js")
     else 
-        h1 Bạn không có quyền truy cập
+        .alert.alert-danger.m-4
+            i.fas.fa-exclamation-triangle.me-2.text-danger
+            | Bạn không có quyền truy cập trang này
 

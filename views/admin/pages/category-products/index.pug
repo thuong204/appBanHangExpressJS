@@ -4,55 +4,73 @@ include ../../mixins/search.pug
 include ../../mixins/pagination.pug
 include ../../mixins/form-change-multi.pug
 include ../../mixins/alert.pug
-include ../../mixins/sortCategory.pug
+include ../../mixins/sort.pug
 include ../../mixins/table-tree.pug
 block main 
     if(role.permissions.includes("products-category-view"))
         +alert-success(3000)
-        +alert-error(5000)
-        h1 Danh mục sản phẩm
-        .card
-            .card-header Bộ lọc và tìm kiếm 
-            .card-body.mt-3
-                .row
-                    .col-6  
-                        +filterStatus()  
-                    .col-6
-                        +search()           
+        +alert-error(3000)
+        
+        .page-header.d-flex.justify-content-between.align-items-center.mb-4
+            h1.page-title 
+                i.fas.fa-folder-tree.me-2
+                | Danh mục sản phẩm
+            if(role.permissions.includes("products-category-create"))
+                a(class="btn btn-success btn-add" href=`${prefixAdmin}/category-products/create`)
+                    i.fas.fa-plus-circle.me-2
+                    | Thêm danh mục
 
-                        
-        .card.mt-3
-            .card-header Danh sách danh mục
-                .card-body
-                    .row 
-                        .col-10
-                            if(role.permissions.includes("products-category-edit"))
-                                +form-change-multi(`${prefixAdmin}/category-products/change-multi?_method=PATCH`)
-                        
-                        .col-2
-                            if(role.permissions.includes("products-category-create"))
-                                a(
-                                    class="btn btn-outline-success"
-                                    href=`${prefixAdmin}/category-products/create`
-                                ) +Thêm sản phẩm
-                    table(
-                        class="table table-hover table-sm mt-3"
-                        checkbox-multi
-                    )
-                        thead
+        .card.shadow.mb-4
+            .card-header.bg-white.py-3
+                .row.align-items-center
+                    .col-md-3
+                        +filterStatus()
+                    .col-md-5
+                        +search()
+                    .col-md-4
+                        +sort()
+
+        .card.shadow
+            .card-header.bg-white.py-3.d-flex.justify-content-between.align-items-center
+                h6.m-0.font-weight-bold.text-primary
+                    i.fas.fa-list-ul.me-2
+                    | Danh sách danh mục
+                if(role.permissions.includes("products-category-edit"))
+                    +form-change-multi(`${prefixAdmin}/category-products/change-multi?_method=PATCH`)
+            
+            .card-body
+                .table-responsive
+                    table.table.table-hover.align-middle(checkbox-multi)
+                        thead.bg-light
                             tr
                                 th 
-                                    input(type="checkbox" name="checkall")
-                                th STT
+                                    .form-check
+                                        input.form-check-input(type="checkbox" name="checkall" id="checkall")
+                                        label.form-check-label(for="checkall")
+                                th.text-center STT
                                 th Hình ảnh
                                 th Tiêu đề
-                                th Vị trí
-                                th Người tạo
-                                th Người cập nhật
-                                th Trạng thái
-                                th Hành động
+                                th.text-center 
+                                    i.fas.fa-sort-numeric-down.me-1
+                                    | Vị trí
+                                th 
+                                    i.fas.fa-user-edit.me-1
+                                    | Người tạo
+                                th 
+                                    i.fas.fa-user-clock.me-1
+                                    | Người cập nhật
+                                th.text-center 
+                                    i.fas.fa-toggle-on.me-1
+                                    | Trạng thái
+                                th.text-center 
+                                    i.fas.fa-cogs.me-1
+                                    | Hành động
                         tbody
                             +table-tree(records)
+                
+                .d-flex.justify-content-center.mt-4
+                    +pagination()
+                    
         if(role.permissions.includes("products-category-edit"))                 
             form(
                 action=""
@@ -68,4 +86,8 @@ block main
                 data-path=`${prefixAdmin}/category-products/delete`
                 )
     else    
-        h1 Bạn không có quyền truy cập
+        .access-denied
+            .icon
+                i.fas.fa-user-lock.fa-4x
+            h1 Truy cập bị từ chối
+            p Bạn không có quyền truy cập vào trang này. Vui lòng liên hệ quản trị viên để biết thêm chi tiết.

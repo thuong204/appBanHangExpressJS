@@ -1,5 +1,6 @@
 mixin sort()
     div(sort)
+      div(class="d-flex justify-content-between align-items-center gap-2")
         select(
             name="sort"
             class="form-select"
@@ -11,6 +12,6 @@ mixin sort()
             option(value="title-asc") Tiêu đề A-Z  
             option(value="title-desc") Tiêu đề Z-A  
         button(
-            class="btn btn-danger mt-2"
+            class="btn btn-danger "
             sort-clear
         ) Clear

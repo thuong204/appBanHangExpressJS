@@ -1,4 +1,265 @@
 extends ../../layouts/default.pug
-block main  
-    div #{user}
-    div #{role.permissions}
+block main
+  .dashboard-container
+    .row.mb-4
+      .col-xl-3.col-md-6.mb-4
+        .card.border-left-primary.shadow.h-100.py-2
+          .card-body
+            .row.no-gutters.align-items-center
+              .col.mr-2
+                .text-xs.font-weight-bold.text-primary.text-uppercase.mb-1 Doanh thu (Tháng)
+                .h5.mb-0.font-weight-bold.text-gray-800 43,500,000 ₫
+              .col-auto
+                i.fas.fa-calendar.fa-2x.text-gray-300
+          .card-footer.small.text-muted
+            | Cập nhật lúc #{new Date().toLocaleTimeString('vi-VN')}
+
+      .col-xl-3.col-md-6.mb-4
+        .card.border-left-success.shadow.h-100.py-2
+          .card-body
+            .row.no-gutters.align-items-center
+              .col.mr-2
+                .text-xs.font-weight-bold.text-success.text-uppercase.mb-1 Doanh thu (năm)
+                .h5.mb-0.font-weight-bold.text-gray-800 521,240,000 ₫
+              .col-auto
+                i.fas.fa-dollar-sign.fa-2x.text-gray-300
+          .card-footer.small.text-muted
+            | Cập nhật lúc #{new Date().toLocaleTimeString('vi-VN')}
+
+      .col-xl-3.col-md-6.mb-4
+        .card.border-left-info.shadow.h-100.py-2
+          .card-body
+            .row.no-gutters.align-items-center
+              .col.mr-2
+                .text-xs.font-weight-bold.text-info.text-uppercase.mb-1 Đơn hàng mới
+                .h5.mb-0.font-weight-bold.text-gray-800 24
+              .col-auto
+                i.fas.fa-shopping-bag.fa-2x.text-gray-300
+          .card-footer.small.text-muted
+            | Cập nhật lúc #{new Date().toLocaleTimeString('vi-VN')}
+
+      .col-xl-3.col-md-6.mb-4
+        .card.border-left-warning.shadow.h-100.py-2
+          .card-body
+            .row.no-gutters.align-items-center
+              .col.mr-2
+                .text-xs.font-weight-bold.text-warning.text-uppercase.mb-1 Người dùng mới
+                .h5.mb-0.font-weight-bold.text-gray-800 18
+              .col-auto
+                i.fas.fa-users.fa-2x.text-gray-300
+          .card-footer.small.text-muted
+            | Cập nhật lúc #{new Date().toLocaleTimeString('vi-VN')}
+
+    .row.mb-4
+      .col-xl-8.col-lg-7
+        .card.shadow.mb-4
+          .card-header.py-3.d-flex.flex-row.align-items-center.justify-content-between
+            h6.m-0.font-weight-bold.text-primary Thống kê doanh thu
+            .dropdown.no-arrow
+              a.dropdown-toggle(href='#', role='button', data-bs-toggle='dropdown', aria-expanded='false')
+                i.fas.fa-ellipsis-v.fa-sm.fa-fw.text-gray-400
+              .dropdown-menu.dropdown-menu-end
+                a.dropdown-item(href='#') Tháng này
+                a.dropdown-item(href='#') Quý này
+                .dropdown-divider
+                a.dropdown-item(href='#') Năm này
+          .card-body
+            .chart-container(style='position: relative; height:300px;')
+              canvas#revenueChart
+
+      .col-xl-4.col-lg-5
+        .card.shadow.mb-4
+          .card-header.py-3.d-flex.flex-row.align-items-center.justify-content-between
+            h6.m-0.font-weight-bold.text-primary Thống kê theo danh mục
+            .dropdown.no-arrow
+              a.dropdown-toggle(href='#', role='button', data-bs-toggle='dropdown', aria-expanded='false')
+                i.fas.fa-ellipsis-v.fa-sm.fa-fw.text-gray-400
+              .dropdown-menu.dropdown-menu-end
+                a.dropdown-item(href='#') Theo doanh thu
+                a.dropdown-item(href='#') Theo số lượng bán
+          .card-body
+            .chart-container(style='position: relative; height:300px;')
+              canvas#categoryChart
+
+    .row
+      .col-lg-6.mb-4
+        .card.shadow.mb-4
+          .card-header.py-3
+            h6.m-0.font-weight-bold.text-primary Đơn hàng gần đây
+          .card-body
+            .table-responsive
+              table.table.table-bordered.table-hover
+                thead
+                  tr
+                    th Mã đơn
+                    th Khách hàng
+                    th Trạng thái
+                    th Giá trị
+                    th Thời gian
+                tbody
+                  tr
+                    td #ORD001234
+                    td Nguyễn Văn A
+                    td
+                      span.badge.bg-success Đã thanh toán
+                    td 1,240,000 ₫
+                    td 10/05/2023
+                  tr
+                    td #ORD001235
+                    td Trần Thị B
+                    td
+                      span.badge.bg-warning Đang xử lý
+                    td 3,540,000 ₫
+                    td 10/05/2023
+                  tr
+                    td #ORD001236
+                    td Lê Văn C
+                    td
+                      span.badge.bg-info Đang giao hàng
+                    td 2,150,000 ₫
+                    td 09/05/2023
+                  tr
+                    td #ORD001237
+                    td Phạm Thị D
+                    td
+                      span.badge.bg-danger Đã hủy
+                    td 5,600,000 ₫
+                    td 09/05/2023
+                  tr
+                    td #ORD001238
+                    td Hoàng Văn E
+                    td
+                      span.badge.bg-success Đã thanh toán
+                    td 1,890,000 ₫
+                    td 08/05/2023
+
+      .col-lg-6.mb-4
+        .card.shadow.mb-4
+          .card-header.py-3
+            h6.m-0.font-weight-bold.text-primary Sản phẩm bán chạy
+          .card-body
+            .table-responsive
+              table.table.table-bordered.table-hover
+                thead
+                  tr
+                    th Sản phẩm
+                    th Danh mục
+                    th Đã bán
+                    th Doanh thu
+                    th Tồn kho
+                tbody
+                  tr
+                    td iPhone 14 Pro Max
+                    td Điện thoại
+                    td 85
+                    td 85,000,000 ₫
+                    td 15
+                  tr
+                    td Samsung Galaxy S23
+                    td Điện thoại
+                    td 78
+                    td 70,200,000 ₫
+                    td 22
+                  tr
+                    td Tai nghe AirPods Pro
+                    td Phụ kiện
+                    td 120
+                    td 42,000,000 ₫
+                    td 35
+                  tr
+                    td MacBook Pro M2
+                    td Laptop
+                    td 45
+                    td 135,000,000 ₫
+                    td 10
+                  tr
+                    td iPad Air
+                    td Máy tính bảng
+                    td 62
+                    td 49,600,000 ₫
+                    td 18
+
+  script(src='https://cdn.jsdelivr.net/npm/chart.js')
+  script.
+    document.addEventListener('DOMContentLoaded', function () {
+      // Biểu đồ doanh thu
+      const revenueCtx = document.getElementById('revenueChart');
+      const revenueChart = new Chart(revenueCtx, {
+        type: 'line',
+        data: {
+          labels: ['Tháng 1', 'Tháng 2', 'Tháng 3', 'Tháng 4', 'Tháng 5', 'Tháng 6', 'Tháng 7', 'Tháng 8', 'Tháng 9', 'Tháng 10', 'Tháng 11', 'Tháng 12'],
+          datasets: [{
+            label: 'Doanh thu (triệu đồng)',
+            data: [35, 28, 42, 38, 45, 52, 48, 40, 47, 55, 60, 68],
+            borderColor: 'rgba(78, 115, 223, 1)',
+            backgroundColor: 'rgba(78, 115, 223, 0.1)',
+            borderWidth: 2,
+            pointBackgroundColor: 'rgba(78, 115, 223, 1)',
+            pointBorderColor: '#fff',
+            pointBorderWidth: 2,
+            pointRadius: 4,
+            pointHoverRadius: 6,
+            fill: true,
+            tension: 0.3
+          }]
+        },
+        options: {
+          maintainAspectRatio: false,
+          plugins: {
+            legend: {
+              display: false
+            }
+          },
+          scales: {
+            y: {
+              beginAtZero: true,
+              grid: {
+                color: 'rgba(0, 0, 0, 0.05)'
+              }
+            },
+            x: {
+              grid: {
+                display: false
+              }
+            }
+          }
+        }
+      });
+      
+      // Biểu đồ danh mục
+      const categoryCtx = document.getElementById('categoryChart');
+      const categoryChart = new Chart(categoryCtx, {
+        type: 'doughnut',
+        data: {
+          labels: ['Điện thoại', 'Laptop', 'Phụ kiện', 'Máy tính bảng', 'Khác'],
+          datasets: [{
+            data: [45, 25, 15, 10, 5],
+            backgroundColor: [
+              'rgba(78, 115, 223, 0.8)',
+              'rgba(28, 200, 138, 0.8)',
+              'rgba(246, 194, 62, 0.8)',
+              'rgba(54, 185, 204, 0.8)',
+              'rgba(231, 74, 59, 0.8)'
+            ],
+            borderWidth: 0,
+            hoverOffset: 5
+          }]
+        },
+        options: {
+          maintainAspectRatio: false,
+          cutout: '70%',
+          plugins: {
+            legend: {
+              position: 'bottom',
+              labels: {
+                padding: 15,
+                usePointStyle: true
+              }
+            }
+          }
+        }
+      });
+    });
+
+
+  

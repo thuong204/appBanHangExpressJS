@@ -1,20 +1,79 @@
 .sider 
-    .inner-menu 
-        ul  
-            li 
-                a(href=`${prefixAdmin}/dashboard`) Tông quan
-            if(role.permissions.includes("products-view"))
-                li  
-                    a(href=`${prefixAdmin}/products`) Sản phẩm
-            if(role.permissions.includes("products-category-view"))
-                li  
-                    a(href=`${prefixAdmin}/category-products`) Danh mục sản phẩm
-            if(role.permissions.includes("roles-view"))
-                li  
-                    a(href=`${prefixAdmin}/roles`) Nhóm quyền
-            if(role.permissions.includes("roles-permissions"))
-                li  
-                    a(href=`${prefixAdmin}/roles/permissions`) Phân quyền
-            if(role.permissions.includes("accounts-view"))
-                li  
-                    a(href=`${prefixAdmin}/accounts`) Danh sách tài khoản
+  .sider-header
+    .logo
+      img(src="/images/dani.png", alt="Logo", width="40")
+      span.brand-name Vô Thường Admin
+  
+  .sider-user
+    .user-avatar
+      img(src=user.avatar, alt="User Avatar", width="50", height="50")
+    .user-info
+      span.user-name= user ? user.fullName : "Admin User"
+      span.user-role= role ? role.title : "Administrator"
+
+  .inner-menu 
+    ul.menu-list
+      li.menu-item
+        a.menu-link(href=`${prefixAdmin}/dashboard`)
+          i.fas.fa-tachometer-alt
+          span Dashboard
+          
+      if(role.permissions.includes("products-view") || role.permissions.includes("products-category-view"))
+        li.menu-section
+          span SẢN PHẨM
+        
+      if(role.permissions.includes("products-view"))
+        li.menu-item
+          a.menu-link(href=`${prefixAdmin}/products`)
+            i.fas.fa-mobile-alt
+            span Quản lý sản phẩm
+            
+      if(role.permissions.includes("products-category-view"))
+        li.menu-item  
+          a.menu-link(href=`${prefixAdmin}/category-products`)
+            i.fas.fa-th-large
+            span Danh mục sản phẩm
+            
+   
+        li.menu-section
+          span ĐƠN HÀNG
+          
+        li.menu-item  
+          a.menu-link(href=`${prefixAdmin}/orders`)
+            i.fas.fa-shopping-cart
+            span Quản lý đơn hàng
+            
+      if(role.permissions.includes("roles-view") || role.permissions.includes("roles-permissions") || role.permissions.includes("accounts-view"))
+        li.menu-section
+          span NGƯỜI DÙNG & QUYỀN
+            
+      if(role.permissions.includes("roles-view"))
+        li.menu-item  
+          a.menu-link(href=`${prefixAdmin}/roles`)
+            i.fas.fa-user-tag
+            span Nhóm quyền
+            
+      if(role.permissions.includes("roles-permissions"))
+        li.menu-item  
+          a.menu-link(href=`${prefixAdmin}/roles/permissions`)
+            i.fas.fa-key
+            span Phân quyền
+            
+      if(role.permissions.includes("accounts-view"))
+        li.menu-item  
+          a.menu-link(href=`${prefixAdmin}/accounts`)
+            i.fas.fa-users
+            span Danh sách tài khoản
+    
+      li.menu-section
+        span HỆ THỐNG
+        
+      li.menu-item
+        a.menu-link(href=`${prefixAdmin}/setting`)
+          i.fas.fa-cog
+          span Thiết lập
+          
+      li.menu-item
+        a.menu-link(href="/admin/logout")
+          i.fas.fa-sign-out-alt
+          span Đăng xuất

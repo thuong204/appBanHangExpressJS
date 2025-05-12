@@ -1,0 +1,251 @@
+extends ../../layouts/default.pug
+include ../../mixins/alert.pug
+block main
+    +alert-success(3000)
+    +alert-error(3000)
+    
+    .d-flex.justify-content-between.align-items-center.mb-4
+        h1.m-0 
+            i.fas.fa-cogs.me-2.text-primary
+            | Cài đặt hệ thống
+
+    form(
+        action=`${prefixAdmin}/setting/update?_method=PATCH`
+        method="POST"
+        enctype="multipart/form-data"
+    )
+        .row
+            .col-md-8
+                // General Settings
+                .card.shadow-sm.mb-4
+                    .card-header.bg-white.py-3
+                        h5.card-title.m-0
+                            i.fas.fa-store.me-2.text-primary
+                            | Thông tin cửa hàng
+                    .card-body
+                        .row.mb-3
+                            .col-md-6
+                                label.form-label Tên cửa hàng
+                                input.form-control(
+                                    type="text"
+                                    name="general[storeName]"
+                                    value=settings && settings.general ? settings.general.storeName : ""
+                                    placeholder="Nhập tên cửa hàng"
+                                )
+                            .col-md-6
+                                label.form-label Email liên hệ
+                                input.form-control(
+                                    type="email"
+                                    name="general[email]"
+                                    value=settings && settings.general ? settings.general.email : ""
+                                    placeholder="example@domain.com"
+                                )
+                        .row.mb-3
+                            .col-md-6
+                                label.form-label Số điện thoại
+                                input.form-control(
+                                    type="text"
+                                    name="general[phone]"
+                                    value=settings && settings.general ? settings.general.phone : ""
+                                    placeholder="0xxxxxxxxx"
+                                )
+                            .col-md-6
+                                label.form-label Địa chỉ
+                                input.form-control(
+                                    type="text"
+                                    name="general[address]"
+                                    value=settings && settings.general ? settings.general.address : ""
+                                    placeholder="Nhập địa chỉ cửa hàng"
+                                )
+                        .row.mb-3
+                            .col-12
+                                label.form-label Mô tả cửa hàng
+                                textarea.form-control(
+                                    name="general[description]"
+                                    rows="3"
+                                    placeholder="Mô tả ngắn về cửa hàng của bạn"
+                                )= settings && settings.general ? settings.general.description : ""
+
+                // SEO Settings
+                .card.shadow-sm.mb-4
+                    .card-header.bg-white.py-3
+                        h5.card-title.m-0
+                            i.fas.fa-search.me-2.text-success
+                            | Cài đặt SEO
+                    .card-body
+                        .row.mb-3
+                            .col-12
+                                label.form-label Tiêu đề trang (Meta Title)
+                                input.form-control(
+                                    type="text"
+                                    name="seo[metaTitle]"
+                                    value=settings && settings.seo ? settings.seo.metaTitle : ""
+                                    placeholder="Tiêu đề hiển thị trên Google"
+                                )
+                        .row.mb-3
+                            .col-12
+                                label.form-label Mô tả trang (Meta Description)
+                                textarea.form-control(
+                                    name="seo[metaDescription]"
+                                    rows="3"
+                                    placeholder="Mô tả hiển thị trên kết quả tìm kiếm"
+                                )= settings && settings.seo ? settings.seo.metaDescription : ""
+                        .row.mb-3
+                            .col-12
+                                label.form-label Từ khóa (Meta Keywords)
+                                input.form-control(
+                                    type="text"
+                                    name="seo[metaKeywords]"
+                                    value=settings && settings.seo ? settings.seo.metaKeywords : ""
+                                    placeholder="Từ khóa, phân cách bằng dấu phẩy"
+                                )
+
+                // Social Media Settings
+                .card.shadow-sm.mb-4
+                    .card-header.bg-white.py-3
+                        h5.card-title.m-0
+                            i.fas.fa-share-alt.me-2.text-info
+                            | Mạng xã hội
+                    .card-body
+                        .row.mb-3
+                            .col-md-6
+                                label.form-label
+                                    i.fab.fa-facebook.me-1.text-primary
+                                    | Facebook
+                                .input-group
+                                    span.input-group-text
+                                        i.fab.fa-facebook
+                                    input.form-control(
+                                        type="text"
+                                        name="social[facebook]"
+                                        value=settings && settings.social ? settings.social.facebook : ""
+                                        placeholder="URL Facebook"
+                                    )
+                            .col-md-6
+                                label.form-label
+                                    i.fab.fa-instagram.me-1.text-danger
+                                    | Instagram
+                                .input-group
+                                    span.input-group-text
+                                        i.fab.fa-instagram
+                                    input.form-control(
+                                        type="text"
+                                        name="social[instagram]"
+                                        value=settings && settings.social ? settings.social.instagram : ""
+                                        placeholder="URL Instagram"
+                                    )
+                        .row
+                            .col-md-6
+                                label.form-label
+                                    i.fab.fa-youtube.me-1.text-danger
+                                    | Youtube
+                                .input-group
+                                    span.input-group-text
+                                        i.fab.fa-youtube
+                                    input.form-control(
+                                        type="text"
+                                        name="social[youtube]"
+                                        value=settings && settings.social ? settings.social.youtube : ""
+                                        placeholder="URL Youtube"
+                                    )
+                            .col-md-6
+                                label.form-label
+                                    i.fab.fa-tiktok.me-1
+                                    | TikTok
+                                .input-group
+                                    span.input-group-text
+                                        i.fab.fa-tiktok
+                                    input.form-control(
+                                        type="text"
+                                        name="social[tiktok]"
+                                        value=settings && settings.social ? settings.social.tiktok : ""
+                                        placeholder="URL TikTok"
+                                    )
+
+            .col-md-4
+                // Logo & Favicon Settings
+                .card.shadow-sm.mb-4
+                    .card-header.bg-white.py-3
+                        h5.card-title.m-0
+                            i.fas.fa-image.me-2.text-warning
+                            | Logo & Favicon
+                    .card-body
+                        .mb-3
+                            label.form-label Logo trang web
+                            .mb-2
+                                if settings && settings.images && settings.images.logo
+                                    img.img-thumbnail.mb-2(
+                                        src=settings.images.logo
+                                        alt="Logo"
+                                        style="max-height: 100px;"
+                                    )
+                                else
+                                    .text-center.p-3.bg-light.rounded.mb-2
+                                        i.fas.fa-image.fa-3x.text-secondary
+                            .input-group
+                                input.form-control(
+                                    type="file"
+                                    name="logo"
+                                    accept="image/*"
+                                )
+                        
+                        .mb-3
+                            label.form-label Favicon (biểu tượng trình duyệt)
+                            .mb-2
+                                if settings && settings.images && settings.images.favicon
+                                    img.img-thumbnail.mb-2(
+                                        src=settings.images.favicon
+                                        alt="Favicon"
+                                        style="max-height: 32px;"
+                                    )
+                                else
+                                    .text-center.p-3.bg-light.rounded.mb-2
+                                        i.fas.fa-star.fa-2x.text-secondary
+                            .input-group
+                                input.form-control(
+                                    type="file"
+                                    name="favicon"
+                                    accept="image/*"
+                                )
+
+                // Other Settings
+                .card.shadow-sm.mb-4
+                    .card-header.bg-white.py-3
+                        h5.card-title.m-0
+                            i.fas.fa-sliders-h.me-2.text-danger
+                            | Cài đặt khác
+                    .card-body
+                        .mb-3
+                            label.form-label Mã Google Analytics
+                            textarea.form-control(
+                                name="analytics[googleAnalytics]"
+                                rows="3"
+                                placeholder="Dán mã Google Analytics vào đây"
+                            )= settings && settings.analytics ? settings.analytics.googleAnalytics : ""
+                        
+                        .form-check.form-switch.mb-3
+                            input.form-check-input(
+                                type="checkbox"
+                                name="maintenance[enabled]"
+                                id="maintenanceMode"
+                                checked=settings && settings.maintenance && settings.maintenance.enabled
+                            )
+                            label.form-check-label(for="maintenanceMode") Bật chế độ bảo trì
+                        
+                        .maintenance-message.mb-3(style=settings && settings.maintenance && settings.maintenance.enabled ? "" : "display: none;")
+                            label.form-label Thông báo bảo trì
+                            textarea.form-control(
+                                name="maintenance[message]"
+                                rows="3"
+                                placeholder="Thông báo hiển thị khi web đang bảo trì"
+                            )= settings && settings.maintenance ? settings.maintenance.message : ""
+
+        .d-flex.justify-content-end.mt-4
+            button.btn.btn-secondary.me-2(type="reset")
+                i.fas.fa-undo.me-2
+                | Hủy thay đổi
+            button.btn.btn-primary(type="submit")
+                i.fas.fa-save.me-2
+                | Lưu cài đặt
+
+
