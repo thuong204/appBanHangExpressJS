@@ -11,6 +11,7 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
+    "@google/generative-ai": "^0.24.1",
     "autoprefixer": "^10.4.20",
     "body-parser": "^1.20.2",
     "cloudinary": "^2.2.0",

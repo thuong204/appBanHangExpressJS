@@ -54,6 +54,12 @@ app.locals.moment = moment
 
 app.use(bodyParser.urlencoded({extended: false}))
 
+
+app.use(bodyParser.urlencoded({extended: false}))
+
+
+app.use(express.json()); 
+
 //flash
 app.use(cookieParser("JHGJKLKLGFLJK"))
 app.use(session({cookie: {maxAge: 60000}}))
