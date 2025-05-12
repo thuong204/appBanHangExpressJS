@@ -27,18 +27,33 @@ mixin table-tree(records, level=1)
                     +formatDateTime(item.timeUpdatedNew)
             td  
                 if(item.status==="active")
-                    a(href="javascript:;" button-change-status data-status = item.status data-id = item.id class="badge bg-success text-decoration-none") Hoạt động
+                    a.status-badge.active(href="javascript:;" button-change-status data-status=item.status data-id=item.id)
+                        i.fas.fa-circle.me-1
+                                                | Hoạt động
                 else
-                    a(href=`javascript:;` button-change-status data-status = item.status data-id = item.id class="badge bg-danger text-decoration-none") Dừng hoạt động
+                    a.status-badge.inactive(href="javascript:;" button-change-status data-status=item.status data-id=item.id)
+                        i.fas.fa-circle.me-1
+                                                | Dừng hoạt động
 
             td 
 
                 if(role.permissions.includes("products-category-edit"))
-                    a(
-                        href=`${prefixAdmin}/category-products/edit/${item.id}`
-                        class="btn btn-warning btn-sm ms-1"
-                        data-id = item.id) Sửa
+                   a.btn.btn-sm.btn-outline-primary(
+                                                    href=`${prefixAdmin}/products/edit/${item.id}`
+                                                    data-id=item.id
+                                                    data-bs-toggle="tooltip" 
+                                                    data-bs-placement="top" 
+                                                    title="Sửa"
+                    )
+                        i.fas.fa-edit
                 if(role.permissions.includes("products-category-delete"))
-                    button(class="btn btn-danger btn-sm ms-1" button-delete data-id=item.id ) Xóa
+                    button.btn.btn-sm.btn-outline-danger(
+                                                    button-delete 
+                                                    data-id=item.id
+                                                    data-bs-toggle="tooltip" 
+                                                    data-bs-placement="top" 
+                                                    title="Xóa"
+                                                )
+                        i.fas.fa-trash-alt
         if item.children && item.children.length > 0
             +table-tree(item.children, level+1)

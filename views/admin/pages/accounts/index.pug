@@ -5,89 +5,147 @@ block main
     if(role.permissions.includes("accounts-view"))      
         +alert-success(3000)
         +alert-error(3000)
-        h1 Danh sách tài khoản
+        
+        .d-flex.justify-content-between.align-items-center.mb-4
+            h1.m-0 Quản lý tài khoản
+            if(role.permissions.includes("accounts-create"))      
+                a(
+                    class="btn btn-success"
+                    href=`${prefixAdmin}/accounts/create`
+                )
+                    i.fas.fa-plus.me-2.text-white
+                    | Thêm tài khoản
 
-        .card.mt-3
-            .card-header Danh sách
-                .card-body
-                    .row 
-                        .col-8
-                        
-                        .col-4.text-end
-                            if(role.permissions.includes("accounts-create"))      
-                                a(
-                                    class="btn btn-outline-success"
-                                    href=`${prefixAdmin}/accounts/create`
-                                ) +Thêm tài khoản
+        .card.shadow-sm.mb-4
+            .card-header.bg-white.py-3
+                h5.card-title.m-0
+                    i.fas.fa-user-friends.me-2.text-primary
+                    | Danh sách tài khoản
+            .card-body.p-0
+                .table-responsive
                     table(
-                        class="table table-hover table-sm mt-3"
+                        class="table table-hover align-middle mb-0"
                         checkbox-multi
                     )
-                        thead
+                        thead.bg-light
                             tr
-                                th 
-                                    input(type="checkbox" name="checkall")
-                                th STT
-                                th Avatar
-                                th Họ tên
-                                th Phân quyền
-                                th Email
-                                th Người tạo
-                                th Người cập nhật
-                                th(style="width:100px") Trạng thái
-                                th(style="width:170px") Hành động
+                                th.py-3 
+                                    .form-check
+                                        input.form-check-input(type="checkbox" name="checkall")
+                                th.py-3 STT
+                                th.py-3 Avatar
+                                th.py-3 Họ tên
+                                th.py-3 Phân quyền
+                                th.py-3 Email
+                                th.py-3 Người tạo
+                                th.py-3 Người cập nhật
+                                th.py-3(style="width:100px") Trạng thái
+                                th.py-3.text-end(style="width:170px") Hành động
                         tbody
                             each item, index in accounts
                                 tr
                                     td 
-                                        input(type="checkbox" name="id" value = item.id)
+                                        .form-check
+                                            input.form-check-input(type="checkbox" name="id" value=item.id)
                                     td #{index+1}
                                     td 
-                                        img(src= item.avatar, alt='Avatar' width='50')
-                                    td #{item.fullName}
-                                    td #{item.role.title}
+                                        if item.avatar
+                                            img(src=item.avatar, alt='Avatar' width='40' height='40' class="rounded-circle")
+                                        else
+                                            .avatar-placeholder.rounded-circle.bg-primary.d-flex.align-items-center.justify-content-center(style="width: 40px; height: 40px;")
+                                                i.fas.fa-user.text-white
+                                    td 
+                                        span.fw-medium #{item.fullName}
+                                    td 
+                                        span.badge.bg-info.text-white
+                                            i.fas.fa-shield-alt.me-1
+                                            | #{item.role.title}
                                     td #{item.email}
                                     td 
-                                        p #{item.createdName}
-                                        if(item.createdName)
-                                            +formatDateTime(item.createdBy.createdAt)
+                                        if item.createdName
+                                            div
+                                                i.fas.fa-user-plus.me-1.text-success
+                                                | #{item.createdName}
+                                            small.text-muted
+                                                i.far.fa-clock.me-1.text-secondary
+                                                +formatDateTime(item.createdBy.createdAt)
+                                        else
+                                            span.text-muted N/A
                                     td 
-                                        p #{item.updatedName}
-                                        if(item.updatedName)
-                                            +formatDateTime(item.timeUpdatedNew)
+                                        if item.updatedName
+                                            div
+                                                i.fas.fa-user-edit.me-1.text-primary
+                                                | #{item.updatedName}
+                                            small.text-muted
+                                                i.far.fa-clock.me-1.text-secondary
+                                                +formatDateTime(item.timeUpdatedNew)
+                                        else
+                                            span.text-muted N/A
                                     td  
                                         if(item.status==="active")
-                                            a.mt-2(href="javascript:;" button-change-status data-status = item.status data-id = item.id class="badge bg-success text-decoration-none") Hoạt động
+                                            a.mt-2(
+                                                href="javascript:;" 
+                                                button-change-status 
+                                                data-status=item.status 
+                                                data-id=item.id 
+                                                class="badge bg-success text-decoration-none px-3 py-2"
+                                            ) 
+                                                i.fas.fa-check-circle.me-1.text-white
+                                                | Hoạt động
                                         else
-                                            a.mt-2(href=`javascript:;` button-change-status data-status = item.status data-id = item.id class="badge bg-danger text-decoration-none") Dừng hoạt động
-
-                                    td 
-                                        a(
-                                            href=`${prefixAdmin}/accounts/detail/${item.id}`
-                                            class="btn btn-secondary btn-sm"
-                                            data-id = item.id) Chi tiết
-                                        if(role.permissions.includes("accounts-edit"))      
-                                            
+                                            a.mt-2(
+                                                href=`javascript:;` 
+                                                button-change-status 
+                                                data-status=item.status 
+                                                data-id=item.id 
+                                                class="badge bg-danger text-decoration-none px-3 py-2"
+                                            ) 
+                                                i.fas.fa-ban.me-1.text-white
+                                                | Dừng hoạt động
+                                    td.text-end
+                                        .btn-group
                                             a(
-                                                href=`${prefixAdmin}/accounts/edit/${item.id}`
-                                                class="btn btn-warning btn-sm ms-1"
-                                                data-id = item.id) Sửa
-                                        if(role.permissions.includes("accounts-delete"))      
-                                            button(class="btn btn-danger btn-sm ms-1" button-delete data-id=item.id ) Xóa
-        if(role.permissions.includes("accounts-edit"))      
+                                                href=`${prefixAdmin}/accounts/detail/${item.id}`
+                                                class="btn btn-outline-secondary btn-sm"
+                                                data-id=item.id
+                                                title="Chi tiết"
+                                            )
+                                                i.fas.fa-eye.text-secondary
+                                            
+                                            if(role.permissions.includes("accounts-edit"))
+                                                a(
+                                                    href=`${prefixAdmin}/accounts/edit/${item.id}`
+                                                    class="btn btn-outline-primary btn-sm ms-1"
+                                                    data-id=item.id
+                                                    title="Sửa"
+                                                )
+                                                    i.fas.fa-edit.text-primary
+                                            
+                                            if(role.permissions.includes("accounts-delete"))
+                                                button(
+                                                    class="btn btn-outline-danger btn-sm ms-1" 
+                                                    button-delete 
+                                                    data-id=item.id
+                                                    title="Xóa"
+                                                )
+                                                    i.fas.fa-trash-alt.text-danger
         
+        if(role.permissions.includes("accounts-edit"))
             form(
                 action=""
                 method="POST"
                 id="form-change-status"
                 data-path=`${prefixAdmin}/accounts/change-status/`
-                )
+            )
+        
         if(role.permissions.includes("accounts-delete")) 
             form(
                 action=""
                 method="POST"
                 id="form-delete-item"
                 data-path=`${prefixAdmin}/accounts/delete`
-                )
+            )
     else 
-        h1 Bạn không có quyền truy cập
+        .alert.alert-danger.m-4
+            i.fas.fa-exclamation-triangle.me-2.text-danger
+            | Bạn không có quyền truy cập trang này

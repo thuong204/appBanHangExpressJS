@@ -1,13 +1,35 @@
 mixin pagination
-    nav.mt-3    
+    nav.mt-3.d-flex.justify-content-center
         ul(class="pagination")
             if(pagination.currentPage>1)
                 li(class="page-item")
-                    button(class="page-link" button-pagination= pagination.currentPage-1) Trang trước
-            - for (var i = 1;i<=pagination.totalPage;i++)
+                    button(class="page-link" button-pagination= pagination.currentPage-1)
+                        i.fas.fa-chevron-left
+            
+            //- Thêm trang đầu tiên nếu không hiển thị trong dãy trang chính
+            if(pagination.currentPage > 3)
+                li(class="page-item")
+                    button(class="page-link" button-pagination=1) 1
+                if(pagination.currentPage > 4)
+                    li.page-item.disabled
+                        span.page-link ...
+            
+            //- Hiển thị các trang xung quanh trang hiện tại
+            - const startPage = Math.max(1, pagination.currentPage - 1);
+            - const endPage = Math.min(pagination.totalPage, pagination.currentPage + 1);
+            - for (var i = startPage; i <= endPage; i++)
                 li(class=`page-item ${pagination.currentPage == i ? "active" :""}`)
                     button(class="page-link" button-pagination= i) #{i}
-              
-            if(pagination.currentPage<pagination.totalPage)
+            
+            //- Thêm trang cuối cùng nếu không hiển thị trong dãy trang chính
+            if(pagination.currentPage < pagination.totalPage - 2)
+                if(pagination.currentPage < pagination.totalPage - 3)
+                    li.page-item.disabled
+                        span.page-link ...
                 li(class="page-item")
-                    button(class="page-link" button-pagination= pagination.currentPage+1) Trang tiếp
+                    button(class="page-link" button-pagination=pagination.totalPage) #{pagination.totalPage}
+              
+            if(pagination.currentPage < pagination.totalPage)
+                li(class="page-item")
+                    button(class="page-link" button-pagination= pagination.currentPage+1)
+                        i.fas.fa-chevron-right

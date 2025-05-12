@@ -10,98 +10,134 @@ block main
     if(role.permissions.includes("products-view"))
         +alert-success(3000)
         +alert-error(3000)
-        h1 Danh sách sản phẩm
+        
+        .page-header.d-flex.justify-content-between.align-items-center.mb-4
+            h1.page-title 
+                i.fas.fa-box-open.me-2
+                | Danh sách sản phẩm
+            if(role.permissions.includes("products-create"))
+                a(class="btn btn-success btn-add" href=`${prefixAdmin}/products/create`)
+                    i.fas.fa-plus.me-2
+                    | Thêm sản phẩm
 
-        .card.mt-3
-            .card-header Bộ lọc và tìm kiếm 
-            .card-body.mt-3
-                .row
-                    .col-6
+        .card.shadow.mb-4
+            .card-header.bg-white.py-3
+                .row.align-items-center
+                    .col-md-3
                         +filterStatus()
-                    .col-6
+                    .col-md-5
                         +search()
-
-        .card.mt-3 
-            .card-header Sắp xếp 
-            .card-body 
-                .row 
-                    .col-4 
+                    .col-md-4
                         +sort()
-        .card.mt-3
-            .card-header Danh sách
-            .card-body
-                .row 
-                    .col-10
-                        if(role.permissions.includes("products-edit"))
-                            +form-change-multi(`${prefixAdmin}/products/change-multi?_method=PATCH`)
-                    .col-2
-                        if(role.permissions.includes("products-create"))
-                            a(
-                                class="btn btn-outline-success"
-                                href=`${prefixAdmin}/products/create`
-                            ) +Thêm sản phẩm
-                table(
-                    class="table table-hover table-sm mt-3"
-                    checkbox-multi
-                )
-                    thead
-                        tr
-                            th 
-                                input(type="checkbox" name="checkall")
-                            th STT
-                            th Hình ảnh
-                            th.product-title Tiêu đề
-                            th Giá
-                            th Vị trí
-                            th Người tạo
-                            th Người cập nhật
-                            th(width="100px;") Trạng thái
-                            th(width="180px;") Hành động
-                    tbody
-                        each item, index in products
-                            tr
-                                td 
-                                    input(type="checkbox" name="id" value = item.id)
-                                td #{pagination.limitItems*(pagination.currentPage-1)+ (index+1)}
-                                td 
-                                    img(src= item.thumbnail, alt='Hình ảnh sản phẩm' width='50')
-                                td.td-title #{item.title}
-                                td #{item.price}đ
-                                td 
-                                    input(
-                                        type="number"
-                                        value = item.position
-                                        style ="width: 60px"
-                                        min="1"
-                                        name="position"
-                                    )
-                                td
-                                    p #{item.accountFullName}
-                                    if(item.accountFullName)
-                                        +formatDateTime(item.createdBy.createdAt)
-                                td
-                                    p #{item.updatedName}
-                                    if(item.updatedName)
-                                        +formatDateTime(item.timeUpdatedNew)
-                                td(style="padđing-top:20px;")
-                                    if(item.status==="active")
-                                        a(href="javascript:;" button-change-status data-status = item.status data-id = item.id class="badge bg-success text-decoration-none") Hoạt động
-                                    else
-                                        a(href=`javascript:;` button-change-status data-status = item.status data-id = item.id class="badge bg-danger text-decoration-none") Dừng hoạt động
+                    
 
-                                td 
-                                    a(
-                                        href=`${prefixAdmin}/products/detail/${item.id}`
-                                        class="btn btn-secondary btn-sm"
-                                        data-id = item.id) Chi tiết
-                                    if(role.permissions.includes("products-edit"))
-                                        a(
-                                            href=`${prefixAdmin}/products/edit/${item.id}`
-                                            class="btn btn-warning btn-sm ms-1"
-                                            data-id = item.id) Sửa
-                                    if(role.permissions.includes("products-delete"))
-                                        button(class="btn btn-danger btn-sm ms-1" button-delete data-id=item.id ) Xóa
-        +pagination()
+        .card.shadow
+            .card-header.bg-white.py-3.d-flex.justify-content-between.align-items-center
+                h6.m-0.font-weight-bold.text-primary Danh sách sản phẩm
+                if(role.permissions.includes("products-edit"))
+                    +form-change-multi(`${prefixAdmin}/products/change-multi?_method=PATCH`)
+            
+            .card-body
+                .table-responsive
+                    table.table.table-hover.align-middle(checkbox-multi)
+                        thead.bg-light
+                            tr
+                                th 
+                                    .form-check
+                                        input.form-check-input(type="checkbox" name="checkall" id="checkall")
+                                        label.form-check-label(for="checkall")
+                                th STT
+                                th Hình ảnh
+                                th.product-title Tiêu đề
+                                th Giá
+                                th Vị trí
+                                th Người tạo
+                                th Cập nhật
+                                th Trạng thái
+                                th.text-center Hành động
+                        tbody
+                            each item, index in products
+                                tr
+                                    td 
+                                        .form-check
+                                            input.form-check-input(type="checkbox" name="id" value=item.id id=`item-${item.id}`)
+                                            label.form-check-label(for=`item-${item.id}`)
+                                    td.text-center #{pagination.limitItems*(pagination.currentPage-1)+ (index+1)}
+                                    td 
+                                        .product-img
+                                            img(src=item.thumbnail, alt=item.title)
+                                    td.product-info
+                                        .product-name #{item.title}
+                                        if item.categoryProduct
+                                            span.product-category #{item.categoryProduct}
+                                    td.text-nowrap
+                                        .product-price #{new Intl.NumberFormat('vi-VN').format(item.price)}₫
+                                        if item.discountPercentage
+                                            span.discount-badge -#{item.discountPercentage}%
+                                    td 
+                                        input.form-control.form-control-sm.position-input(
+                                            type="number"
+                                            value=item.position
+                                            min="1"
+                                            name="position"
+                                        )
+                                    td.creator-info
+                                        if item.accountFullName
+                                            .d-flex.align-items-center
+                                                .avatar.me-2
+                                                    span #{item.accountFullName.charAt(0)}
+                                                .info
+                                                    span.name #{item.accountFullName}
+                                                    .date
+                                                        +formatDateTime(item.createdBy.createdAt)
+                                    td
+                                        if item.updatedName
+                                            .updated-info
+                                                span.name #{item.updatedName}
+                                                .date
+                                                    +formatDateTime(item.timeUpdatedNew)
+                                    td
+                                        if(item.status==="active")
+                                            a.status-badge.active(href="javascript:;" button-change-status data-status=item.status data-id=item.id)
+                                                i.fas.fa-circle.me-1
+                                                | Hoạt động
+                                        else
+                                            a.status-badge.inactive(href="javascript:;" button-change-status data-status=item.status data-id=item.id)
+                                                i.fas.fa-circle.me-1
+                                                | Dừng hoạt động
+
+                                    td.action-column
+                                        .btn-group.action-buttons
+                                            a.btn.btn-sm.btn-outline-info(
+                                                href=`${prefixAdmin}/products/detail/${item.id}`
+                                                data-id=item.id
+                                                data-bs-toggle="tooltip" 
+                                                data-bs-placement="top" 
+                                                title="Chi tiết"
+                                            )
+                                                i.fas.fa-eye
+                                            if(role.permissions.includes("products-edit"))
+                                                a.btn.btn-sm.btn-outline-primary(
+                                                    href=`${prefixAdmin}/products/edit/${item.id}`
+                                                    data-id=item.id
+                                                    data-bs-toggle="tooltip" 
+                                                    data-bs-placement="top" 
+                                                    title="Sửa"
+                                                )
+                                                    i.fas.fa-edit
+                                            if(role.permissions.includes("products-delete"))
+                                                button.btn.btn-sm.btn-outline-danger(
+                                                    button-delete 
+                                                    data-id=item.id
+                                                    data-bs-toggle="tooltip" 
+                                                    data-bs-placement="top" 
+                                                    title="Xóa"
+                                                )
+                                                    i.fas.fa-trash-alt
+                
+                .d-flex.justify-content-center.mt-4
+                    +pagination()
+
         if(role.permissions.includes("products-edit"))
             form(
                 action=""
@@ -115,6 +151,10 @@ block main
                 method="POST"
                 id="form-delete-item"
                 data-path=`${prefixAdmin}/products/delete`
-                )
+            )
     else    
-        h1 Bạn không có quyền truy cập 
+        .access-denied
+            .icon
+                i.fas.fa-lock.fa-4x
+            h1 Truy cập bị từ chối
+            p Bạn không có quyền truy cập vào trang này. Vui lòng liên hệ quản trị viên để biết thêm chi tiết.
