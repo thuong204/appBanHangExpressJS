@@ -393,6 +393,10 @@ if (paymentCard && paymentDelivery) {
 
 //chat box
 
+// ... existing code ...
+
+//chat box
+
 document.addEventListener("DOMContentLoaded", function () {
   const chatbotButton = document.querySelector(".chatbot-button");
   const chatbotContainer = document.querySelector(".chatbot-container");
@@ -402,65 +406,8 @@ document.addEventListener("DOMContentLoaded", function () {
   const chatbotMessages = document.querySelector(".chatbot-messages");
   const chatbotBody = document.querySelector(".chatbot-body");
 
-  // Các câu trả lời mẫu cho chatbot
-  const botResponses = {
-    greeting: [
-      "Xin chào! Tôi có thể giúp gì cho bạn?",
-      "Chào bạn! Tôi là trợ lý ảo, bạn cần hỗ trợ gì không?",
-      "Xin chào! Rất vui được gặp bạn. Tôi có thể giúp gì không?",
-      "Chào mừng bạn đến với Vô Thường! Tôi có thể giúp gì cho bạn?",
-      "Xin chào! Tôi là trợ lý ảo của Vô Thường, rất hân hạnh được phục vụ bạn.",
-    ],
-    product: [
-      "Bạn đang quan tâm đến sản phẩm nào? Tôi có thể giúp bạn tìm hiểu thêm.",
-      "Chúng tôi có nhiều sản phẩm chất lượng. Bạn muốn biết thêm về sản phẩm nào?",
-      "Tôi có thể giúp bạn tìm hiểu thông tin chi tiết về sản phẩm. Bạn quan tâm đến sản phẩm nào?",
-      "Chúng tôi có đa dạng các sản phẩm công nghệ. Bạn muốn tìm hiểu về sản phẩm nào?",
-      "Tôi có thể giúp bạn so sánh các sản phẩm. Bạn đang quan tâm đến sản phẩm nào?",
-    ],
-    price: [
-      "Giá sản phẩm có thể thay đổi tùy theo chương trình khuyến mãi. Bạn muốn biết giá cụ thể của sản phẩm nào?",
-      "Chúng tôi thường xuyên có các chương trình giảm giá. Bạn muốn xem giá của sản phẩm nào?",
-      "Để biết giá chính xác, bạn có thể cho tôi biết sản phẩm cụ thể không?",
-      "Hiện tại chúng tôi đang có nhiều chương trình khuyến mãi. Bạn muốn biết giá của sản phẩm nào?",
-      "Giá sản phẩm sẽ được cập nhật theo chương trình khuyến mãi. Bạn quan tâm đến sản phẩm nào?",
-    ],
-    warranty: [
-      "Tất cả sản phẩm của chúng tôi đều được bảo hành chính hãng. Bạn muốn biết thêm thông tin gì không?",
-      "Chúng tôi cam kết bảo hành chính hãng cho mọi sản phẩm. Bạn cần tư vấn thêm gì không?",
-      "Thời gian bảo hành tùy thuộc vào từng sản phẩm. Bạn muốn biết thông tin bảo hành của sản phẩm nào?",
-      "Chúng tôi có chính sách bảo hành rõ ràng và minh bạch. Bạn cần tư vấn thêm gì không?",
-      "Mọi sản phẩm đều được bảo hành tại các trung tâm bảo hành chính hãng. Bạn cần thông tin gì thêm không?",
-    ],
-    payment: [
-      "Chúng tôi chấp nhận nhiều hình thức thanh toán: tiền mặt, chuyển khoản, thẻ tín dụng. Bạn muốn thanh toán bằng cách nào?",
-      "Bạn có thể thanh toán trực tiếp tại cửa hàng hoặc chuyển khoản. Bạn cần tư vấn thêm gì không?",
-      "Chúng tôi hỗ trợ thanh toán qua nhiều cổng thanh toán: Momo, ZaloPay, VNPay. Bạn muốn biết thêm thông tin gì không?",
-      "Thanh toán online được bảo mật tuyệt đối. Bạn cần tư vấn thêm về phương thức thanh toán không?",
-      "Bạn có thể thanh toán trước hoặc sau khi nhận hàng. Bạn muốn biết thêm thông tin gì không?",
-    ],
-    delivery: [
-      "Chúng tôi giao hàng toàn quốc với phí vận chuyển tùy theo khu vực. Bạn muốn biết thêm thông tin gì không?",
-      "Thời gian giao hàng từ 1-3 ngày tùy khu vực. Bạn cần tư vấn thêm gì không?",
-      "Chúng tôi có dịch vụ giao hàng nhanh trong 2 giờ tại các thành phố lớn. Bạn muốn biết thêm thông tin gì không?",
-      "Phí vận chuyển sẽ được tính dựa trên khoảng cách và trọng lượng. Bạn cần tư vấn thêm gì không?",
-      "Bạn có thể theo dõi đơn hàng trực tuyến. Bạn muốn biết thêm thông tin gì không?",
-    ],
-    return: [
-      "Chúng tôi có chính sách đổi trả trong 15 ngày. Bạn cần tư vấn thêm gì không?",
-      "Sản phẩm lỗi sẽ được đổi trả miễn phí. Bạn muốn biết thêm thông tin gì không?",
-      "Bạn có thể đổi trả sản phẩm tại bất kỳ cửa hàng nào của chúng tôi. Bạn cần tư vấn thêm gì không?",
-      "Chúng tôi cam kết đổi trả nếu sản phẩm không đúng như mô tả. Bạn muốn biết thêm thông tin gì không?",
-      "Quy trình đổi trả đơn giản và nhanh chóng. Bạn cần tư vấn thêm gì không?",
-    ],
-    default: [
-      "Xin lỗi, tôi chưa hiểu rõ câu hỏi của bạn. Bạn có thể diễn đạt lại không?",
-      "Tôi đang học hỏi thêm. Bạn có thể hỏi lại theo cách khác không?",
-      "Tôi chưa có thông tin về vấn đề này. Bạn có thể liên hệ hotline 1900 1234 để được hỗ trợ.",
-      "Xin lỗi, tôi chưa hiểu ý của bạn. Bạn có thể hỏi lại được không?",
-      "Tôi chưa được cập nhật thông tin này. Bạn có thể liên hệ trực tiếp với chúng tôi qua hotline 1900 1234.",
-    ],
-  };
+  // Generate a unique session ID for this chat session
+  const sessionId = "session_" + Math.random().toString(36).substring(2, 15);
 
   // Hàm tạo tin nhắn
   function createMessage(content, isUser = false) {
@@ -481,84 +428,42 @@ document.addEventListener("DOMContentLoaded", function () {
     chatbotBody.scrollTop = chatbotBody.scrollHeight;
   }
 
-  // Hàm xử lý phản hồi của bot
-  function handleBotResponse(userMessage) {
-    const lowerMessage = userMessage.toLowerCase();
-    let response;
+  // Hàm xử lý tin nhắn thông qua API Gemini
+  async function sendMessageToAPI(message) {
+    try {
+      // Hiển thị trạng thái đang gõ
+      const typingIndicator = createMessage("...", false);
+      chatbotMessages.appendChild(typingIndicator);
+      chatbotBody.scrollTop = chatbotBody.scrollHeight;
 
-    if (
-      lowerMessage.includes("chào") ||
-      lowerMessage.includes("hello") ||
-      lowerMessage.includes("hi")
-    ) {
-      response =
-        botResponses.greeting[
-          Math.floor(Math.random() * botResponses.greeting.length)
-        ];
-    } else if (
-      lowerMessage.includes("sản phẩm") ||
-      lowerMessage.includes("máy") ||
-      lowerMessage.includes("điện thoại")
-    ) {
-      response =
-        botResponses.product[
-          Math.floor(Math.random() * botResponses.product.length)
-        ];
-    } else if (
-      lowerMessage.includes("giá") ||
-      lowerMessage.includes("bao nhiêu") ||
-      lowerMessage.includes("tiền")
-    ) {
-      response =
-        botResponses.price[
-          Math.floor(Math.random() * botResponses.price.length)
-        ];
-    } else if (
-      lowerMessage.includes("bảo hành") ||
-      lowerMessage.includes("warranty")
-    ) {
-      response =
-        botResponses.warranty[
-          Math.floor(Math.random() * botResponses.warranty.length)
-        ];
-    } else if (
-      lowerMessage.includes("thanh toán") ||
-      lowerMessage.includes("payment") ||
-      lowerMessage.includes("trả tiền")
-    ) {
-      response =
-        botResponses.payment[
-          Math.floor(Math.random() * botResponses.payment.length)
-        ];
-    } else if (
-      lowerMessage.includes("giao hàng") ||
-      lowerMessage.includes("ship") ||
-      lowerMessage.includes("vận chuyển")
-    ) {
-      response =
-        botResponses.delivery[
-          Math.floor(Math.random() * botResponses.delivery.length)
-        ];
-    } else if (
-      lowerMessage.includes("đổi trả") ||
-      lowerMessage.includes("return") ||
-      lowerMessage.includes("hoàn tiền")
-    ) {
-      response =
-        botResponses.return[
-          Math.floor(Math.random() * botResponses.return.length)
-        ];
-    } else {
-      response =
-        botResponses.default[
-          Math.floor(Math.random() * botResponses.default.length)
-        ];
+      // Gọi API
+      const response = await fetch("/api/chatbot", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          message: message,
+          sessionId: sessionId,
+        }),
+      });
+
+      // Xoá dấu hiệu đang gõ
+      chatbotMessages.removeChild(typingIndicator);
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || "Không thể kết nối đến chat bot");
+      }
+
+      const data = await response.json();
+      addMessage(data.response);
+    } catch (error) {
+      console.error("Chatbot error:", error);
+      addMessage(
+        "Xin lỗi, có lỗi xảy ra. Vui lòng thử lại sau hoặc liên hệ hotline 1900 1234."
+      );
     }
-
-    // Thêm độ trễ để tạo cảm giác tự nhiên
-    setTimeout(() => {
-      addMessage(response);
-    }, 500);
   }
 
   // Xử lý sự kiện click vào nút chat
@@ -578,17 +483,21 @@ document.addEventListener("DOMContentLoaded", function () {
   chatbotForm.addEventListener("submit", function (e) {
     e.preventDefault();
     const message = chatbotInput.value.trim();
+    console.log(message);
 
-    if (message) {
-      // Thêm tin nhắn của user
-      addMessage(message, true);
-
-      // Xử lý phản hồi của bot
-      handleBotResponse(message);
-
-      // Xóa nội dung input
-      chatbotInput.value = "";
+    if (!message) {
+      // Don't submit empty messages
+      return;
     }
+
+    // Thêm tin nhắn của user
+    addMessage(message, true);
+
+    // Gửi tin nhắn đến API
+    sendMessageToAPI(message);
+
+    // Xóa nội dung input
+    chatbotInput.value = "";
   });
 
   // Thêm tin nhắn chào mừng khi mở chat
@@ -598,7 +507,9 @@ document.addEventListener("DOMContentLoaded", function () {
       chatbotMessages.children.length === 0
     ) {
       setTimeout(() => {
-        addMessage(botResponses.greeting[0]);
+        addMessage(
+          "Xin chào! Tôi là trợ lý ảo của cửa hàng Vô Thường. Tôi có thể giúp gì cho bạn?"
+        );
       }, 300);
     }
   });
