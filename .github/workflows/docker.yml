@@ -14,7 +14,7 @@ on:
 
 env:
   DOCKER_IMAGE: trancongthuong/appbanhang-express
-  DOCKER_TAG: testes
+  DOCKER_TAG: latest
 
 jobs:
   build-and-push:
