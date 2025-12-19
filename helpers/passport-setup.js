@@ -5,7 +5,7 @@ const User = require("../models/users.model"); // Đường dẫn đến model U
 
 module.exports.setupGoogleStrategy = () => {
   // Sử dụng full URL cho callbackURL
-  const baseURL = process.env.BASE_URL || 'http://localhost:3000';
+  const baseURL =  process.env.BASE_URL || "https://thuong-electronic.io.vn"
   const callbackURL = `${baseURL}/user/oauth2/redirect/google`;
   
   passport.use(new GoogleStrategy({
