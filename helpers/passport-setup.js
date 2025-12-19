@@ -4,10 +4,14 @@ const FacebookStrategy = require('passport-facebook');
 const User = require("../models/users.model"); // Đường dẫn đến model User của bạn
 
 module.exports.setupGoogleStrategy = () => {
+  // Sử dụng full URL cho callbackURL
+  const baseURL = process.env.BASE_URL || 'http://localhost:3000';
+  const callbackURL = `${baseURL}/user/oauth2/redirect/google`;
+  
   passport.use(new GoogleStrategy({
     clientID: process.env.GOOGLE_CLIENT_ID,
     clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-    callbackURL: '/user/oauth2/redirect/google',
+    callbackURL: callbackURL,
     scope: ['profile', 'email'],
   }, async (accessToken, refreshToken, profile, cb) => {
     try {
@@ -34,10 +38,14 @@ module.exports.setupGoogleStrategy = () => {
 };
 
 module.exports.setupFacebookStrategy = () =>{
+    // Sử dụng full URL cho callbackURL
+    const baseURL = process.env.BASE_URL || 'http://localhost:3000';
+    const callbackURL = `${baseURL}/user/oauth2/redirect/facebook`;
+    
     passport.use(new FacebookStrategy({
         clientID: process.env.FACEBOOK_CLIENT_ID,
         clientSecret: process.env.FACEBOOK_CLIENT_SECRET,
-        callbackURL: '/user/oauth2/redirect/facebook',
+        callbackURL: callbackURL,
         profileFields: ['id', 'displayName'] // Chọn các trường bạn muốn lấy
       },
       async (accessToken, refreshToken, profile, cb) => {

@@ -23,6 +23,7 @@ const moment = require("moment")
 const cookieParser =require("cookie-parser")
 
 const database = require("./config/database.js")
+const mongoose = require('mongoose')
 
 const app = express()
 const port = process.env.PORT
@@ -35,56 +36,93 @@ const { configureSession, configurePassport } = require('./config/passportConfig
 app.use(methodOverride('_method'))
 app.use('/tinymce', express.static(path.join(__dirname, 'node_modules', 'tinymce')));
 
+// Kết nối database (async nhưng không block app)
 database.connect()
-
 
 app.set('views', `${__dirname}/views`)
 app.set('view engine', 'pug')
-
-//Socket IO
-const server = http.createServer(app)
-const io = new Server(server)
-global._io = io
-
-
 
 //App local variable
 app.locals.prefixAdmin =  systemConfig.prefixAdmin
 app.locals.moment = moment
 
 app.use(bodyParser.urlencoded({extended: false}))
-
-
-app.use(bodyParser.urlencoded({extended: false}))
-
-
 app.use(express.json()); 
 
 //flash
 app.use(cookieParser("JHGJKLKLGFLJK"))
-app.use(session({cookie: {maxAge: 60000}}))
-app.use(flash())
-//end flash
 
-route(app);
-routeAdmin(app);
-app.use(express.static(`${__dirname}/public`))
-
-
+// Cấu hình session (chỉ 1 lần, trước routes)
 app.use(session({
-    secret: 'keyboard cat',  
+    secret: process.env.SESSION_SECRET || 'keyboard cat',  
     resave: false,
     saveUninitialized: false,
+    cookie: { 
+        maxAge: 14 * 24 * 60 * 60 * 1000, // 14 days
+        secure: process.env.NODE_ENV === 'production', // HTTPS only in production
+        httpOnly: true
+    },
     store: MongoStore.create({
       mongoUrl: process.env.MONGO_URL,  
       collectionName: 'sessions',       
-      ttl: 14 * 24 * 60 * 60           
+      ttl: 14 * 24 * 60 * 60,
+      autoRemove: 'native'          
     })
-  }));
+}));
+
+app.use(flash())
 
 // Cấu hình session và Passport
 configureSession(app);
 configurePassport(app);
-server.listen(port, () => {
-    console.log(`Example app listening on port ${port}`)
+
+// Routes
+route(app);
+routeAdmin(app);
+app.use(express.static(`${__dirname}/public`))
+
+//Socket IO
+const server = http.createServer(app)
+const io = new Server(server)
+global._io = io
+
+// Health check endpoint
+app.get('/health', (req, res) => {
+    try {
+        const mongoState = mongoose.connection.readyState;
+        const mongoStatus = mongoState === 1 ? 'connected' : 
+                           mongoState === 2 ? 'connecting' : 
+                           mongoState === 3 ? 'disconnecting' : 'disconnected';
+        
+        res.status(200).json({ 
+            status: 'ok', 
+            timestamp: new Date().toISOString(),
+            mongodb: mongoStatus,
+            port: port
+        });
+    } catch (error) {
+        res.status(500).json({ 
+            status: 'error', 
+            error: error.message 
+        });
+    }
+});
+
+// Error handling middleware
+app.use((err, req, res, next) => {
+    console.error('Error:', err);
+    res.status(500).send('Internal Server Error');
+});
+
+// Start server
+if (!port) {
+    console.error('PORT environment variable is not set');
+    process.exit(1);
+}
+
+server.listen(port, '0.0.0.0', () => {
+    console.log(`Server listening on port ${port}`)
+}).on('error', (err) => {
+    console.error('Server error:', err);
+    process.exit(1);
 })
