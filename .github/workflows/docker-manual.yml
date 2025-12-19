@@ -39,5 +39,6 @@ jobs:
           cache-to: type=inline
 
       - name: Image digest
-        run: echo "Image pushed to Docker Hub: ${{ env.DOCKER_IMAGE }}:${{ inputs.tag || 'testes' }}"
+        run: |
+          echo "Image pushed to Docker Hub: ${{ env.DOCKER_IMAGE }}:${{ inputs.tag || 'testes' }}"
 
