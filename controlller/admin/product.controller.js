@@ -209,18 +209,24 @@ module.exports.saveItem = async (req, res) => {
     //
     const colors = req.body.colors
     const quantities = req.body.quantities
-    const variations = colors.map((color, index) => {
-        const quantity = parseInt(quantities[index], 10); 
-        if (color && quantity >= 1) {
-            return {
-                color: color,
-                quantity: quantity
-            };
-        }
-    }).filter(Boolean);
+    
+    // Kiểm tra colors và quantities có tồn tại không
+    let variations = [];
+    if (colors && Array.isArray(colors) && colors.length > 0) {
+        variations = colors.map((color, index) => {
+            const quantity = parseInt(quantities && quantities[index] ? quantities[index] : 0, 10); 
+            if (color && quantity >= 1) {
+                return {
+                    color: color,
+                    quantity: quantity
+                };
+            }
+        }).filter(Boolean);
+    }
+    
     req.body.variations = variations
     const totalQuantity = variations.reduce((total, variation) => total + variation.quantity, 0);
-    req.body.totalQuantity = totalQuantity
+    req.body.totalQuantity = totalQuantity || 0
     delete req.body.colors
     delete req.body.quantities
 
@@ -264,15 +270,20 @@ module.exports.updateItem = async (req, res) => {
     const colors = req.body.colors
     const quantities = req.body.quantities
 
-    const variations = colors.map((color, index) => {
-        return {
-            color: color,
-            quantity: parseInt(quantities[index], 10) || 0
-        };
-    });
+    // Kiểm tra colors và quantities có tồn tại không
+    let variations = [];
+    if (colors && Array.isArray(colors) && colors.length > 0) {
+        variations = colors.map((color, index) => {
+            return {
+                color: color,
+                quantity: parseInt(quantities && quantities[index] ? quantities[index] : 0, 10) || 0
+            };
+        }).filter(v => v.color); // Lọc bỏ các variation không có color
+    }
+    
     req.body.variations = variations
     const totalQuantity = variations.reduce((total, variation) => total + variation.quantity, 0);
-    req.body.totalQuantity = totalQuantity
+    req.body.totalQuantity = totalQuantity || 0
 
     delete req.body.colors
     delete req.body.quantities
