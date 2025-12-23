@@ -2,8 +2,96 @@ const axios = require("axios");
 const config = require("../../config/chatbot");
 const Product = require("../../models/product.model");
 
+// Kiểm tra API key
+if (!config.GROQ_API_KEY || config.GROQ_API_KEY === "") {
+  console.warn("⚠️  GROQ_API_KEY chưa được cấu hình!");
+  console.warn("💡 Đăng ký miễn phí tại: https://console.groq.com/");
+  console.warn("💡 Sau đó thêm GROQ_API_KEY vào file .env");
+} else {
+  console.log(`✅ Đã cấu hình Groq API với model: ${config.MODEL}`);
+  console.log(`📌 API Key: ${config.GROQ_API_KEY.substring(0, 10)}...${config.GROQ_API_KEY.substring(config.GROQ_API_KEY.length - 4)}`);
+}
+
 // Lưu trữ lịch sử chat
 const chatHistory = new Map();
+
+// Hàm chuyển đổi lịch sử chat sang format OpenAI (dùng cho Groq)
+const convertHistoryToOpenAIFormat = (history) => {
+  return history.slice(-8).map(msg => ({
+    role: msg.role === "user" ? "user" : "assistant",
+    content: msg.content
+  }));
+};
+
+// Danh sách model dự phòng
+const FALLBACK_MODELS = [
+  "llama-3.1-70b-versatile",
+  "mixtral-8x7b-32768",
+  "gemma-7b-it",
+  "llama-3.1-8b-instant"
+];
+
+// Hàm gọi Groq API với khả năng thử lại với model khác
+const callGroqAPI = async (prompt, history = [], model = config.MODEL, retryCount = 0) => {
+  if (!config.GROQ_API_KEY || config.GROQ_API_KEY === "") {
+    return {
+      success: false,
+      error: new Error("GROQ_API_KEY chưa được cấu hình"),
+      errorType: 'no_api_key',
+      message: 'GROQ_API_KEY chưa được cấu hình. Đăng ký tại: https://console.groq.com/'
+    };
+  }
+  
+  // Chuyển đổi lịch sử chat
+  const messages = convertHistoryToOpenAIFormat(history);
+  messages.push({ role: "user", content: prompt });
+  
+  try {
+    console.log(`🔄 Calling Groq API with model: ${model} (attempt ${retryCount + 1})`);
+    
+    const apiResponse = await axios.post(config.API_BASE_URL, {
+      model: model,
+      messages: messages,
+      max_tokens: config.MAX_TOKENS,
+      temperature: config.TEMPERATURE
+    }, {
+      headers: {
+        'Authorization': `Bearer ${config.GROQ_API_KEY}`,
+        'Content-Type': 'application/json'
+      },
+      timeout: 30000
+    });
+    
+    if (apiResponse.data && apiResponse.data.choices && apiResponse.data.choices[0]) {
+      console.log(`✅ Groq API response received`);
+      return {
+        success: true,
+        text: apiResponse.data.choices[0].message.content
+      };
+    }
+    
+    throw new Error("Invalid response format");
+  } catch (error) {
+    const errorData = error.response?.data || {};
+    const errorCode = errorData.error?.code;
+    const errorMessage = errorData.error?.message || error.message;
+    
+    // Nếu model bị decommissioned hoặc không tồn tại, thử model khác
+    if ((errorCode === 'model_decommissioned' || errorCode === 'model_not_found' || 
+         error.response?.status === 404) && retryCount < FALLBACK_MODELS.length) {
+      console.warn(`⚠️  Model ${model} không khả dụng: ${errorMessage}`);
+      console.warn(`🔄 Thử model dự phòng: ${FALLBACK_MODELS[retryCount]}`);
+      return callGroqAPI(prompt, history, FALLBACK_MODELS[retryCount], retryCount + 1);
+    }
+    
+    return {
+      success: false,
+      error: error,
+      errorType: error.response?.status === 429 ? 'quota_exceeded' : 'other',
+      message: errorMessage
+    };
+  }
+};
 
 // Hàm để truy vấn dữ liệu sản phẩm từ MongoDB
 const getProductsInfo = async (message) => {
@@ -203,44 +291,33 @@ const handleChat = async (req, res) => {
       }
 
       try {
-        // Cấu trúc request theo định dạng mới của Gemini API
-        const requestData = {
-          contents: [
-            {
-              parts: [
-                { text: contextPrompt },
-                { text: `Tin nhắn của khách hàng: ${message}` },
-              ],
-            },
-          ],
-          generationConfig: {
-            temperature: config.TEMPERATURE,
-            maxOutputTokens: config.MAX_TOKENS,
-          },
-        };
+        // Tạo prompt hoàn chỉnh cho Groq
+        const fullPrompt = `${contextPrompt}\n\nTin nhắn của khách hàng: ${message}`;
+        
+        // Gọi Groq API
+        const apiResult = await callGroqAPI(fullPrompt, history);
 
-        // Gửi request đến Gemini API
-        const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/${config.MODEL}:generateContent?key=${config.GEMINI_API_KEY}`;
-        const apiResponse = await axios.post(apiUrl, requestData);
+        if (apiResult.success && apiResult.text) {
+          const response = apiResult.text;
 
-        // Xử lý phản hồi từ API
-        const response = apiResponse.data.candidates[0].content.parts[0].text;
+          // Thêm phản hồi vào lịch sử
+          history.push({ role: "assistant", content: response });
 
-        // Thêm phản hồi vào lịch sử
-        history.push({ role: "assistant", content: response });
+          // Giới hạn lịch sử chat (giữ 10 tin nhắn gần nhất)
+          if (history.length > 10) {
+            history = history.slice(-10);
+          }
 
-        // Giới hạn lịch sử chat (giữ 10 tin nhắn gần nhất)
-        if (history.length > 10) {
-          history = history.slice(-10);
+          // Cập nhật lịch sử chat
+          chatHistory.set(sessionId, history);
+
+          res.json({ response });
+        } else {
+          throw apiResult.error || new Error(apiResult.message || "Groq API call failed");
         }
-
-        // Cập nhật lịch sử chat
-        chatHistory.set(sessionId, history);
-
-        res.json({ response });
       } catch (apiError) {
         console.error(
-          "Gemini API error:",
+          "Groq API error:",
           apiError.response?.data || apiError.message
         );
 
