@@ -1,6 +1,7 @@
 const express = require('express')
 var path = require('path');
-require("dotenv").config()  
+require("dotenv").config()
+process.env.TZ = process.env.TZ || "Asia/Ho_Chi_Minh"  
 
 const passport= require("passport")
 
