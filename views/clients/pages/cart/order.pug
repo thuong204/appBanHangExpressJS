@@ -66,9 +66,11 @@ block main
                                 value="paymentcard")
                             label(
                                 for="paymentcard" 
-                                class="form-check-label") Thanh toán bằng thẻ  
+                                class="form-check-label") Thanh toán payOS (QR / chuyển khoản)
                         div(class="mb-3")
-                            input(name="dataOrder" value=cart.products type="hidden")
+                            input(type="hidden" name="payosOrderCode" id="payosOrderCode" value=qr.orderCode)
+                            each item in cart.products
+                                input(type="hidden" name="dataOrder" value=item.product_id)
                         div(class="mb-3")
                             button(type="submit" class="btn btn-warning mb-3" button-order) Đặt hàng
                 .col-5
@@ -104,24 +106,29 @@ block main
                                 tr 
                                     th Tổng tiền thanh toán: 
                                     td.text-end.text-warning.text-uppercase.fw-bold.fs-5 #{cart.totalInter}đ
-                    div.modal.fade.container-qr(id='qrModal' tabindex='-1' aria-labelledby='qrModalLabel' aria-hidden='true' data-order=qr)
+                    script#qr-payment-data(type="application/json")!= JSON.stringify({ qr: qr, payosPaid: payosPaid || false })
+                    div.modal.fade.container-qr(id='qrModal' tabindex='-1' aria-labelledby='qrModalLabel' aria-hidden='true')
                         div.modal-dialog
                             div.modal-content
                                 div.modal-header
-                                    h5#qrModalLabel.modal-title Vui lòng thanh toán trước khi đặt hàng
+                                    h5#qrModalLabel.modal-title Thanh toán qua payOS
                                     button.btn-close(type='button' data-bs-dismiss='modal' aria-label='Close')
                                 div.modal-body
+                                    p.text-muted Quét mã QR bằng app ngân hàng hoặc mở trang thanh toán payOS.
                                     div.text-center
-                                        img#qrImage(src=`${qr.image}` alt='QR Code' width='70%')
-                                    .information.fw-bold
-                                        div Só tài khoản: #{qr.information.accountNo}
-                                        div Chủ tài khoản: #{qr.information.accountName}
+                                        img#qrImage(src=`${qr.image}` alt='QR payOS' width='70%')
+                                    if qr.checkoutUrl
+                                        p.mt-3.text-center
+                                            a.btn.btn-primary(href=qr.checkoutUrl target="_blank" rel="noopener") Mở trang thanh toán payOS
+                                    .information.fw-bold.mt-3
+                                        if qr.information.accountNo
+                                            div Số tài khoản: #{qr.information.accountNo}
                                         div Nội dung: #{qr.information.addInfo}
-                                        div Só tiền: #{qr.information.amount}đ
+                                        div Số tiền: #{qr.information.amount}đ
                                 div.modal-footer.text-center
                                     .wait-payment
-                                        span Đang chờ thanh toán. 
-                                    button.btn.btn-secondary.text-center(type='button' data-bs-dismiss='modal') Close
+                                        span.text-warning Đang chờ xác nhận từ payOS...
+                                    button.btn.btn-secondary(type='button' data-bs-dismiss='modal') Đóng
                     div.modal.fade#paymentSuccessModal(tabindex="-1", aria-labelledby="paymentSuccessLabel", aria-hidden="true")
                         div.modal-dialog
                             div.modal-content

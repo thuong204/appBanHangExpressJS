@@ -6,6 +6,23 @@ const searchHelpers = require("../../helpers/search")
 const paginationHelpers = require("../../helpers/pagination")
 const tree = require("../../helpers/createtree")
 
+function toArray(value) {
+    if (value == null || value === "") return [];
+    return Array.isArray(value) ? value : [value];
+}
+
+function buildVariations(colors, quantities) {
+    const colorList = toArray(colors).map((c) => String(c).trim()).filter(Boolean);
+    const qtyList = toArray(quantities);
+
+    return colorList
+        .map((color, index) => {
+            const quantity = parseInt(qtyList[index], 10);
+            if (!color || Number.isNaN(quantity) || quantity < 1) return null;
+            return { color, quantity };
+        })
+        .filter(Boolean);
+}
 
 module.exports.index = async (req, res) => {
 
@@ -206,27 +223,12 @@ module.exports.saveItem = async (req, res) => {
     req.body.totalQuantity=1
 
 
-    //
-    const colors = req.body.colors
-    const quantities = req.body.quantities
-    
-    // Kiểm tra colors và quantities có tồn tại không
-    let variations = [];
-    if (colors && Array.isArray(colors) && colors.length > 0) {
-        variations = colors.map((color, index) => {
-            const quantity = parseInt(quantities && quantities[index] ? quantities[index] : 0, 10); 
-            if (color && quantity >= 1) {
-                return {
-                    color: color,
-                    quantity: quantity
-                };
-            }
-        }).filter(Boolean);
-    }
-    
-    req.body.variations = variations
-    const totalQuantity = variations.reduce((total, variation) => total + variation.quantity, 0);
-    req.body.totalQuantity = totalQuantity || 0
+    const variations = buildVariations(req.body.colors, req.body.quantities);
+    req.body.variations = variations;
+    req.body.totalQuantity = variations.reduce(
+        (total, variation) => total + variation.quantity,
+        0
+    );
     delete req.body.colors
     delete req.body.quantities
 
@@ -259,31 +261,16 @@ module.exports.updateItem = async (req, res) => {
     req.body.price = parseInt(req.body.price)
     req.body.discountPercentage = parseInt(req.body.discountPercentage)
     req.body.position = parseInt(req.body.position)
-       if(req.body.storage){
-        req.body.storage = req.body.storage
-
-    }
-    if(req.body.colors){
-        req.body.color = req.body.color
+    if (req.body.storage) {
+        req.body.storage = req.body.storage;
     }
 
-    const colors = req.body.colors
-    const quantities = req.body.quantities
-
-    // Kiểm tra colors và quantities có tồn tại không
-    let variations = [];
-    if (colors && Array.isArray(colors) && colors.length > 0) {
-        variations = colors.map((color, index) => {
-            return {
-                color: color,
-                quantity: parseInt(quantities && quantities[index] ? quantities[index] : 0, 10) || 0
-            };
-        }).filter(v => v.color); // Lọc bỏ các variation không có color
-    }
-    
-    req.body.variations = variations
-    const totalQuantity = variations.reduce((total, variation) => total + variation.quantity, 0);
-    req.body.totalQuantity = totalQuantity || 0
+    const variations = buildVariations(req.body.colors, req.body.quantities);
+    req.body.variations = variations;
+    req.body.totalQuantity = variations.reduce(
+        (total, variation) => total + variation.quantity,
+        0
+    );
 
     delete req.body.colors
     delete req.body.quantities

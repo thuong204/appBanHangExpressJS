@@ -1,9 +1,8 @@
 const Cart = require("../../models/carts.model");
 const productsHelper = require("../../helpers/products");
-const { VietQR } = require("vietqr");
+const paymentHelper = require("../../helpers/payment");
 const Product = require("../../models/product.model");
 const Order = require("../../models/order.model");
-const User = require("../../models/users.model");
 const { priceInter } = require("../../helpers/priceInter");
 const CategoryProduct = require("../../models/category-product.model");
 const formatDate = require("../../helpers/formatDate");
@@ -162,43 +161,38 @@ module.exports.order = async (req, res) => {
     }
   }
   cart.total = cart.products.reduce((sum, item) => sum + item.totalPrice, 0);
-  const total = cart.total.toString();
   cart.totalInter = priceInter(cart.total);
 
-  const userOrder = await User.findOne({
-    _id: cart.user_id,
-  });
-  //tao ma qr thanh toan
-  const vietQR = new VietQR({
-    clientID: "de8a0804-a76d-41e5-8ad6-31503ce7d5f4",
-    apiKey: "17c29f09-4ea2-4417-b9c2-7f020d35de42",
-  });
+  const paymentCode = `DH${Date.now().toString(36).toUpperCase().slice(-8)}`;
+  const baseUrl = paymentHelper.getAppBaseUrl(req);
+  const orderCode = paymentHelper.generateOrderCode();
 
-  let qr = {};
-
-  // list banks are supported create QR code by Vietqr
-  vietQR
-    .getBanks()
-    .then((banks) => {
-      console.log(banks);
-    })
-    .catch((err) => {});
-  await vietQR
-    .genQRCodeBase64({
-      bank: "970405",
-      accountName: "TRAN CONG THUONG",
-      accountNumber: "2015220051510",
-      amount: `5000`,
-      memo: `${userOrder.fullName} thanh toán sản phẩm`,
-      template: "compact",
-    })
-    .then((data) => {
-      qr = data;
+  let objectQR;
+  try {
+    objectQR = await paymentHelper.createPayOSPayment({
+      orderCode,
+      amount: cart.total,
+      description: paymentCode,
+      returnUrl: `${baseUrl}/cart/checkout/payos-return?orderCode=${orderCode}`,
+      cancelUrl: `${baseUrl}/cart`,
     });
+    objectQR.paymentCode = paymentCode;
+  } catch (err) {
+    console.error("payOS error:", err.message);
+    req.flash(
+      "Error",
+      err.message.includes("Thiếu cấu hình")
+        ? "Chưa cấu hình payOS. Liên hệ quản trị viên."
+        : "Không tạo được link thanh toán payOS. Vui lòng thử lại."
+    );
+    return res.redirect("/cart");
+  }
 
-  const objectQR = {
-    image: qr.data.data.qrDataURL,
-    information: JSON.parse(qr.config.data),
+  req.session.checkout = {
+    orderCode,
+    qr: objectQR,
+    productIds: cart.products.map((p) => p.product_id.toString()),
+    paid: false,
   };
 
   cart.total = cart.products.reduce((sum, item) => sum + item.totalPrice, 0);
@@ -207,6 +201,58 @@ module.exports.order = async (req, res) => {
     pageTitle: "Trang đặt hàng",
     cart: cart,
     qr: objectQR,
+    payosPaid: false,
+  });
+};
+
+async function buildCheckoutCart(cartId, productIds) {
+  const cart = await Cart.findOne({ _id: cartId });
+  if (!cart) return null;
+
+  const ids = Array.isArray(productIds) ? productIds : [productIds];
+  for (let i = cart.products.length - 1; i >= 0; i--) {
+    const cartproduct = cart.products[i];
+    if (!ids.includes(cartproduct.product_id.toString())) {
+      cart.products.splice(i, 1);
+      continue;
+    }
+    const productInCart = await Product.findOne({
+      _id: cartproduct.product_id,
+      delete: false,
+      status: "active",
+    }).select("-description -content -createdBy -updatedBy");
+
+    if (productInCart) {
+      productInCart.priceNew = productsHelper.priceNewProduct(productInCart);
+      cartproduct.productInfo = productInCart;
+      cartproduct.totalPrice = cartproduct.quantity * productInCart.priceNew;
+      cartproduct.totalPriceInter = priceInter(cartproduct.totalPrice);
+    }
+  }
+
+  cart.total = cart.products.reduce((sum, item) => sum + item.totalPrice, 0);
+  cart.totalInter = priceInter(cart.total);
+  return cart;
+}
+
+module.exports.orderResume = async (req, res) => {
+  const checkout = req.session.checkout;
+  if (!checkout?.productIds?.length) {
+    req.flash("Error", "Phiên đặt hàng đã hết hạn. Vui lòng thử lại.");
+    return res.redirect("/cart");
+  }
+
+  const cart = await buildCheckoutCart(req.cookies.cartId, checkout.productIds);
+  if (!cart || !cart.products.length) {
+    req.flash("Error", "Không tìm thấy sản phẩm để đặt hàng.");
+    return res.redirect("/cart");
+  }
+
+  res.render("clients/pages/cart/order", {
+    pageTitle: "Trang đặt hàng",
+    cart,
+    qr: checkout.qr,
+    payosPaid: Boolean(checkout.paid),
   });
 };
 module.exports.orderPost = async (req, res) => {
@@ -262,12 +308,30 @@ module.exports.orderPost = async (req, res) => {
     products: products,
   });
   if (userInfo.payment == "paymentcard") {
-    objOrder.status = "Đã thanh toán";
+    const payosOrderCode = userInfo.payosOrderCode;
+    if (!payosOrderCode) {
+      req.flash("Error", "Vui lòng thanh toán payOS trước khi đặt hàng.");
+      return res.redirect("back");
+    }
+    try {
+      const paid = await paymentHelper.checkPayOSPayment(payosOrderCode);
+      if (!paid) {
+        req.flash("Error", "Chưa xác nhận thanh toán payOS. Vui lòng thử lại.");
+        return res.redirect("back");
+      }
+      objOrder.status = "Đã thanh toán";
+      objOrder.payosOrderCode = Number(payosOrderCode);
+    } catch (err) {
+      console.error("payOS verify error:", err.message);
+      req.flash("Error", "Không xác minh được thanh toán payOS.");
+      return res.redirect("back");
+    }
   } else {
     objOrder.status = "Chưa thanh toán";
   }
 
   await objOrder.save();
+  delete req.session.checkout;
   req.flash("success", "Đặt hàng thành công");
   res.redirect(`checkout/success/${objOrder.id}`);
 };
@@ -305,6 +369,61 @@ module.exports.success = async (req, res) => {
     res.send("Không tìm thấy trang");
   }
 };
+module.exports.checkPaymentStatus = async (req, res) => {
+  const orderCode = req.query.orderCode;
+  if (!orderCode) {
+    return res.json({ paid: false });
+  }
+  try {
+    const paid = await paymentHelper.checkPayOSPayment(orderCode);
+    return res.json({ paid });
+  } catch (err) {
+    console.error("checkPaymentStatus:", err.message);
+    return res.status(500).json({ paid: false });
+  }
+};
+
+module.exports.payosReturn = async (req, res) => {
+  const orderCode = req.query.orderCode;
+  const checkout = req.session.checkout;
+
+  if (!orderCode || !checkout || String(checkout.orderCode) !== String(orderCode)) {
+    req.flash("Error", "Phiên thanh toán không hợp lệ.");
+    return res.redirect("/cart");
+  }
+
+  try {
+    const paid = await paymentHelper.checkPayOSPayment(orderCode);
+    checkout.paid = paid;
+    req.session.checkout = checkout;
+
+    if (paid) {
+      req.flash("success", "Thanh toán payOS thành công. Bạn có thể đặt hàng ngay.");
+    } else {
+      req.flash("Error", "Chưa nhận được xác nhận thanh toán từ payOS.");
+    }
+  } catch (err) {
+    req.flash("Error", "Không kiểm tra được trạng thái thanh toán payOS.");
+  }
+
+  return res.redirect("/cart/order/resume");
+};
+
+module.exports.payosWebhook = async (req, res) => {
+  try {
+    const webhookData = await paymentHelper.verifyPayOSWebhook(req.body);
+    if (webhookData?.orderCode && req.session.checkout) {
+      if (String(req.session.checkout.orderCode) === String(webhookData.orderCode)) {
+        req.session.checkout.paid = true;
+      }
+    }
+    return res.json({ success: true });
+  } catch (err) {
+    console.error("payOS webhook:", err.message);
+    return res.status(400).json({ success: false });
+  }
+};
+
 module.exports.paymentCallback = async (req, res) => {
   const { orderId, paymentStatus } = req.body;
   if (paymentStatus === "success") {

@@ -10,6 +10,7 @@ const orderSchema = new mongoose.Schema(
         },
         payments: String,
         status: String,
+        payosOrderCode: Number,
         note: String,
         dateOrder:Date,
         products:[{
