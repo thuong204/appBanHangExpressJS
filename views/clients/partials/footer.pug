@@ -115,30 +115,22 @@ footer.footer-modern
     .chatbot-widget
         .chatbot-button
             i.fas.fa-comments
-            span.badge.badge-pill.badge-danger 1
+            span.badge.badge-pill.badge-danger AI
         .chatbot-container
             .chatbot-header
                 .chatbot-title
                     i.fas.fa-robot
-                    span Hỗ trợ trực tuyến
+                    span Trợ lý mua sắm AI
                 button.chatbot-close
                     i.fas.fa-times
             .chatbot-body
                 .chatbot-messages
-                    .message-chat.bot
-                        .message-content
-                            p Xin chào! Tôi có thể giúp gì cho bạn?
-                    .message-chat.user
-                        .message-content
-                            p Tôi cần hỗ trợ về sản phẩm
-                    .message-chat.bot
-                        .message-content
-                            p Vui lòng cho tôi biết bạn cần hỗ trợ về sản phẩm nào?
-                .chatbot-footer
-                    form.chatbot-form
-                        input.form-control(type="text" placeholder="Nhập tin nhắn của bạn...")
-                        button.btn.btn-warning
-                            i.fas.fa-paper-plane
+            .chatbot-footer
+                form.chatbot-form
+                    input.form-control(type="text" placeholder="Ví dụ: Gợi ý laptop dưới 20 triệu")
+                    button.btn.btn-warning(type="submit")
+                        i.fas.fa-paper-plane
+                        span.ms-1 Gửi
 
 style.
     /* Modern Footer Styling */
@@ -345,11 +337,16 @@ style.
         bottom: 100px;
         right: 30px;
         z-index: 1000;
+        display: flex;
+        flex-direction: row-reverse;
+        align-items: flex-end;
+        gap: 14px;
     }
 
     .chatbot-button {
         width: 60px;
         height: 60px;
+        flex-shrink: 0;
         background: #ffc107;
         border-radius: 50%;
         display: flex;
@@ -383,19 +380,24 @@ style.
     }
 
     .chatbot-container {
-        position: absolute;
-        bottom: 70px;
-        right: 0;
-        width: 350px;
+        position: relative;
+        bottom: auto;
+        right: auto;
+        left: auto;
+        width: 440px;
         background: white;
         border-radius: 15px;
         box-shadow: 0 5px 25px rgba(0, 0, 0, 0.2);
         display: none;
         overflow: hidden;
+        flex-direction: column;
+        max-height: min(82vh, 640px);
+        height: 560px;
     }
 
     .chatbot-container.active {
-        display: block;
+        display: flex;
+        flex-direction: column;
         animation: slideUp 0.3s ease;
     }
 
@@ -411,11 +413,35 @@ style.
     }
 
     .chatbot-header {
+        flex-shrink: 0;
         background: #ffc107;
         padding: 15px;
         display: flex;
         justify-content: space-between;
         align-items: center;
+    }
+
+    .chatbot-body {
+        flex: 1 1 auto;
+        min-height: 0;
+        padding: 15px;
+        overflow-y: auto;
+        background: linear-gradient(180deg, #fff 0%, #fffdf6 100%);
+    }
+
+    .chatbot-messages {
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+        min-height: 100%;
+    }
+
+    .chatbot-footer {
+        flex-shrink: 0;
+        margin-top: auto;
+        padding: 12px 15px 14px;
+        border-top: 1px solid #eee;
+        background: #fff;
     }
 
     .chatbot-title {
@@ -437,18 +463,6 @@ style.
         cursor: pointer;
         font-size: 18px;
         padding: 5px;
-    }
-
-    .chatbot-body {
-        height: 300px;
-        padding: 15px;
-        overflow-y: auto;
-    }
-
-    .chatbot-messages {
-        display: flex;
-        flex-direction: column;
-        gap: 15px;
     }
 
     .message {
@@ -487,44 +501,51 @@ style.
         font-size: 14px;
     }
 
-    .chatbot-footer {
-        padding: 15px;
-        border-top: 1px solid #eee;
-    }
-
     .chatbot-form {
         display: flex;
-        gap: 10px;
+        flex-direction: row;
+        align-items: center;
+        gap: 8px;
     }
 
     .chatbot-form input {
-        flex: 1;
+        flex: 1 1 auto;
+        min-width: 0;
+        width: auto;
         border: 1px solid #ddd;
-        border-radius: 20px;
+        border-radius: 12px;
         padding: 8px 15px;
         font-size: 14px;
     }
 
     .chatbot-form button {
-        width: 40px;
+        flex: 0 0 auto;
+        width: auto;
+        min-width: 44px;
         height: 40px;
-        border-radius: 50%;
-        padding: 0;
-        display: flex;
+        border-radius: 12px;
+        padding: 0 14px;
+        display: inline-flex;
         align-items: center;
         justify-content: center;
+        gap: 6px;
+        font-weight: 600;
+        border: none;
+        white-space: nowrap;
     }
 
     /* Responsive Adjustments */
     @media (max-width: 768px) {
         .chatbot-widget {
             bottom: 80px;
-            right: 20px;
+            right: 16px;
+            gap: 10px;
         }
         
         .chatbot-container {
-            width: 300px;
-            right: -10px;
+            width: min(calc(100vw - 90px), 360px);
+            height: min(78vh, 520px);
+            max-height: min(78vh, 520px);
         }
         
         .chatbot-button {

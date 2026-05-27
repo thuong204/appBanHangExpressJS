@@ -5,6 +5,8 @@ const productSchema = new mongoose.Schema(
     {
         title: String,
         price:Number,
+        /** Tồn kho tổng (một số bản ghi MongoDB dùng field `quantity` thay cho totalQuantity) */
+        quantity: Number,
         totalQuantity: Number,
         discountPercentage: Number,
         total: Number,

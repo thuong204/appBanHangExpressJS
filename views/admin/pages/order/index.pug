@@ -1,6 +1,7 @@
 extends ../../layouts/default.pug
 include ../../mixins/alert.pug
 include ../../mixins/formatDateTime.pug
+include ../../mixins/pagination.pug
 block main 
        
         +alert-success(3000)
@@ -34,21 +35,25 @@ block main
                             if(orders && orders.length > 0)
                                 each item, index in orders
                                     tr
-                                        td.py-3 #{index+1}
+                                        td.py-3 #{(pagination ? (pagination.currentPage - 1) * pagination.limitItems : 0) + index + 1}
                                         td.py-3 
-                                            span.text-primary.fw-medium #{item._id.toString().slice(-6).toUpperCase()}
-                                        td.py-3 #{item.userInfo.fullName}
-                                        td.py-3 #{item.userInfo.phone}
-                                        td.py-3 #{item.userInfo.address}
+                                            span.text-primary.fw-medium #{String(item._id).slice(-6).toUpperCase()}
+                                        td.py-3 #{item.userInfo && item.userInfo.fullName ? item.userInfo.fullName : "—"}
+                                        td.py-3 #{item.userInfo && item.userInfo.phone ? item.userInfo.phone : "—"}
+                                        td.py-3 #{item.userInfo && item.userInfo.address ? item.userInfo.address : "—"}
                                         td.py-3 
-                                            if(item.payments === "ship-cod")
+                                            if(item.payments === "paymentdelivery" || item.payments === "ship-cod")
                                                 span.badge.bg-info.text-white
                                                     i.fas.fa-truck.me-1
                                                     | Thanh toán khi nhận hàng
-                                            else
+                                            else if(item.payments === "paymentcard")
                                                 span.badge.bg-success.text-white
                                                     i.fas.fa-credit-card.me-1
                                                     | Thanh toán trực tuyến
+                                            else
+                                                span.badge.bg-secondary.text-white
+                                                    i.fas.fa-money-bill.me-1
+                                                    | #{item.payments || "Không rõ"}
                                         td.py-3 
                                             small.text-muted
                                                 i.far.fa-calendar-alt.me-1.text-secondary
@@ -59,29 +64,39 @@ block main
                                         td.py-3
                                             case item.status
                                                 when "pending"
+                                                when "Chưa thanh toán"
                                                     span.badge.bg-warning.text-white.px-3.py-2
                                                         i.fas.fa-clock.me-1
                                                         | Chờ xác nhận
                                                 when "processing"
+                                                when "Đang xử lý"
                                                     span.badge.bg-primary.text-white.px-3.py-2
                                                         i.fas.fa-cog.me-1
                                                         | Đang xử lý
                                                 when "shipping"
+                                                when "Đang giao hàng"
                                                     span.badge.bg-info.text-white.px-3.py-2
                                                         i.fas.fa-truck.me-1
                                                         | Đang giao hàng
                                                 when "delivered"
+                                                when "Đã giao hàng"
                                                     span.badge.bg-success.text-white.px-3.py-2
                                                         i.fas.fa-check-circle.me-1
                                                         | Đã giao hàng
                                                 when "canceled"
+                                                when "Đã hủy"
                                                     span.badge.bg-danger.text-white.px-3.py-2
                                                         i.fas.fa-times-circle.me-1
                                                         | Đã hủy
+                                                when "Paid"
+                                                when "Đã thanh toán"
+                                                    span.badge.bg-success.text-white.px-3.py-2
+                                                        i.fas.fa-check-circle.me-1
+                                                        | Đã thanh toán
                                                 default
                                                     span.badge.bg-secondary.text-white.px-3.py-2
                                                         i.fas.fa-question-circle.me-1
-                                                        | Không xác định
+                                                        | #{item.status || "Không xác định"}
                                         td.py-3.text-end
                                             .btn-group
                                                 a(
@@ -103,6 +118,9 @@ block main
                                         .text-muted
                                             i.fas.fa-info-circle.me-2.text-info
                                             | Chưa có đơn hàng nào
+
+        if(pagination && pagination.totalPage > 1)
+            +pagination(pagination)
 
         form(
             action=""

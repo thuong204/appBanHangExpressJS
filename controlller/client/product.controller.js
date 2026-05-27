@@ -3,7 +3,10 @@ const priceNew = require("../../helpers/priceNew")
 const CategoryProduct = require("../../models/category-product.model")
 const productsCategoryHelper = require("../../helpers/products-category");
 const formatPrice = require("../../helpers/formatPrice");
-const { listSearchIndexes } = require("../../models/accounts.model");
+const {
+    normalizeProductDetail,
+    normalizeProductList,
+} = require("../../helpers/productDetailMock");
 
 module.exports.index = async (req, res) => {
 
@@ -27,38 +30,51 @@ module.exports.detailItem = async (req, res) => {
 
         const newSlug = slug.replace(/\d+gb/gi, '').replace(/--/g, '-').replace(/^-|-$/g, '');
         const product_detail = await Product.findOne({ slug: slug, delete: false }).select("-updatedBy -CreatedBy")
-        if (product_detail == undefined) {
-            res.redirect('/products')
+        if (!product_detail) {
+            return res.redirect('/products')
         }
 
-        const productPriceNew = formatPrice.formatPrice(product_detail)
-        const categoryProduct = await CategoryProduct.findOne({
-            delete: false,
-            status: "active",
-            _id: product_detail.categoryProduct
-        })
+        let productPriceNew = normalizeProductDetail(product_detail)
+        productPriceNew = formatPrice.formatPrice(productPriceNew)
 
+        const categoryProduct = product_detail.categoryProduct
+            ? await CategoryProduct.findOne({
+                delete: false,
+                status: "active",
+                _id: product_detail.categoryProduct
+            })
+            : null
 
-        const productRelated = await Product.find({
-            delete: false,
-            status: "active",
-            categoryProduct: categoryProduct._id,
-            _id: { $ne: product_detail._id }  // Loại bỏ sản phẩm hiện tại
-        }).limit(6).sort({ position: -1 }).select("title slug price discountPercentage thumbnail")
+        let productRelated = []
+        if (categoryProduct) {
+            productRelated = await Product.find({
+                delete: false,
+                status: "active",
+                categoryProduct: categoryProduct._id,
+                _id: { $ne: product_detail._id }
+            }).limit(6).sort({ position: -1 }).select("title slug price discountPercentage thumbnail")
+        }
+
+        if (!productRelated.length) {
+            productRelated = await Product.find({
+                delete: false,
+                status: "active",
+                _id: { $ne: product_detail._id }
+            }).limit(6).sort({ position: -1 }).select("title slug price discountPercentage thumbnail")
+        }
 
         const productNewPriceRelated = priceNew(productRelated)
 
-        const productList = await Product.find({
+        const productListRaw = await Product.find({
             delete: false,
             slug: { $regex: newSlug, $options: 'i' },
             status: "active"
         }).select("title slug storage color")
 
-
-
+        const productList = normalizeProductList(productListRaw, productPriceNew)
 
         res.render("clients/pages/products/detail", {
-            pageTitle: "Detail Product",
+            pageTitle: productPriceNew.title,
             product: productPriceNew,
             productstRelated: productNewPriceRelated,
             productList: productList,

@@ -1,0 +1,176 @@
+extends ../../layouts/default.pug
+include ../../mixins/alert.pug
+include ../../mixins/formatDateTime.pug
+
+block main
+    +alert-success(3000)
+    +alert-error(3000)
+
+    .d-flex.justify-content-between.align-items-center.mb-4
+        h1.m-0
+            i.fas.fa-file-invoice.me-2.text-primary
+            | Chi tiết đơn hàng ##{order.orderCode}
+        a.btn.btn-outline-secondary(href=`${prefixAdmin}/orders`)
+            i.fas.fa-arrow-left.me-1
+            | Quay lại danh sách
+
+    .row.g-4
+        .col-lg-4
+            .card.shadow-sm.h-100
+                .card-header.bg-white.py-3
+                    h5.card-title.m-0
+                        i.fas.fa-user.me-2.text-primary
+                        | Thông tin khách hàng
+                .card-body
+                    dl.row.mb-0
+                        dt.col-sm-5 Họ tên
+                        dd.col-sm-7 #{order.userInfo && order.userInfo.fullName ? order.userInfo.fullName : "—"}
+                        dt.col-sm-5 Số điện thoại
+                        dd.col-sm-7 #{order.userInfo && order.userInfo.phone ? order.userInfo.phone : "—"}
+                        dt.col-sm-5 Địa chỉ
+                        dd.col-sm-7 #{order.userInfo && order.userInfo.address ? order.userInfo.address : "—"}
+                        dt.col-sm-5 Ngày đặt
+                        dd.col-sm-7
+                            if(order.dateOrder)
+                                +formatDateTime(order.dateOrder)
+                            else
+                                +formatDateTime(order.createdAt)
+
+            .card.shadow-sm.mt-4
+                .card-header.bg-white.py-3
+                    h5.card-title.m-0
+                        i.fas.fa-credit-card.me-2.text-primary
+                        | Thanh toán
+                .card-body
+                    dl.row.mb-0
+                        dt.col-sm-5 Phương thức
+                        dd.col-sm-7
+                            if(order.payments === "paymentdelivery" || order.payments === "ship-cod")
+                                span.badge.bg-info.text-white Thanh toán khi nhận hàng
+                            else if(order.payments === "paymentcard")
+                                span.badge.bg-success.text-white Thanh toán trực tuyến (payOS)
+                            else
+                                span #{order.payments || "—"}
+                        if(order.payosOrderCode)
+                            dt.col-sm-5 Mã payOS
+                            dd.col-sm-7
+                                code #{order.payosOrderCode}
+                        dt.col-sm-5 Tổng tiền
+                        dd.col-sm-7.fw-bold.text-danger #{order.totalPriceInter}đ
+                        if(order.note)
+                            dt.col-sm-5 Ghi chú
+                            dd.col-sm-7 #{order.note}
+
+        .col-lg-8
+            .card.shadow-sm.mb-4
+                .card-header.bg-white.py-3.d-flex.justify-content-between.align-items-center
+                    h5.card-title.m-0
+                        i.fas.fa-box.me-2.text-primary
+                        | Sản phẩm trong đơn
+                    span.badge.bg-secondary #{order.products ? order.products.length : 0} sản phẩm
+                .card-body.p-0
+                    .table-responsive
+                        table.table.table-hover.align-middle.mb-0
+                            thead.bg-light
+                                tr
+                                    th.py-3 STT
+                                    th.py-3 Ảnh
+                                    th.py-3 Tên sản phẩm
+                                    th.py-3 Màu
+                                    th.py-3 Giá
+                                    th.py-3 SL
+                                    th.py-3.text-end Thành tiền
+                            tbody
+                                if(order.products && order.products.length > 0)
+                                    each item, index in order.products
+                                        tr
+                                            td.py-3 #{index + 1}
+                                            td.py-3
+                                                if(item.productInfo && item.productInfo.thumbnail)
+                                                    img(
+                                                        src=item.productInfo.thumbnail
+                                                        alt=item.productInfo.title
+                                                        width="48"
+                                                        height="48"
+                                                        style="object-fit: cover; border-radius: 8px;"
+                                                    )
+                                                else
+                                                    span.text-muted —
+                                            td.py-3
+                                                if(item.productInfo && item.productInfo.slug)
+                                                    a(href=`/products/detail/${item.productInfo.slug}` target="_blank") #{item.productInfo.title}
+                                                else
+                                                    | #{item.productInfo ? item.productInfo.title : "—"}
+                                            td.py-3 #{item.color || "—"}
+                                            td.py-3 #{item.priceInter}đ
+                                            td.py-3 #{item.quantity}
+                                            td.py-3.text-end.fw-medium #{item.totalPriceInter}đ
+                                    tr.table-light
+                                        td.py-3(colspan=6).text-end.fw-bold Tổng cộng
+                                        td.py-3.text-end.fw-bold.text-danger #{order.totalPriceInter}đ
+                                else
+                                    tr
+                                        td.py-4.text-center.text-muted(colspan=7) Không có sản phẩm
+
+            .card.shadow-sm
+                .card-header.bg-white.py-3
+                    h5.card-title.m-0
+                        i.fas.fa-tasks.me-2.text-primary
+                        | Trạng thái đơn hàng
+                .card-body
+                    .d-flex.flex-wrap.align-items-center.gap-3.mb-3
+                        span.fw-medium Trạng thái hiện tại:
+                        case order.status
+                            when "pending"
+                            when "Chưa thanh toán"
+                                span.badge.bg-warning.text-white.px-3.py-2 Chờ xác nhận / Chưa thanh toán
+                            when "processing"
+                            when "Đang xử lý"
+                                span.badge.bg-primary.text-white.px-3.py-2 Đang xử lý
+                            when "shipping"
+                            when "Đang giao hàng"
+                                span.badge.bg-info.text-white.px-3.py-2 Đang giao hàng
+                            when "delivered"
+                            when "Đã giao hàng"
+                                span.badge.bg-success.text-white.px-3.py-2 Đã giao hàng
+                            when "canceled"
+                            when "Đã hủy"
+                                span.badge.bg-danger.text-white.px-3.py-2 Đã hủy
+                            when "Paid"
+                            when "Đã thanh toán"
+                                span.badge.bg-success.text-white.px-3.py-2 Đã thanh toán
+                            default
+                                span.badge.bg-secondary.text-white.px-3.py-2 #{order.status || "Không xác định"}
+
+                    form.d-flex.flex-wrap.align-items-end.gap-2(
+                        action=`${prefixAdmin}/orders/change-status/${id}?_method=PATCH`
+                        method="POST"
+                    )
+                        div
+                            label.form-label.small Cập nhật trạng thái
+                            select.form-select(name="status" style="min-width: 220px;")
+                                option(value="Chưa thanh toán" selected=(order.status === "Chưa thanh toán" || order.status === "pending")) Chưa thanh toán
+                                option(value="Đã thanh toán" selected=(order.status === "Đã thanh toán" || order.status === "Paid")) Đã thanh toán
+                                option(value="Đang xử lý" selected=(order.status === "Đang xử lý" || order.status === "processing")) Đang xử lý
+                                option(value="Đang giao hàng" selected=(order.status === "Đang giao hàng" || order.status === "shipping")) Đang giao hàng
+                                option(value="Đã giao hàng" selected=(order.status === "Đã giao hàng" || order.status === "delivered")) Đã giao hàng
+                                option(value="Đã hủy" selected=(order.status === "Đã hủy" || order.status === "canceled")) Đã hủy
+                        button.btn.btn-warning(type="submit")
+                            i.fas.fa-save.me-1
+                            | Lưu trạng thái
+
+                    hr.my-4
+
+                    form(
+                        action=""
+                        method="POST"
+                        id="form-delete-item"
+                        data-path=`${prefixAdmin}/orders/delete`
+                    )
+                    button.btn.btn-outline-danger(
+                        type="button"
+                        button-delete
+                        data-id=id
+                    )
+                        i.fas.fa-trash-alt.me-1
+                        | Xóa đơn hàng

@@ -1,363 +1,115 @@
 const axios = require("axios");
 const config = require("../../config/chatbot");
-const Product = require("../../models/product.model");
+const {
+  retrieveKnowledge,
+  buildSystemPrompt,
+  resolveProductSuggestions,
+} = require("../../helpers/chatbotKnowledge");
 
-// Kiểm tra API key
-if (!config.GROQ_API_KEY || config.GROQ_API_KEY === "") {
-  console.warn("⚠️  GROQ_API_KEY chưa được cấu hình!");
-  console.warn("💡 Đăng ký miễn phí tại: https://console.groq.com/");
-  console.warn("💡 Sau đó thêm GROQ_API_KEY vào file .env");
+const apiKey = (config.OPENROUTER_API_KEY || "").trim();
+const baseURL = (config.OPENROUTER_BASE_URL || "").replace(/\/$/, "");
+const chatUrl = `${baseURL}/chat/completions`;
+
+if (!apiKey) {
+  console.warn("⚠️  OPENROUTER_API_KEY chưa cấu hình — chatbot không hoạt động.");
 } else {
-  console.log(`✅ Đã cấu hình Groq API với model: ${config.MODEL}`);
-  console.log(`📌 API Key: ${config.GROQ_API_KEY.substring(0, 10)}...${config.GROQ_API_KEY.substring(config.GROQ_API_KEY.length - 4)}`);
+  const host = baseURL.replace(/^https?:\/\//, "").split("/")[0];
+  console.log(`✅ Chatbot RAG: ${host} — model ${config.OPENROUTER_MODEL}`);
 }
 
-// Lưu trữ lịch sử chat
 const chatHistory = new Map();
 
-// Hàm chuyển đổi lịch sử chat sang format OpenAI (dùng cho Groq)
-const convertHistoryToOpenAIFormat = (history) => {
-  return history.slice(-8).map(msg => ({
+const convertHistoryToOpenAIFormat = (history) =>
+  history.slice(-8).map((msg) => ({
     role: msg.role === "user" ? "user" : "assistant",
-    content: msg.content
+    content: msg.content,
   }));
-};
 
-// Danh sách model dự phòng
-const FALLBACK_MODELS = [
-  "llama-3.1-70b-versatile",
-  "mixtral-8x7b-32768",
-  "gemma-7b-it",
-  "llama-3.1-8b-instant"
-];
-
-// Hàm gọi Groq API với khả năng thử lại với model khác
-const callGroqAPI = async (prompt, history = [], model = config.MODEL, retryCount = 0) => {
-  if (!config.GROQ_API_KEY || config.GROQ_API_KEY === "") {
-    return {
-      success: false,
-      error: new Error("GROQ_API_KEY chưa được cấu hình"),
-      errorType: 'no_api_key',
-      message: 'GROQ_API_KEY chưa được cấu hình. Đăng ký tại: https://console.groq.com/'
-    };
+async function callLLM(messages) {
+  if (!apiKey) {
+    throw new Error("OPENROUTER_API_KEY chưa được cấu hình");
   }
-  
-  // Chuyển đổi lịch sử chat
-  const messages = convertHistoryToOpenAIFormat(history);
-  messages.push({ role: "user", content: prompt });
-  
-  try {
-    console.log(`🔄 Calling Groq API with model: ${model} (attempt ${retryCount + 1})`);
-    
-    const apiResponse = await axios.post(config.API_BASE_URL, {
-      model: model,
-      messages: messages,
+
+  const { data, status } = await axios.post(
+    chatUrl,
+    {
+      model: config.OPENROUTER_MODEL,
+      messages,
       max_tokens: config.MAX_TOKENS,
-      temperature: config.TEMPERATURE
-    }, {
+      temperature: config.TEMPERATURE,
+    },
+    {
       headers: {
-        'Authorization': `Bearer ${config.GROQ_API_KEY}`,
-        'Content-Type': 'application/json'
+        Authorization: `Bearer ${apiKey}`,
+        "Content-Type": "application/json",
+        Accept: "application/json",
+        "User-Agent": "BanHangExpress-Chatbot/1.0",
       },
-      timeout: 30000
-    });
-    
-    if (apiResponse.data && apiResponse.data.choices && apiResponse.data.choices[0]) {
-      console.log(`✅ Groq API response received`);
-      return {
-        success: true,
-        text: apiResponse.data.choices[0].message.content
-      };
+      timeout: 60000,
+      validateStatus: () => true,
     }
-    
-    throw new Error("Invalid response format");
-  } catch (error) {
-    const errorData = error.response?.data || {};
-    const errorCode = errorData.error?.code;
-    const errorMessage = errorData.error?.message || error.message;
-    
-    // Nếu model bị decommissioned hoặc không tồn tại, thử model khác
-    if ((errorCode === 'model_decommissioned' || errorCode === 'model_not_found' || 
-         error.response?.status === 404) && retryCount < FALLBACK_MODELS.length) {
-      console.warn(`⚠️  Model ${model} không khả dụng: ${errorMessage}`);
-      console.warn(`🔄 Thử model dự phòng: ${FALLBACK_MODELS[retryCount]}`);
-      return callGroqAPI(prompt, history, FALLBACK_MODELS[retryCount], retryCount + 1);
-    }
-    
-    return {
-      success: false,
-      error: error,
-      errorType: error.response?.status === 429 ? 'quota_exceeded' : 'other',
-      message: errorMessage
-    };
-  }
-};
+  );
 
-// Hàm để truy vấn dữ liệu sản phẩm từ MongoDB
-const getProductsInfo = async (message) => {
-  try {
-    const lowerMessage = message.toLowerCase();
-    let productsData = "";
-    let query = {
-      // Mặc định chỉ lấy sản phẩm còn hoạt động và chưa bị xóa
-      status: "active",
-      delete: false,
-    };
-
-    // Tạo query dựa trên nội dung tin nhắn
-    if (
-      lowerMessage.includes("điện thoại") ||
-      lowerMessage.includes("phone") ||
-      lowerMessage.includes("smartphone")
-    ) {
-      query.categoryProduct = { $regex: /điện thoại|phone|smartphone/i };
-    } else if (
-      lowerMessage.includes("laptop") ||
-      lowerMessage.includes("máy tính")
-    ) {
-      query.categoryProduct = { $regex: /laptop|máy tính/i };
-    } else if (
-      lowerMessage.includes("tai nghe") ||
-      lowerMessage.includes("headphone")
-    ) {
-      query.categoryProduct = { $regex: /tai nghe|headphone/i };
-    }
-
-    // Tìm kiếm theo tên sản phẩm
-    const productKeywords = lowerMessage.match(
-      /(iphone|samsung|xiaomi|oppo|macbook|apple|asus|acer)/gi
+  if (status === 403) {
+    throw new Error(
+      "403: API từ chối request. Kiểm tra 9router đang chạy tại localhost:20128."
     );
-    if (productKeywords && productKeywords.length > 0) {
-      const regex = new RegExp(productKeywords.join("|"), "i");
-      query.title = { $regex: regex };
-    }
-
-    // Truy vấn theo mức giá
-    if (lowerMessage.includes("giá rẻ") || lowerMessage.includes("giá thấp")) {
-      query.price = { $lt: 5000000 };
-    } else if (
-      lowerMessage.includes("tầm trung") ||
-      lowerMessage.includes("giá tầm trung")
-    ) {
-      query.price = { $gte: 5000000, $lt: 15000000 };
-    } else if (
-      lowerMessage.includes("cao cấp") ||
-      lowerMessage.includes("giá cao")
-    ) {
-      query.price = { $gte: 15000000 };
-    }
-
-    // Truy vấn dữ liệu từ MongoDB - chỉ lấy sản phẩm đang hoạt động và chưa bị xóa
-    const products = await Product.find(
-      query,
-      "title price discountPercentage description variations storage screen"
-    )
-      .sort({ createdAt: -1 })
-      .limit(5);
-
-    // Nếu có kết quả truy vấn, thêm thông tin vào dữ liệu
-    if (products && products.length > 0) {
-      productsData = "Thông tin sản phẩm liên quan:\n\n";
-      products.forEach((product, index) => {
-        const discountPrice = product.discountPercentage
-          ? Math.round(product.price * (1 - product.discountPercentage / 100))
-          : product.price;
-
-        productsData += `${index + 1}. ${product.title}\n`;
-        productsData += `   - Giá: ${product.price.toLocaleString("vi-VN")}đ`;
-
-        if (product.discountPercentage) {
-          productsData += ` (Giảm ${
-            product.discountPercentage
-          }%, còn ${discountPrice.toLocaleString("vi-VN")}đ)`;
-        }
-
-        productsData += `\n`;
-
-        if (product.storage) {
-          productsData += `   - Dung lượng: ${product.storage}\n`;
-        }
-
-        if (product.screen) {
-          productsData += `   - Màn hình: ${product.screen}\n`;
-        }
-
-        if (product.variations && product.variations.length > 0) {
-          const colors = product.variations.map((v) => v.color).join(", ");
-          productsData += `   - Màu sắc: ${colors}\n`;
-        }
-
-        productsData += "\n";
-      });
-    }
-
-    return { productsData, products };
-  } catch (error) {
-    console.error("Error querying MongoDB:", error);
-    return { productsData: "", products: [] };
   }
-};
-
-// Tạo phản hồi dự phòng từ MongoDB khi API không khả dụng
-const generateFallbackResponse = (message, productsInfo) => {
-  const { productsData, products } = productsInfo;
-  const lowerMessage = message.toLowerCase();
-
-  // Nếu không có dữ liệu sản phẩm nào
-  if (!products || products.length === 0) {
-    if (
-      lowerMessage.includes("chào") ||
-      lowerMessage.includes("hello") ||
-      lowerMessage.includes("hi")
-    ) {
-      return "Xin chào! Tôi là trợ lý ảo của cửa hàng Vô Thường. Tôi có thể giúp bạn tìm hiểu về các sản phẩm điện thoại, laptop và phụ kiện của chúng tôi. Bạn cần tư vấn về sản phẩm nào?";
-    }
-
-    return "Xin lỗi, hiện tại dịch vụ trợ lý ảo đang gặp sự cố. Tuy nhiên, tôi có thể cho bạn biết chúng tôi có nhiều sản phẩm điện thoại, laptop và phụ kiện với đa dạng mẫu mã và giá cả. Bạn có thể ghé thăm website hoặc gọi hotline 1900 1234 để được tư vấn chi tiết hơn.";
+  if (status === 404) {
+    throw new Error(
+      `404: Không tìm thấy ${chatUrl}. Kiểm tra OPENROUTER_BASE_URL trong .env.`
+    );
+  }
+  if (status >= 400) {
+    const msg =
+      data?.error?.message || data?.message || JSON.stringify(data).slice(0, 200);
+    throw new Error(`${status}: ${msg}`);
   }
 
-  // Nếu có dữ liệu sản phẩm
-  let response = "";
+  const text = data?.choices?.[0]?.message?.content;
+  if (!text) throw new Error("API không trả về nội dung");
+  return text;
+}
 
-  if (lowerMessage.includes("máy tính") || lowerMessage.includes("laptop")) {
-    response =
-      "Dựa trên yêu cầu của bạn về máy tính, đây là một số sản phẩm phù hợp từ cửa hàng Vô Thường:\n\n";
-  } else if (
-    lowerMessage.includes("điện thoại") ||
-    lowerMessage.includes("smartphone") ||
-    lowerMessage.includes("phone")
-  ) {
-    response =
-      "Dựa trên yêu cầu của bạn về điện thoại, đây là một số sản phẩm phù hợp từ cửa hàng Vô Thường:\n\n";
-  } else if (
-    lowerMessage.includes("tai nghe") ||
-    lowerMessage.includes("headphone")
-  ) {
-    response =
-      "Dựa trên yêu cầu của bạn về tai nghe, đây là một số sản phẩm phù hợp từ cửa hàng Vô Thường:\n\n";
-  } else if (
-    lowerMessage.includes("giá") ||
-    lowerMessage.includes("bao nhiêu") ||
-    lowerMessage.includes("tiền")
-  ) {
-    response =
-      "Về thông tin giá cả mà bạn quan tâm, đây là một số sản phẩm tại cửa hàng Vô Thường:\n\n";
-  } else {
-    response =
-      "Tôi đã tìm thấy một số sản phẩm có thể phù hợp với nhu cầu của bạn:\n\n";
-  }
-
-  response += productsData;
-  response +=
-    "\nBạn cần thêm thông tin gì về các sản phẩm trên không? Hoặc bạn muốn tôi giới thiệu sản phẩm khác?";
-
-  return response;
-};
-
-// Hàm xử lý chat với Gemini API
 const handleChat = async (req, res) => {
   try {
     const { message, sessionId } = req.body;
-    console.log(req.body);
 
-    // Validate message parameter
     if (!message) {
       return res.status(400).json({
         error: "Tin nhắn không được để trống.",
-        response:
-          "Xin lỗi, tôi không nhận được tin nhắn của bạn. Vui lòng thử lại.",
       });
     }
 
-    // Lấy lịch sử chat của session
     let history = chatHistory.get(sessionId) || [];
 
-    // Thêm tin nhắn của user vào lịch sử
+    const knowledge = await retrieveKnowledge(message);
+    const systemPrompt = buildSystemPrompt(knowledge);
+
+    const messages = [
+      { role: "system", content: systemPrompt },
+      ...convertHistoryToOpenAIFormat(history),
+      { role: "user", content: message },
+    ];
+
+    const response = await callLLM(messages);
+
+    const productSuggestions = await resolveProductSuggestions(
+      response,
+      knowledge.ragProducts || []
+    );
+
     history.push({ role: "user", content: message });
+    history.push({ role: "assistant", content: response });
+    if (history.length > 10) history = history.slice(-10);
+    chatHistory.set(sessionId, history);
 
-    try {
-      // Truy vấn thông tin sản phẩm từ MongoDB
-      const productsInfo = await getProductsInfo(message);
-      const { productsData } = productsInfo;
-
-      // Chuẩn bị prompt cho Gemini
-      const systemPrompt =
-        "Bạn là trợ lý ảo của cửa hàng Vô Thường, một cửa hàng bán điện thoại và phụ kiện công nghệ. Hãy trả lời thân thiện, ngắn gọn và hữu ích. Nếu được hỏi về thông tin bạn không biết, hãy gợi ý khách hàng liên hệ hotline 1900 1234.";
-
-      // Thêm thông tin sản phẩm vào prompt nếu có
-      let contextPrompt = systemPrompt;
-      if (productsData) {
-        contextPrompt += `\n\nDưới đây là thông tin sản phẩm từ cửa hàng Vô Thường:\n${productsData}`;
-      }
-
-      try {
-        // Tạo prompt hoàn chỉnh cho Groq
-        const fullPrompt = `${contextPrompt}\n\nTin nhắn của khách hàng: ${message}`;
-        
-        // Gọi Groq API
-        const apiResult = await callGroqAPI(fullPrompt, history);
-
-        if (apiResult.success && apiResult.text) {
-          const response = apiResult.text;
-
-          // Thêm phản hồi vào lịch sử
-          history.push({ role: "assistant", content: response });
-
-          // Giới hạn lịch sử chat (giữ 10 tin nhắn gần nhất)
-          if (history.length > 10) {
-            history = history.slice(-10);
-          }
-
-          // Cập nhật lịch sử chat
-          chatHistory.set(sessionId, history);
-
-          res.json({ response });
-        } else {
-          throw apiResult.error || new Error(apiResult.message || "Groq API call failed");
-        }
-      } catch (apiError) {
-        console.error(
-          "Groq API error:",
-          apiError.response?.data || apiError.message
-        );
-
-        // Tạo phản hồi dự phòng dựa trên dữ liệu MongoDB khi API lỗi
-        const fallbackResponse = generateFallbackResponse(
-          message,
-          productsInfo
-        );
-
-        // Thêm phản hồi dự phòng vào lịch sử
-        history.push({ role: "assistant", content: fallbackResponse });
-
-        // Cập nhật lịch sử chat
-        chatHistory.set(sessionId, history);
-
-        res.status(200).json({
-          response: fallbackResponse,
-        });
-      }
-    } catch (mongoError) {
-      console.error("MongoDB error:", mongoError);
-
-      // Trả về thông báo lỗi khi cả MongoDB và API đều lỗi
-      const genericResponse =
-        "Xin lỗi, dịch vụ trợ lý ảo đang gặp sự cố. Vui lòng thử lại sau hoặc liên hệ hotline 1900 1234 để được hỗ trợ.";
-
-      // Thêm phản hồi vào lịch sử
-      history.push({ role: "assistant", content: genericResponse });
-
-      // Cập nhật lịch sử chat
-      chatHistory.set(sessionId, history);
-
-      res.status(200).json({
-        response: genericResponse,
-      });
-    }
+    return res.json({ response, productSuggestions });
   } catch (error) {
-    console.error("Chatbot error:", error);
-    res.status(500).json({
-      error: "Xin lỗi, có lỗi xảy ra. Vui lòng thử lại sau.",
+    console.error("Chatbot error:", error.message || error);
+    return res.status(500).json({
+      error: error.message || "Không thể kết nối AI.",
+      response: "Xin lỗi, trợ lý ảo đang gặp sự cố. Vui lòng thử lại sau.",
     });
   }
 };

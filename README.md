@@ -12,24 +12,29 @@ Trang web thương mại điện tử bán điện thoại, laptop và phụ ki�
 - Panel quản trị
 - Chatbot trợ lý ảo thông minh
 
-## Chatbot AI với Google Gemini
+## Chatbot AI (OpenRouter hoặc Groq)
 
-Hệ thống chatbot thông minh sử dụng Google Gemini API kết hợp với dữ liệu sản phẩm từ MongoDB để tư vấn khách hàng:
+Chatbot gọi API tương thích OpenAI: **ưu tiên [OpenRouter](https://openrouter.ai/)** nếu có `OPENROUTER_API_KEY`; nếu OpenRouter lỗi và có `GROQ_API_KEY` thì **fallback Groq**. Dữ liệu sản phẩm lấy từ MongoDB để bổ sung ngữ cảnh.
 
-### Tính năng của Chatbot
+### Cấu hình `.env`
 
-- Tư vấn sản phẩm dựa trên yêu cầu của khách hàng
-- Truy vấn thông tin sản phẩm thực tế từ database MongoDB
-- Trả lời các câu hỏi về giá cả, thông số kỹ thuật, màu sắc sản phẩm
-- Xử lý ngôn ngữ tự nhiên thông qua Google Gemini API
-- Hệ thống phản hồi dự phòng thông minh khi API gặp sự cố
+```env
+# OpenRouter (khuyên dùng — nhiều model, ví dụ DeepSeek)
+OPENROUTER_API_KEY=sk-or-v1-...
+OPENROUTER_MODEL=deepseek/deepseek-chat-v3-0324
+OPENROUTER_HTTP_REFERER=https://your-site.com
 
-### Cách hoạt động
+# Groq (dự phòng / không dùng OpenRouter)
+GROQ_API_KEY=gsk_...
+```
 
-1. Khi người dùng gửi tin nhắn, hệ thống phân tích nội dung tin nhắn
-2. Truy vấn MongoDB để tìm sản phẩm phù hợp (theo danh mục, thương hiệu, mức giá)
-3. Kết hợp thông tin sản phẩm thực tế với Google Gemini API để tạo phản hồi thông minh
-4. Trả về phản hồi được cá nhân hóa dựa trên dữ liệu sản phẩm thực tế
+Xem thêm biến trong `config/chatbot.js`.
+
+### Tính năng
+
+- Tư vấn sản phẩm theo tin nhắn + truy vấn MongoDB
+- Lịch sử hội thoại ngắn (giữ bối cảnh)
+- Phản hồi dự phòng khi API lỗi
 
 ## Cài đặt và Sử dụng
 
@@ -66,18 +71,16 @@ npm start
 
 ### Cấu hình Chatbot
 
-Để cấu hình Chatbot với Google Gemini API:
-
-1. Đăng ký Google API Key tại: https://ai.google.dev/
-2. Cập nhật API key trong file `.env` hoặc trong `config/chatbot.js`
-3. Chatbot sẽ tự động tích hợp với dữ liệu sản phẩm từ MongoDB
+1. Lấy key tại [OpenRouter](https://openrouter.ai/) hoặc [Groq](https://console.groq.com/)
+2. Thêm vào `.env` như mục trên
+3. Chatbot tích hợp dữ liệu sản phẩm từ MongoDB
 
 ## Công nghệ sử dụng
 
 - **Backend**: Node.js, Express.js
 - **Database**: MongoDB, Mongoose
 - **Frontend**: HTML, CSS, JavaScript, Pug templates
-- **AI Services**: Google Gemini API
+- **AI Services**: OpenRouter (OpenAI SDK) hoặc Groq
 - **Authentication**: Passport.js
 - **Payment**: (Thêm thông tin nếu có)
 

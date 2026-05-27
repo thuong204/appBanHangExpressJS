@@ -1,21 +1,16 @@
-// Cấu hình AI Chatbot - Sử dụng Gemma qua Groq API
-// Gemma là model mã nguồn mở của Google, miễn phí và nhanh qua Groq
+// Chatbot — API OpenAI-compatible (9router tunnel / OpenRouter)
 module.exports = {
-  // Groq API Key - Đăng ký tại: https://console.groq.com/
-  // LƯU Ý: KHÔNG hardcode API key ở đây! Luôn dùng environment variable
-  GROQ_API_KEY: process.env.GROQ_API_KEY || "",
-  
-  // Model - Các model có sẵn trên Groq:
-  // llama-3.1-8b-instant (mặc định - rất nhanh, miễn phí)
-  // llama-3.1-70b-versatile (mạnh hơn)
-  // mixtral-8x7b-32768 (tốt cho tiếng Việt)
-  // gemma-7b-it, gemma-2b-it (Gemma models)
-  MODEL: "llama-3.1-8b-instant",
-  
-  // Groq API endpoint
-  API_BASE_URL: "https://api.groq.com/openai/v1/chat/completions",
-  
-  MAX_TOKENS: 1024, // Giới hạn token đầu ra
-  TEMPERATURE: 0.7, // Độ sáng tạo trong câu trả lời (0.0-1.0)
-};
+  OPENROUTER_API_KEY: process.env.OPENROUTER_API_KEY || "",
+  OPENROUTER_BASE_URL:
+    process.env.OPENROUTER_BASE_URL || "https://openrouter.ai/api/v1",
+  OPENROUTER_MODEL: process.env.OPENROUTER_MODEL || "fdf",
 
+  MAX_TOKENS: Math.min(
+    8192,
+    Math.max(64, parseInt(process.env.CHATBOT_MAX_TOKENS || "1536", 10) || 1536)
+  ),
+  TEMPERATURE: (() => {
+    const t = parseFloat(process.env.CHATBOT_TEMPERATURE);
+    return Number.isFinite(t) ? Math.min(2, Math.max(0, t)) : 0.7;
+  })(),
+};

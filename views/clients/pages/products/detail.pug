@@ -63,15 +63,14 @@ block main
                                                 | #{product.screenType}
                         
                         // Storage Options
-                        if productList && productList.length > 0
-                            .storage-options.mb-4
-                                h5.storage-title Dung lượng
-                                .storage-buttons
-                                    each item in productList
-                                        a.storage-btn(
-                                            href=item.slug
-                                            class=item.storage === product.storage ? 'active' : ''
-                                        ) #{item.storage}
+                        .storage-options.mb-4
+                            h5.storage-title Dung lượng
+                            .storage-buttons
+                                each item in productList
+                                    a.storage-btn(
+                                        href=`/products/detail/${item.slug}`
+                                        class=(item.storage === product.storage ? 'active' : '')
+                                    ) #{item.storage}
                         
                         // Color Options
                         if product.variations
@@ -144,8 +143,7 @@ block main
                                 .content-wrapper !{product.description}
                             
                             .tab-pane.fade#specs(role="tabpanel")
-                                .content-wrapper
-                                    // Add technical specifications here
+                                .content-wrapper !{product.specsHtml}
 
     // Related Products
     section.related-products.py-4
