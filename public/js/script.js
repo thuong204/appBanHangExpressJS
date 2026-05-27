@@ -262,92 +262,118 @@ if (itemTitle) {
     });
   });
 }
-let isSuccess = false;
-document.addEventListener("DOMContentLoaded", function () {
+(function initPayOSPayment() {
   const paymentCard = document.getElementById("paymentcard");
-  const qrModal = new bootstrap.Modal(document.getElementById("qrModal"));
+  const paymentDelivery = document.getElementById("paymentdelivery");
+  const buttonOrder = document.querySelector("[button-order]");
+  const qrModalEl = document.getElementById("qrModal");
+  const qrDataEl = document.getElementById("qr-payment-data");
+  const payosOrderCodeInput = document.getElementById("payosOrderCode");
 
-  const dataOrder = document.querySelector("[data-order]");
-  const orderData = dataOrder.getAttribute("data-order");
-  const order = JSON.parse(orderData);
-
-  // Event listener for payment card option
-  paymentCard.addEventListener("change", () => {
-    if (paymentCard.checked && isSuccess == false) {
-      qrModal.show();
-    }
-    setTimeout(() => {
-      setInterval(() => {
-        checkPaid(
-          order.information.addInfo,
-          parseInt(order.information.amount)
-        );
-      }, 4000);
-    }, 3000);
-  });
-});
-const checkPaid = async (contentOrder, priceOrder) => {
-  try {
-    if (isSuccess) {
-      return;
-    } else {
-      const response = await fetch(
-        "https://script.google.com/macros/s/AKfycbxgzCZpFs-LabRitVmKZ3f-dpCzuWE8OAvPpyUqKSkWTFBTO0V7ATAmQAGj63uKh0bI/exec"
-      );
-      const data = await response.json();
-      const lastPaid = data.data[data.data.length - 1];
-      const price = lastPaid["Giá trị"];
-      const content = lastPaid["Mô tả"];
-      if (price >= priceOrder && content.includes(contentOrder)) {
-        const qrModal = new bootstrap.Modal(document.getElementById("qrModal"));
-        const qrModalElement = document.getElementById("qrModal");
-        qrModalElement.style.display = "none";
-        qrModalElement.classList.remove("fade", "show");
-        const backdrop = document.querySelector(".modal-backdrop");
-        if (backdrop) {
-          backdrop.remove();
-        }
-        document.body.style.overflow = "";
-        document.body.style.paddingRight = "";
-
-        var paymentModal = new bootstrap.Modal(
-          document.getElementById("paymentSuccessModal")
-        );
-        paymentModal.show();
-        document.getElementById("paymentdelivery").disabled = true;
-        document.getElementById("paymentcard").checked = true;
-
-        buttonOrder.disabled = false;
-        var cardLabel = document.querySelector('label[for="paymentcard"]');
-        cardLabel.innerHTML +=
-          ' <span style="color: green;">(Thành công)</span>';
-        isSuccess = true;
-      }
-    }
-  } catch (err) {
-    console.log("Lỗi");
-    console.log(err);
+  if (!paymentCard || !qrModalEl || !buttonOrder || !qrDataEl) {
     return;
   }
-};
-const paymentCard = document.getElementById("paymentcard");
-const paymentDelivery = document.getElementById("paymentdelivery");
-const buttonOrder = document.querySelector("[button-order]");
-if (paymentCard && paymentDelivery) {
+
+  let isSuccess = false;
+  let pollInterval = null;
+
+  let payload;
+  try {
+    payload = JSON.parse(qrDataEl.textContent.trim());
+  } catch (err) {
+    console.error("payOS data invalid:", err);
+    return;
+  }
+
+  const order = payload.qr;
+  const orderCode = order?.orderCode;
+
+  if (!orderCode) {
+    console.error("Missing payOS orderCode");
+    return;
+  }
+
+  const qrModal = bootstrap.Modal.getOrCreateInstance(qrModalEl);
+  const successModalEl = document.getElementById("paymentSuccessModal");
+  const successModal = successModalEl
+    ? bootstrap.Modal.getOrCreateInstance(successModalEl)
+    : null;
+
+  const stopPolling = () => {
+    if (pollInterval) {
+      clearInterval(pollInterval);
+      pollInterval = null;
+    }
+  };
+
+  const showPaymentSuccess = () => {
+    if (isSuccess) return;
+    isSuccess = true;
+    stopPolling();
+
+    const qrInstance = bootstrap.Modal.getInstance(qrModalEl);
+    if (qrInstance) qrInstance.hide();
+
+    document.querySelectorAll(".modal-backdrop").forEach((el) => el.remove());
+    document.body.classList.remove("modal-open");
+    document.body.style.overflow = "";
+    document.body.style.paddingRight = "";
+
+    if (successModal) successModal.show();
+    if (payosOrderCodeInput) payosOrderCodeInput.value = orderCode;
+
+    if (paymentDelivery) paymentDelivery.disabled = true;
+    paymentCard.checked = true;
+    buttonOrder.disabled = false;
+
+    const cardLabel = document.querySelector('label[for="paymentcard"]');
+    if (cardLabel && !cardLabel.querySelector(".payment-ok")) {
+      const span = document.createElement("span");
+      span.className = "payment-ok";
+      span.style.color = "green";
+      span.textContent = " (Đã thanh toán)";
+      cardLabel.appendChild(span);
+    }
+  };
+
+  const checkPaid = async () => {
+    if (isSuccess) return;
+    try {
+      const response = await fetch(
+        `/cart/check-payment?orderCode=${encodeURIComponent(orderCode)}`
+      );
+      const data = await response.json();
+      if (data.paid) showPaymentSuccess();
+    } catch (err) {
+      console.error("checkPaid:", err);
+    }
+  };
+
+  const startPolling = () => {
+    if (pollInterval || isSuccess) return;
+    checkPaid();
+    pollInterval = setInterval(checkPaid, 3000);
+  };
+
   paymentCard.addEventListener("change", () => {
-    if (paymentCard.checked) {
+    if (paymentCard.checked && !isSuccess) {
       buttonOrder.disabled = true;
-      if (isSuccess) {
-        buttonOrder.disabled = false;
-      }
+      qrModal.show();
+      startPolling();
     }
   });
+
   paymentDelivery.addEventListener("change", () => {
     if (paymentDelivery.checked) {
       buttonOrder.disabled = false;
+      stopPolling();
     }
   });
-}
+
+  if (payload.payosPaid) {
+    showPaymentSuccess();
+  }
+})();
 
 // const countdownElement = document.getElementById('countdown');
 // if (countdownElement) {

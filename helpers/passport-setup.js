@@ -1,13 +1,21 @@
 const passport = require('passport');
 const GoogleStrategy = require('passport-google-oauth20').Strategy;
 const FacebookStrategy = require('passport-facebook');
-const User = require("../models/users.model"); // Đường dẫn đến model User của bạn
+const User = require("../models/users.model");
+
+function getOAuthBaseUrl() {
+  const fromEnv = process.env.BASE_URL?.trim().replace(/\/$/, "");
+  if (fromEnv) return fromEnv;
+  return process.env.NODE_ENV === "production"
+    ? "https://thuongelectronics.vercel.app"
+    : "http://localhost:3000";
+}
 
 module.exports.setupGoogleStrategy = () => {
-  // Sử dụng full URL cho callbackURL
-  const baseURL =  process.env.BASE_URL || "https://thuong-electronic.io.vn"
+  const baseURL = getOAuthBaseUrl();
   const callbackURL = `${baseURL}/user/oauth2/redirect/google`;
-  
+  console.log("Google OAuth callbackURL:", callbackURL);
+
   passport.use(new GoogleStrategy({
     clientID: process.env.GOOGLE_CLIENT_ID,
     clientSecret: process.env.GOOGLE_CLIENT_SECRET,
@@ -37,11 +45,11 @@ module.exports.setupGoogleStrategy = () => {
   }));
 };
 
-module.exports.setupFacebookStrategy = () =>{
-    // Sử dụng full URL cho callbackURL
-    const baseURL = process.env.BASE_URL || 'http://localhost:3000';
+module.exports.setupFacebookStrategy = () => {
+    const baseURL = getOAuthBaseUrl();
     const callbackURL = `${baseURL}/user/oauth2/redirect/facebook`;
-    
+    console.log("Facebook OAuth callbackURL:", callbackURL);
+
     passport.use(new FacebookStrategy({
         clientID: process.env.FACEBOOK_CLIENT_ID,
         clientSecret: process.env.FACEBOOK_CLIENT_SECRET,
