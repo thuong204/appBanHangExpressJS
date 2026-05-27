@@ -22,7 +22,7 @@ nano .env
 Thêm dòng này (nếu chưa có):
 ```env
 BASE_URL=https://thuong-electronic.io.vn
-```
+```dsdasdsad
 
 **Lưu ý:**
 - Dùng `https://` nếu website đã có SSL
