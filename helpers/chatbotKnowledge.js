@@ -1,10 +1,15 @@
 const Product = require("../models/product.model");
 const CategoryProduct = require("../models/category-product.model");
-const productsCategoryHelper = require("./products-category");
 const { classifyIntent } = require("./chatbotIntentRouter");
 
 const STORE_NAME = "Vô Thường";
 const STORE_HOTLINE = "1900 1234";
+
+const IS_SERVERLESS = Boolean(process.env.VERCEL);
+const RAG_PRODUCT_LIMIT = IS_SERVERLESS ? 4 : 5;
+const RAG_FETCH_LIMIT = IS_SERVERLESS ? 18 : 28;
+const MONGO_QUERY_MS = IS_SERVERLESS ? 2500 : 8000;
+const MAX_CATEGORY_ROWS = IS_SERVERLESS ? 10 : 12;
 
 /** Cache danh mục + số lượng SP (giảm tải DB) */
 const CACHE_TTL_MS = 5 * 60 * 1000;
@@ -176,16 +181,24 @@ function categoryIdsForLine(line, categories) {
   return ids;
 }
 
-async function expandWithSubcategories(rootIds) {
+/** Mở rộng danh mục con từ cache (không gọi DB đệ quy) */
+function expandWithSubcategoriesFromCache(rootIds, categories) {
+  const byParent = new Map();
+  for (const c of categories) {
+    const pid = String(c.parent_id || "");
+    if (!byParent.has(pid)) byParent.set(pid, []);
+    byParent.get(pid).push(String(c._id));
+  }
+
   const all = new Set([...rootIds].map(String));
-  for (const id of rootIds) {
-    try {
-      const subs = await productsCategoryHelper.getSubCategory(id);
-      for (const sub of subs) {
-        all.add(String(sub._id || sub.id));
+  const stack = [...all];
+  while (stack.length) {
+    const id = stack.pop();
+    for (const child of byParent.get(id) || []) {
+      if (!all.has(child)) {
+        all.add(child);
+        stack.push(child);
       }
-    } catch (_) {
-      /* ignore */
     }
   }
   return [...all];
@@ -229,34 +242,28 @@ async function getTotalProductsCached() {
   return n;
 }
 
-async function findCategoryIdsFromHints(message) {
+/** Tìm danh mục từ cache (tránh query MongoDB thêm) */
+function findCategoryIdsFromHints(message, categories) {
   const ids = new Set();
-  const orTitle = [];
+  const matched = [];
+  const titlePatterns = [];
 
   for (const hint of CATEGORY_HINTS) {
-    if (hint.pattern.test(message)) {
-      orTitle.push({ title: hint.search });
-    }
+    if (hint.pattern.test(message)) titlePatterns.push(hint.search);
   }
-
   for (const term of extractSearchTerms(message)) {
-    if (term.length >= 3) {
-      orTitle.push({ title: { $regex: term, $options: "i" } });
+    if (term.length >= 3) titlePatterns.push(new RegExp(term, "i"));
+  }
+  if (!titlePatterns.length) return { ids, categories: matched };
+
+  for (const c of categories) {
+    const title = String(c.title || "");
+    if (titlePatterns.some((p) => p.test(title))) {
+      ids.add(String(c._id));
+      matched.push(c);
     }
   }
-
-  if (!orTitle.length) return { ids, categories: [] };
-
-  const categories = await CategoryProduct.find({
-    delete: false,
-    status: "active",
-    $or: orTitle,
-  })
-    .select("_id title slug")
-    .lean();
-
-  categories.forEach((c) => ids.add(String(c._id)));
-  return { ids, categories };
+  return { ids, categories: matched };
 }
 
 function buildTextOrConditions(terms) {
@@ -319,58 +326,21 @@ function scoreProduct(product, message, terms, categoryById, searchMode) {
 
 function buildProductRecord(product, categoryById, index) {
   const cat = categoryById.get(String(product.categoryProduct));
-  const priceOriginal = Number(product.price) || 0;
   const discount = Number(product.discountPercentage) || 0;
   const priceFinal = getEffectivePrice(product);
   const stock = getStockInfo(product);
-  const desc = stripHtml(product.description);
-  const contentPlain = stripHtml(product.content || "");
 
   const lines = [
-    `### Sản phẩm #${index} — ${product.title}`,
-    "",
-    "| Trường | Giá trị (từ database) |",
-    "|--------|----------------------|",
-    `| Mã tham chiếu | ${product._id} |`,
-    `| Tên | ${product.title} |`,
-    `| Slug | ${product.slug} |`,
-    `| Danh mục | ${cat?.title || "Chưa phân loại"} |`,
-    `| Link danh mục | ${cat?.slug ? `/products/category/${cat.slug}` : "—"} |`,
-    `| Giá niêm yết | ${formatVnd(priceOriginal)} |`,
-    `| Giảm giá | ${discount > 0 ? `${discount}%` : "Không"} |`,
-    `| Giá sau giảm | ${formatVnd(priceFinal)} |`,
-    `| Tình trạng kho | ${stock.label} |`,
-    `| Số lượng (DB: quantity / totalQuantity / biến thể) | ${stock.quantity} |`,
+    `### SP #${index} — ${product.title}`,
+    `| Giá sau giảm | ${formatVnd(priceFinal)} | Giảm | ${discount > 0 ? `${discount}%` : "0%"} |`,
+    `| Danh mục | ${cat?.title || "—"} | Kho | ${stock.label} |`,
+    `| Slug | ${product.slug} | Link | /products/detail/${product.slug} |`,
   ];
 
-  if (product.thumbnail) {
-    lines.push(`| Ảnh đại diện | ${asText(product.thumbnail)} |`);
-  }
-
-  if (product.storage) lines.push(`| Bộ nhớ / Dung lượng | ${asText(product.storage)} |`);
+  if (product.storage) lines.push(`| Bộ nhớ | ${asText(product.storage)} |`);
   if (product.screen) lines.push(`| Màn hình | ${asText(product.screen)} |`);
-  if (product.screenType) lines.push(`| Loại màn hình | ${asText(product.screenType)} |`);
 
-  if (product.variations?.length) {
-    const variants = product.variations
-      .map((v) => `${v.color}: ${Number(v.quantity) || 0} chiếc`)
-      .join("; ");
-    lines.push(`| Biến thể màu | ${variants} |`);
-  }
-
-  if (desc) {
-    const short = desc.length > 220 ? `${desc.slice(0, 220)}…` : desc;
-    lines.push(`| Mô tả (description) | ${short} |`);
-  }
-
-  if (contentPlain) {
-    const shortC = contentPlain.length > 280 ? `${contentPlain.slice(0, 280)}…` : contentPlain;
-    lines.push(`| Nội dung chi tiết (content) | ${shortC} |`);
-  }
-
-  lines.push(`| Link chi tiết | /products/detail/${product.slug} |`);
   lines.push("");
-
   return lines.join("\n");
 }
 
@@ -422,8 +392,15 @@ function buildStoreDocument({
   doc.push("| STT | Danh mục | Slug | Số SP |");
   doc.push("|-----|----------|------|-------|");
 
-  categories.forEach((c, i) => {
-    const count = countMap.get(String(c._id)) || 0;
+  const categoryRows = categories
+    .map((c) => ({
+      c,
+      count: countMap.get(String(c._id)) || 0,
+    }))
+    .sort((a, b) => b.count - a.count);
+  const maxCats = MAX_CATEGORY_ROWS;
+
+  categoryRows.slice(0, maxCats).forEach(({ c, count }, i) => {
     doc.push(`| ${i + 1} | ${c.title} | ${c.slug} | ${count} |`);
   });
 
@@ -462,12 +439,14 @@ function buildStoreDocument({
 }
 
 async function fetchProductsForQuery(baseQuery, queryExtra, limit) {
+  const cap = Math.min(limit, RAG_FETCH_LIMIT);
   return Product.find({ ...baseQuery, ...queryExtra })
     .select(
-      "title slug price quantity totalQuantity discountPercentage description content variations storage screen screenType categoryProduct featured position thumbnail"
+      "title slug price quantity totalQuantity discountPercentage categoryProduct featured position thumbnail storage screen"
     )
     .sort({ featured: -1, position: -1, createdAt: -1 })
-    .limit(limit)
+    .limit(cap)
+    .maxTimeMS(MONGO_QUERY_MS)
     .lean();
 }
 
@@ -481,7 +460,7 @@ function applyBudgetFilter(products, budget) {
   });
 }
 
-function rankAndSlice(products, message, terms, categoryById, searchMode, slice = 6) {
+function rankAndSlice(products, message, terms, categoryById, searchMode, slice = RAG_PRODUCT_LIMIT) {
   return products
     .map((p) => ({
       product: p,
@@ -493,26 +472,40 @@ function rankAndSlice(products, message, terms, categoryById, searchMode, slice 
     .map((x) => x.product);
 }
 
-async function retrieveKnowledge(message) {
-  const intent = classifyIntent(message);
-  const terms = extractSearchTerms(message);
-  const budget = parseBudget(message);
-  const categoryIndex = await loadCategoryIndex();
-  const productLine = detectProductLine(message);
+function buildMinimalKnowledge(intent, message) {
+  const doc = [
+    `# ${STORE_NAME} — trợ lý cửa hàng`,
+    `- Hotline: ${STORE_HOTLINE}`,
+    `- Trang sản phẩm: /products`,
+    `- Câu hỏi: "${message}"`,
+    `- Ý định: ${intent}`,
+    "",
+    "Trả lời ngắn gọn, thân thiện. Gợi ý khách xem /products hoặc hỏi cụ thể (laptop, điện thoại, ngân sách…).",
+  ].join("\n");
 
-  let strictCategoryIds = categoryIdsForLine(productLine, categoryIndex.categories);
-  if (strictCategoryIds.size) {
-    strictCategoryIds = new Set(await expandWithSubcategories([...strictCategoryIds]));
-  }
+  return {
+    intent,
+    document: doc,
+    productCount: 0,
+    ragProducts: [],
+  };
+}
 
-  const { ids: hintCategoryIds } = await findCategoryIdsFromHints(message);
+async function fetchRankedProducts({
+  message,
+  terms,
+  budget,
+  categoryIndex,
+  productLine,
+  strictCategoryIds,
+  hintCategoryIds,
+}) {
+  const baseQuery = { status: "active", delete: false };
+  const textOr = buildTextOrConditions(terms);
   const mergedCategoryFilter = new Set([
     ...strictCategoryIds,
     ...hintCategoryIds,
   ]);
-
-  const baseQuery = { status: "active", delete: false };
-  const textOr = buildTextOrConditions(terms);
 
   let products = [];
   let searchMode = "broad";
@@ -521,48 +514,39 @@ async function retrieveKnowledge(message) {
     searchMode = `${productLine}_strict`;
     products = await fetchProductsForQuery(
       baseQuery,
-      {
-        categoryProduct: { $in: [...strictCategoryIds] },
-        $or: textOr,
-      },
-      50
+      { categoryProduct: { $in: [...strictCategoryIds] }, $or: textOr },
+      RAG_FETCH_LIMIT
     );
     if (products.length < 2) {
       products = await fetchProductsForQuery(
         baseQuery,
         { categoryProduct: { $in: [...strictCategoryIds] } },
-        40
+        RAG_FETCH_LIMIT
       );
+      searchMode = `${productLine}_category_only`;
     }
   } else if (strictCategoryIds.size) {
     searchMode = `${productLine}_category_only`;
     products = await fetchProductsForQuery(
       baseQuery,
       { categoryProduct: { $in: [...strictCategoryIds] } },
-      40
+      RAG_FETCH_LIMIT
     );
-  }
-
-  if (!products.length && mergedCategoryFilter.size && textOr.length) {
+  } else if (mergedCategoryFilter.size && textOr.length) {
     searchMode = "hint_category_text";
     products = await fetchProductsForQuery(
       baseQuery,
-      {
-        categoryProduct: { $in: [...mergedCategoryFilter] },
-        $or: textOr,
-      },
-      45
+      { categoryProduct: { $in: [...mergedCategoryFilter] }, $or: textOr },
+      RAG_FETCH_LIMIT
     );
-  }
-
-  if (!products.length && textOr.length) {
+  } else if (textOr.length) {
     searchMode = "text_only";
-    products = await fetchProductsForQuery(baseQuery, { $or: textOr }, 40);
+    products = await fetchProductsForQuery(baseQuery, { $or: textOr }, RAG_FETCH_LIMIT);
   }
 
   if (!products.length) {
     searchMode = "featured_fallback";
-    products = await fetchProductsForQuery(baseQuery, {}, 18);
+    products = await fetchProductsForQuery(baseQuery, {}, Math.min(18, RAG_FETCH_LIMIT));
   }
 
   products = applyBudgetFilter(products, budget);
@@ -575,10 +559,70 @@ async function retrieveKnowledge(message) {
     terms,
     categoryIndex.byId,
     modeForScore,
-    6
+    RAG_PRODUCT_LIMIT
   );
 
-  const totalProducts = await getTotalProductsCached();
+  return { products, searchMode };
+}
+
+async function retrieveKnowledge(message) {
+  const intent = classifyIntent(message);
+
+  if (intent === "greeting" || intent === "empty") {
+    return buildMinimalKnowledge(intent, message);
+  }
+
+  const terms = extractSearchTerms(message);
+  const budget = parseBudget(message);
+  const productLine = detectProductLine(message);
+
+  const categoryIndex = await loadCategoryIndex();
+
+  if (intent === "general" && !terms.length && !productLine) {
+    const totalProducts = await getTotalProductsCached();
+    const document = buildStoreDocument({
+      message,
+      intent,
+      terms,
+      budget,
+      products: [],
+      categoryIndex,
+      totalProducts,
+      productLine,
+      searchMode: "general",
+    });
+    return {
+      intent,
+      document,
+      productCount: 0,
+      ragProducts: [],
+    };
+  }
+
+  let strictCategoryIds = categoryIdsForLine(productLine, categoryIndex.categories);
+  if (strictCategoryIds.size) {
+    strictCategoryIds = new Set(
+      expandWithSubcategoriesFromCache([...strictCategoryIds], categoryIndex.categories)
+    );
+  }
+
+  const { ids: hintCategoryIds } = findCategoryIdsFromHints(
+    message,
+    categoryIndex.categories
+  );
+
+  const [{ products, searchMode }, totalProducts] = await Promise.all([
+    fetchRankedProducts({
+      message,
+      terms,
+      budget,
+      categoryIndex,
+      productLine,
+      strictCategoryIds,
+      hintCategoryIds,
+    }),
+    getTotalProductsCached(),
+  ]);
 
   const document = buildStoreDocument({
     message,
@@ -596,7 +640,6 @@ async function retrieveKnowledge(message) {
     intent,
     document,
     productCount: products.length,
-    /** Dùng ghép ảnh sản phẩm dưới bubble chat theo slug trong câu trả lời */
     ragProducts: products.map((p) => ({
       slug: p.slug,
       title: p.title,
@@ -657,15 +700,24 @@ async function resolveProductSuggestions(responseText, ragProducts = []) {
 }
 
 function buildSystemPrompt(knowledge) {
-  return `Bạn là trợ lý bán hàng ${STORE_NAME}.
+  const isLight =
+    knowledge.intent === "greeting" ||
+    knowledge.intent === "empty" ||
+    knowledge.intent === "general";
 
-Nhiệm vụ: đọc TÀI LIỆU TƯ VẤN bên dưới (100% từ database) và trả lời khách bằng tiếng Việt.
+  const rules = isLight
+    ? `- Trả lời ngắn gọn (1–3 câu), thân thiện.
+- Chào hỏi → giới thiệu bản thân và hỏi khách cần tư vấn gì.
+- Câu chung → gợi ý xem /products hoặc hotline ${STORE_HOTLINE}.`
+    : `- Tuân thủ mục "Quy tắc sử dụng tài liệu" cuối tài liệu.
+- Trả lời ngắn gọn (3–5 câu), gợi ý 1–3 sản phẩm phù hợp nhất từ Mục 4.
+- Nêu rõ giá sau giảm; mỗi sản phẩm gợi ý phải có /products/detail/<slug>.
+- Không có sản phẩm phù hợp → gợi ý danh mục (Mục 2) hoặc hotline ${STORE_HOTLINE}.`;
+
+  return `Bạn là trợ lý bán hàng ${STORE_NAME}. Trả lời bằng tiếng Việt.
 
 Quy tắc:
-- Tuân thủ mục "Quy tắc sử dụng tài liệu" cuối tài liệu.
-- Trả lời ngắn gọn, thân thiện (3–6 câu), gợi ý 1–3 sản phẩm phù hợp nhất từ Mục 4.
-- Nêu rõ giá sau giảm; mỗi sản phẩm gợi ý phải có một dòng (hoặc cuối câu) chứa đúng đường dẫn /products/detail/<slug> — slug phải khớp cột "Slug" trong tài liệu (để giao diện hiển thị ảnh + link).
-- Không có sản phẩm phù hợp → nói rõ và gợi ý danh mục (Mục 2) hoặc hotline ${STORE_HOTLINE}.
+${rules}
 
 ${knowledge.document}`;
 }
@@ -677,3 +729,6 @@ module.exports = {
   getEffectivePrice,
   resolveProductSuggestions,
 };
+
+/** Làm nóng cache danh mục khi khởi động server (giảm latency câu hỏi đầu) */
+loadCategoryIndex().catch(() => {});
