@@ -18,7 +18,7 @@ cd ~/appbanhang
 # Sửa file .env
 nano .env
 ```
-
+dâdasd
 Thêm dòng này (nếu chưa có):
 ```env
 BASE_URL=https://thuong-electronic.io.vn
