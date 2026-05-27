@@ -20,6 +20,7 @@ const bodyParser = require("body-parser")
 
 const flash = require("express-flash")
 const moment = require("moment")
+const formatDateVN = require("./helpers/formatDate")
 const cookieParser =require("cookie-parser")
 
 const database = require("./config/database.js")
@@ -45,6 +46,9 @@ app.set('view engine', 'pug')
 //App local variable
 app.locals.prefixAdmin =  systemConfig.prefixAdmin
 app.locals.moment = moment
+app.locals.formatDateVN = formatDateVN
+app.locals.formatDateOnlyVN = formatDateVN.dateOnly
+app.locals.formatTimeOnlyVN = formatDateVN.timeOnly
 
 app.use(bodyParser.urlencoded({extended: false}))
 app.use(express.json()); 

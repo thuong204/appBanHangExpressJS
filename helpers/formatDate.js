@@ -1,11 +1,30 @@
-module.exports = (dateLocal) => {
-    let date = new Date(dateLocal);
+const moment = require("moment");
 
-    // Định dạng chỉ hiển thị ngày tháng năm, giờ phút giây
-    let formattedDate = new Intl.DateTimeFormat('vi-VN', {
-        year: 'numeric', month: '2-digit', day: '2-digit',
-        hour: '2-digit', minute: '2-digit', second: '2-digit'
-    }).format(date);
-    return formattedDate
+/** Múi giờ Việt Nam (GMT+7) */
+const VN_UTC_OFFSET = 7;
+
+function toVN(dateLocal) {
+  if (dateLocal == null || dateLocal === "") return null;
+  const m = moment(dateLocal);
+  if (!m.isValid()) return null;
+  return m.utcOffset(VN_UTC_OFFSET);
 }
 
+/** DD/MM/YYYY HH:mm:ss (GMT+7) */
+module.exports = (dateLocal) => {
+  const m = toVN(dateLocal);
+  if (!m) return "";
+  return m.format("DD/MM/YYYY HH:mm:ss");
+};
+
+module.exports.dateOnly = (dateLocal) => {
+  const m = toVN(dateLocal);
+  if (!m) return "";
+  return m.format("DD/MM/YYYY");
+};
+
+module.exports.timeOnly = (dateLocal) => {
+  const m = toVN(dateLocal);
+  if (!m) return "";
+  return m.format("HH:mm:ss");
+};

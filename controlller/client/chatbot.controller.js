@@ -13,11 +13,11 @@ const GREETING_REPLY =
 
 if (!activeLLM) {
   console.warn(
-    "⚠️  Chatbot: chưa có GROQ_API_KEY hoặc OPENROUTER (HTTPS). Chatbot sẽ không hoạt động."
+    "⚠️  Chatbot: chưa có OPENROUTER_API_KEY hoặc GROQ_API_KEY. Chatbot sẽ không hoạt động."
   );
 } else {
   console.log(
-    `✅ Chatbot: ${activeLLM.provider} — model ${activeLLM.model}` +
+    `✅ Chatbot: ${activeLLM.provider} — model ${activeLLM.model} @ ${activeLLM.chatUrl}` +
       (config.IS_VERCEL ? " (Vercel serverless)" : "")
   );
 }

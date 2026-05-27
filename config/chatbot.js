@@ -17,53 +17,53 @@ const OPENROUTER_BASE_URL = (
   process.env.OPENROUTER_BASE_URL || "https://openrouter.ai/api/v1"
 ).replace(/\/$/, "");
 
-/** Chọn provider: trên Vercel hoặc khi OpenRouter trỏ localhost → dùng Groq (HTTPS) */
+/** Chọn provider LLM */
 function resolveActiveLLM() {
   const groqKey = (process.env.GROQ_API_KEY || "").trim();
   const openRouterKey = (process.env.OPENROUTER_API_KEY || "").trim();
   const openRouterLocal = isLocalUrl(OPENROUTER_BASE_URL);
+  const pref = (process.env.CHATBOT_PROVIDER || "").trim().toLowerCase();
 
-  if (groqKey && (IS_VERCEL || openRouterLocal)) {
-    return {
-      provider: "groq",
-      chatUrl: "https://api.groq.com/openai/v1/chat/completions",
-      apiKey: groqKey,
-      model:
-        process.env.GROQ_MODEL ||
-        process.env.AI_MODEL ||
-        "llama-3.1-8b-instant",
-    };
+  const groqConfig = () => ({
+    provider: "groq",
+    chatUrl: "https://api.groq.com/openai/v1/chat/completions",
+    apiKey: groqKey,
+    model:
+      process.env.GROQ_MODEL ||
+      process.env.AI_MODEL ||
+      "llama-3.1-8b-instant",
+  });
+
+  const openRouterConfig = (local) => ({
+    provider: local ? "openrouter-local" : "openrouter",
+    chatUrl: `${OPENROUTER_BASE_URL}/chat/completions`,
+    apiKey: openRouterKey,
+    model:
+      process.env.OPENROUTER_MODEL ||
+      (local ? "fdf" : "google/gemma-2-9b-it:free"),
+  });
+
+  if (pref === "groq" && groqKey) return groqConfig();
+  if (pref === "openrouter" && openRouterKey) {
+    return openRouterConfig(openRouterLocal);
   }
 
-  if (openRouterKey && !openRouterLocal) {
-    return {
-      provider: "openrouter",
-      chatUrl: `${OPENROUTER_BASE_URL}/chat/completions`,
-      apiKey: openRouterKey,
-      model: process.env.OPENROUTER_MODEL || "google/gemma-2-9b-it:free",
-    };
-  }
-
-  if (groqKey) {
-    return {
-      provider: "groq",
-      chatUrl: "https://api.groq.com/openai/v1/chat/completions",
-      apiKey: groqKey,
-      model:
-        process.env.GROQ_MODEL ||
-        process.env.AI_MODEL ||
-        "llama-3.1-8b-instant",
-    };
-  }
-
+  // Local: ưu tiên OpenRouter / 9router (localhost)
   if (openRouterKey && openRouterLocal && !IS_VERCEL) {
-    return {
-      provider: "openrouter-local",
-      chatUrl: `${OPENROUTER_BASE_URL}/chat/completions`,
-      apiKey: openRouterKey,
-      model: process.env.OPENROUTER_MODEL || "fdf",
-    };
+    return openRouterConfig(true);
   }
+
+  // OpenRouter cloud (HTTPS)
+  if (openRouterKey && !openRouterLocal) {
+    return openRouterConfig(false);
+  }
+
+  // Vercel + OpenRouter localhost không chạy được → Groq
+  if (groqKey && IS_VERCEL) {
+    return groqConfig();
+  }
+
+  if (groqKey) return groqConfig();
 
   return null;
 }

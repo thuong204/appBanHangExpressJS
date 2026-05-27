@@ -303,7 +303,7 @@ module.exports.orderPost = async (req, res) => {
       address: userInfo.address,
     },
     payments: userInfo.payment,
-    dateOrder: new Date().toLocaleString(),
+    dateOrder: new Date(),
     note: userInfo.note,
     products: products,
   });
@@ -350,9 +350,7 @@ module.exports.success = async (req, res) => {
       product.totalPriceInter = priceInter(product.totalPrice);
     }
 
-    if (order.dateOrder) {
-      order.date = formatDate(order.dateOrder);
-    }
+    order.date = formatDate(order.dateOrder || order.createdAt);
 
     order.totalPrice = order.products.reduce(
       (sum, item) => sum + item.totalPrice,
@@ -360,7 +358,6 @@ module.exports.success = async (req, res) => {
     );
     order.totalPriceInter = priceInter(order.totalPrice);
 
-    order.dateOrder;
     res.render("clients/pages/cart/success", {
       pageTitle: "Đơn hàng",
       order: order,

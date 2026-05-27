@@ -22,10 +22,21 @@ router.post('/password/otp', controller.otpPasswordPost)
 router.get('/password/reset', controller.resetPassword)
 router.post('/password/reset', validate.resetPassword, controller.resetPasswordPost)
 router.get('/info',authMiddleware.requireAuth,controller.info)
-router.get("/login/federated/google",passport.authenticate('google'))
-router.get('/oauth2/redirect/google', passport.authenticate('google', {
-    failureRedirect: '/login'
-  }),controller.loginSuccessGoogle);
+router.get("/login/federated/google", (req, res, next) => {
+  const callbackURL = passportHelper.getGoogleCallbackURL(req);
+  passport.authenticate("google", { callbackURL, scope: ["profile", "email"] })(
+    req,
+    res,
+    next
+  );
+});
+router.get('/oauth2/redirect/google', (req, res, next) => {
+  const callbackURL = passportHelper.getGoogleCallbackURL(req);
+  passport.authenticate("google", {
+    callbackURL,
+    failureRedirect: "/user/login",
+  })(req, res, next);
+}, controller.loginSuccessGoogle);
 router.get('/login/federated/facebook', passport.authenticate('facebook'));
 
 router.get('/oauth2/redirect/facebook', passport.authenticate('facebook', {
