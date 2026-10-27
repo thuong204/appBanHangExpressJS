@@ -50,6 +50,7 @@ block main
                                 th Hình ảnh
                                 th.product-title Tiêu đề
                                 th Giá
+                                th Tồn kho
                                 th Vị trí
                                 th Người tạo
                                 th Cập nhật
@@ -74,6 +75,17 @@ block main
                                         .product-price #{new Intl.NumberFormat('vi-VN').format(item.price)}₫
                                         if item.discountPercentage
                                             span.discount-badge -#{item.discountPercentage}%
+                                    td.text-nowrap
+                                        //- Cùng quy tắc với helpers/inventory.js totalStock()
+                                        - const stock = item.variations && item.variations.length ? item.variations.reduce((sum, v) => sum + (v.quantity || 0), 0) : Math.max(item.totalQuantity || 0, item.quantity || 0)
+                                        if stock <= 0
+                                            span.badge.bg-danger Hết hàng
+                                        else if stock <= 5
+                                            span.badge.bg-warning.text-dark #{stock}
+                                        else
+                                            span.badge.bg-light.text-dark.border #{stock}
+                                        if item.variations && item.variations.length > 1
+                                            small.d-block.text-muted #{item.variations.length} màu
                                     td 
                                         input.form-control.form-control-sm.position-input(
                                             type="number"

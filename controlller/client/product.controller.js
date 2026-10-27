@@ -96,7 +96,7 @@ module.exports.detailItem = async (req, res) => {
         productPriceNew = formatPrice.formatPrice(productPriceNew)
 
         // Sản phẩm tương tự: cùng danh mục trước, thiếu thì lấy thêm từ danh mục cha
-        const relatedFields = "title slug price discountPercentage thumbnail categoryProduct screen storage"
+        const relatedFields = "title slug price discountPercentage thumbnail categoryProduct screen storage variations totalQuantity quantity"
         let productRelated = []
         for (const cat of chain) {
             if (productRelated.length >= 4) break

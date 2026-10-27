@@ -14,6 +14,11 @@ block main
             i.fas.fa-arrow-left.me-1
             | Quay lại danh sách
 
+    if order.stockShortage
+        .alert.alert-warning.d-flex.align-items-center
+            i.fas.fa-exclamation-triangle.me-2
+            | Đơn đã thanh toán nhưng không đủ hàng lúc đặt (chưa trừ kho). Hãy liên hệ khách để đổi sản phẩm hoặc hoàn tiền.
+
     .row.g-4
         .col-lg-4
             .card.shadow-sm.h-100

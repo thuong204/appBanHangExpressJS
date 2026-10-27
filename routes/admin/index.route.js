@@ -8,6 +8,7 @@ const authMiddleware = require("../../middlewares/admin/auth.middleware");
 const myAccountRoutes = require("./my-account.route.js");
 const orderRoutes = require("./order.route.js");
 const settingRoutes = require("./setting.route.js");
+const contactRoutes = require("./contact.route.js");
 const systemConfig = require("../../config/system");
 
 module.exports = (app) => {
@@ -33,4 +34,5 @@ module.exports = (app) => {
   );
   app.use(PATH_ADMIN + "/orders", authMiddleware.requireAuth, orderRoutes);
   app.use(PATH_ADMIN + "/setting", authMiddleware.requireAuth, settingRoutes);
+  app.use(PATH_ADMIN + "/contacts", authMiddleware.requireAuth, contactRoutes);
 };

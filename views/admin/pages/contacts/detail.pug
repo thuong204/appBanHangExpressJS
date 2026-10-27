@@ -1,0 +1,88 @@
+extends ../../layouts/default.pug
+include ../../mixins/alert.pug
+include ../../mixins/formatDateTime.pug
+block main
+    +alert-success(4000)
+    +alert-error(6000)
+
+    .d-flex.justify-content-between.align-items-center.flex-wrap.gap-2.mb-4
+        h1.m-0
+            i.fas.fa-envelope-open.me-2.text-primary
+            | Chi tiết liên hệ
+        a.btn.btn-outline-secondary(href=`${prefixAdmin}/contacts`)
+            i.fas.fa-arrow-left.me-1
+            | Quay lại danh sách
+
+    .row.g-4
+        .col-lg-4
+            .card.shadow-sm
+                .card-header.bg-white.py-3
+                    h5.card-title.m-0
+                        i.fas.fa-user.me-2.text-primary
+                        | Khách hàng
+                .card-body
+                    dl.row.mb-0
+                        dt.col-sm-4 Họ tên
+                        dd.col-sm-8 #{contact.fullName || "—"}
+                        dt.col-sm-4 Email
+                        dd.col-sm-8
+                            a(href=`mailto:${contact.email}`) #{contact.email}
+                        dt.col-sm-4 Điện thoại
+                        dd.col-sm-8
+                            if contact.phone
+                                a(href=`tel:${contact.phone}`) #{contact.phone}
+                            else
+                                | —
+                        dt.col-sm-4 Ngày gửi
+                        dd.col-sm-8
+                            +formatDateTime(contact.createdAt)
+            .card.shadow-sm.mt-4
+                .card-header.bg-white.py-3
+                    h5.card-title.m-0
+                        i.fas.fa-tag.me-2.text-primary
+                        | Trạng thái
+                .card-body
+                    form(action=`${prefixAdmin}/contacts/change-status/${contact.id}?_method=PATCH` method="POST")
+                        .input-group
+                            select.form-select(name="status")
+                                each label, key in statuses
+                                    option(value=key selected=contact.status === key) #{label}
+                            button.btn.btn-outline-primary(type="submit") Lưu
+
+        .col-lg-8
+            .card.shadow-sm
+                .card-header.bg-white.py-3
+                    h5.card-title.m-0
+                        i.fas.fa-comment-dots.me-2.text-primary
+                        | #{contact.subject || "Lời nhắn"}
+                .card-body
+                    p.mb-0(style="white-space:pre-wrap") #{contact.message}
+
+            if contact.reply && contact.reply.message
+                .card.shadow-sm.mt-4.border-success
+                    .card-header.bg-white.py-3.d-flex.justify-content-between.align-items-center.flex-wrap.gap-2
+                        h5.card-title.m-0.text-success
+                            i.fas.fa-check-circle.me-2
+                            | Đã phản hồi
+                        small.text-muted
+                            if contact.reply.accountName
+                                | #{contact.reply.accountName} · 
+                            +formatDateTime(contact.reply.repliedAt)
+                    .card-body
+                        p.mb-0(style="white-space:pre-wrap") #{contact.reply.message}
+
+            .card.shadow-sm.mt-4
+                .card-header.bg-white.py-3
+                    h5.card-title.m-0
+                        i.fas.fa-reply.me-2.text-primary
+                        | #{contact.reply && contact.reply.message ? "Gửi phản hồi khác" : "Phản hồi qua email"}
+                .card-body
+                    form(action=`${prefixAdmin}/contacts/reply/${contact.id}` method="POST")
+                        .mb-2.small.text-muted
+                            | Gửi tới
+                            strong.ms-1 #{contact.email}
+                            | . Email có lời chào, chữ ký cửa hàng và trích dẫn lời nhắn gốc.
+                        textarea.form-control.mb-3(name="message" rows="6" required placeholder="Nhập nội dung phản hồi cho khách...")
+                        button.btn.btn-primary(type="submit")
+                            i.fas.fa-paper-plane.me-1
+                            | Gửi phản hồi

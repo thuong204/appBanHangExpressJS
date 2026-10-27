@@ -22,6 +22,12 @@ const orderSchema = new mongoose.Schema(
         status: String,
         payosOrderCode: Number,
         note: String,
+        // true khi đã trừ kho cho đơn này (huỷ đơn thì hoàn kho và đặt lại false)
+        stockReserved: { type: Boolean, default: false },
+        // true khi đơn bị huỷ và đã hoàn kho; khôi phục đơn sẽ trừ kho lại
+        stockReleased: { type: Boolean, default: false },
+        // Đơn đã thanh toán nhưng không đủ hàng lúc đặt, cần shop xử lý
+        stockShortage: { type: Boolean, default: false },
         dateOrder:Date,
         products:[{
             product_id: String,

@@ -302,14 +302,33 @@ if (itemTitle) {
 
   const colorInput = section.querySelector("#color-input");
   const colorBtns = section.querySelectorAll(".color-btn");
+  const stockLeft = section.querySelector("[data-stock-left]");
+  // Đổi màu thì giới hạn số lượng theo tồn kho của màu đó
+  const applyStock = (btn) => {
+    const qtyInput = section.querySelector("#quantity");
+    const stock = parseInt(btn.getAttribute("data-stock"), 10);
+    if (!qtyInput || Number.isNaN(stock)) return;
+    qtyInput.max = stock;
+    if (parseInt(qtyInput.value, 10) > stock) qtyInput.value = Math.max(1, stock);
+    if (stockLeft) {
+      stockLeft.textContent = stock <= 5 ? `Chỉ còn ${stock} sản phẩm` : `Còn ${stock} sản phẩm`;
+    }
+  };
   if (colorInput && colorBtns.length) {
-    const active = section.querySelector(".color-btn.active") || colorBtns[0];
-    if (active) colorInput.value = active.getAttribute("data-color") || "";
+    const active = section.querySelector(".color-btn.active:not(:disabled)") ||
+      section.querySelector(".color-btn:not(:disabled)");
+    if (active) {
+      colorBtns.forEach((b) => b.classList.remove("active"));
+      active.classList.add("active");
+      colorInput.value = active.getAttribute("data-color") || "";
+      applyStock(active);
+    }
     colorBtns.forEach((btn) => {
       btn.addEventListener("click", () => {
         colorBtns.forEach((b) => b.classList.remove("active"));
         btn.classList.add("active");
         colorInput.value = btn.getAttribute("data-color") || "";
+        applyStock(btn);
       });
     });
   }
@@ -318,7 +337,8 @@ if (itemTitle) {
   const decBtn = section.querySelector(".quantity-btn.decrease");
   const incBtn = section.querySelector(".quantity-btn.increase");
   if (qtyInput) {
-    const max = parseInt(qtyInput.getAttribute("max"), 10) || 99;
+    // Đọc max mỗi lần bấm vì đổi màu sẽ đổi giới hạn tồn kho
+    const getMax = () => parseInt(qtyInput.getAttribute("max"), 10) || 1;
     const min = parseInt(qtyInput.getAttribute("min"), 10) || 1;
     if (decBtn) {
       decBtn.addEventListener("click", () => {
@@ -327,7 +347,7 @@ if (itemTitle) {
     }
     if (incBtn) {
       incBtn.addEventListener("click", () => {
-        qtyInput.value = Math.min(max, parseInt(qtyInput.value, 10) + 1 || min);
+        qtyInput.value = Math.min(getMax(), parseInt(qtyInput.value, 10) + 1 || min);
       });
     }
   }

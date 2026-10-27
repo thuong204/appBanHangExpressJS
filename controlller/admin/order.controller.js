@@ -6,6 +6,34 @@ const productsHelper = require("../../helpers/products");
 const { priceInter } = require("../../helpers/priceInter");
 const formatDate = require("../../helpers/formatDate");
 const systemConfig = require("../../config/system");
+const inventory = require("../../helpers/inventory");
+
+const CANCELED = ["Đã hủy", "canceled"];
+
+/** Huỷ đơn: hoàn kho đúng 1 lần (lật cờ có điều kiện trước rồi mới cộng kho) */
+async function releaseStock(orderId) {
+  const order = await Order.findOneAndUpdate(
+    { _id: orderId, stockReserved: true },
+    { $set: { stockReserved: false, stockReleased: true } }
+  );
+  if (order) await inventory.release(order.products);
+}
+
+/** Khôi phục đơn đã huỷ: trừ kho lại; trả về false nếu không đủ hàng */
+async function reserveStockAgain(orderId) {
+  const order = await Order.findOneAndUpdate(
+    { _id: orderId, stockReleased: true },
+    { $set: { stockReleased: false } }
+  );
+  if (!order) return true;
+  const result = await inventory.reserve(order.products);
+  if (!result.ok) {
+    await Order.updateOne({ _id: orderId }, { $set: { stockReleased: true } });
+    return false;
+  }
+  await Order.updateOne({ _id: orderId }, { $set: { stockReserved: true } });
+  return true;
+}
 
 function waitForMongo(maxMs = 8000) {
   if (mongoose.connection.readyState === 1) {
@@ -152,8 +180,15 @@ module.exports.changeStatus = async (req, res) => {
       return res.redirect("back");
     }
 
+    if (CANCELED.includes(status)) {
+      await releaseStock(req.params.id);
+    } else if (!(await reserveStockAgain(req.params.id))) {
+      req.flash("Error", "Không thể khôi phục đơn: một số sản phẩm không còn đủ hàng");
+      return res.redirect("back");
+    }
+
     await Order.updateOne({ _id: req.params.id }, { status });
-    req.flash("Success", "Cập nhật trạng thái đơn hàng thành công");
+    req.flash("Success", CANCELED.includes(status) ? "Đã huỷ đơn và hoàn lại tồn kho" : "Cập nhật trạng thái đơn hàng thành công");
     res.redirect("back");
   } catch (error) {
     console.error("Admin order changeStatus error:", error);
@@ -164,6 +199,8 @@ module.exports.changeStatus = async (req, res) => {
 
 module.exports.deleteItem = async (req, res) => {
   try {
+    // Xoá đơn chưa huỷ thì trả hàng về kho
+    await releaseStock(req.params.id);
     await Order.deleteOne({ _id: req.params.id });
     req.flash("Success", "Xóa đơn hàng thành công");
     res.redirect(`${systemConfig.prefixAdmin}/orders`);

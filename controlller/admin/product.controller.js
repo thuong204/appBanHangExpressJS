@@ -18,7 +18,8 @@ function buildVariations(colors, quantities) {
     return colorList
         .map((color, index) => {
             const quantity = parseInt(qtyList[index], 10);
-            if (!color || Number.isNaN(quantity) || quantity < 1) return null;
+            // Cho phép tồn 0 để màu đã bán hết vẫn hiện (khách thấy "hết hàng") thay vì biến mất
+            if (!color || Number.isNaN(quantity) || quantity < 0) return null;
             return { color, quantity };
         })
         .filter(Boolean);
@@ -229,6 +230,8 @@ module.exports.saveItem = async (req, res) => {
         (total, variation) => total + variation.quantity,
         0
     );
+    // Trường quantity cũ luôn bằng totalQuantity (xem helpers/inventory.js)
+    req.body.quantity = req.body.totalQuantity;
     delete req.body.colors
     delete req.body.quantities
 
@@ -271,6 +274,8 @@ module.exports.updateItem = async (req, res) => {
         (total, variation) => total + variation.quantity,
         0
     );
+    // Trường quantity cũ luôn bằng totalQuantity (xem helpers/inventory.js)
+    req.body.quantity = req.body.totalQuantity;
 
     delete req.body.colors
     delete req.body.quantities

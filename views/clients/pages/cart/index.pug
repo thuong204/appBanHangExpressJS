@@ -28,7 +28,7 @@ block main
                             each item in cart.products
                                 .cart-item(data-cart)
                                     label.cart-check
-                                        input.form-check-input(type="checkbox" checkedOrder priceItem=item.totalPrice value=item.product_id)
+                                        input.form-check-input(type="checkbox" checkedOrder priceItem=item.totalPrice value=item.product_id disabled=item.available <= 0)
                                     a.cart-thumb(href=`/products/detail/${item.productInfo.slug}`)
                                         img(src=item.productInfo.thumbnail alt=item.productInfo.title)
                                     .cart-body
@@ -39,6 +39,16 @@ block main
                                             else
                                                 span.d-none(value="" item-color)
                                             span.cart-unit-price(price-new value=item.productInfo.priceNew) #{item.productInfo.priceInter}đ
+                                        if item.available <= 0
+                                            .cart-stock-warning
+                                                i.fas.fa-exclamation-circle.me-1
+                                                | Sản phẩm đã hết hàng, vui lòng xoá khỏi giỏ
+                                        else if item.quantity > item.available
+                                            .cart-stock-warning
+                                                i.fas.fa-exclamation-circle.me-1
+                                                | Chỉ còn #{item.available} sản phẩm, vui lòng giảm số lượng
+                                        else if item.available <= 5
+                                            .cart-stock-low Chỉ còn #{item.available} sản phẩm
                                         .cart-actions
                                             .qty-control.button-add-quantity
                                                 input(type="button" value="−" button-decrease aria-label="Giảm")

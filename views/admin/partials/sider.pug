@@ -42,6 +42,16 @@
           a.menu-link(href=`${prefixAdmin}/orders`)
             i.fas.fa-shopping-cart
             span Quản lý đơn hàng
+
+      li.menu-section
+        span KHÁCH HÀNG
+
+      li.menu-item
+        a.menu-link(href=`${prefixAdmin}/contacts`)
+          i.fas.fa-envelope-open-text
+          span Liên hệ
+          if newContactCount
+            span.badge.bg-danger.ms-auto #{newContactCount}
             
       if(role.permissions.includes("roles-view") || role.permissions.includes("roles-permissions") || role.permissions.includes("accounts-view"))
         li.menu-section

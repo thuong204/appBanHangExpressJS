@@ -97,12 +97,15 @@ block main
                                             type="button"
                                             data-color=item.color
                                             title=item.color
+                                            data-stock=item.quantity
                                             class=item.color === product.color ? 'active' : ''
                                             disabled=item.quantity === 0
                                         )
                                             if item.swatch
                                                 span.color-swatch(style=`background-color: ${item.swatch}`)
                                             span.color-name #{item.color}
+                                            if item.quantity === 0
+                                                small.color-soldout Hết
                         
                         // Chính sách theo loại sản phẩm
                         if product.perks && product.perks.length
@@ -113,29 +116,45 @@ block main
                                         | #{perk}
                         
                         // Add to Cart Form
-                        form.add-to-cart-form(action=`/cart/add/${product.id}` method="POST")
-                            .quantity-selector.mb-4
-                                label.form-label(for="quantity") Số lượng
-                                .quantity-input-group
-                                    button.quantity-btn.decrease(type="button") -
-                                    input#quantity.form-control(
-                                        type="number"
-                                        name="quantity"
-                                        value="1"
-                                        min="1"
-                                        max=product.stock
-                                    )
-                                    button.quantity-btn.increase(type="button") +
-                            
-                            input(type="hidden" name="color" id="color-input")
-                            
-                            .action-buttons
-                                button.btn.btn-warning.btn-lg.btn-add-cart(type="submit")
-                                    i.fas.fa-shopping-cart.me-2
-                                    | Thêm vào giỏ
-                                button.btn.btn-danger.btn-lg.btn-buy-now(type="button")
-                                    i.fas.fa-bolt.me-2
-                                    | Mua ngay
+                        if product.stock > 0
+                            form.add-to-cart-form(action=`/cart/add/${product.id}` method="POST")
+                                .quantity-selector.mb-4
+                                    label.form-label(for="quantity") Số lượng
+                                    .d-flex.align-items-center.gap-3.flex-wrap
+                                        .quantity-input-group
+                                            button.quantity-btn.decrease(type="button") -
+                                            input#quantity.form-control(
+                                                type="number"
+                                                name="quantity"
+                                                value="1"
+                                                min="1"
+                                                max=product.stockSelected
+                                            )
+                                            button.quantity-btn.increase(type="button") +
+                                        span.stock-left(data-stock-left)
+                                            if product.stockSelected <= 5
+                                                | Chỉ còn #{product.stockSelected} sản phẩm
+                                            else
+                                                | Còn #{product.stockSelected} sản phẩm
+                                
+                                input(type="hidden" name="color" id="color-input" value=product.color || "")
+                                
+                                .action-buttons
+                                    button.btn.btn-warning.btn-lg.btn-add-cart(type="submit")
+                                        i.fas.fa-shopping-cart.me-2
+                                        | Thêm vào giỏ
+                                    //- Mua ngay: thêm vào giỏ rồi chuyển thẳng tới giỏ hàng
+                                    button.btn.btn-danger.btn-lg.btn-buy-now(type="submit" name="buyNow" value="1")
+                                        i.fas.fa-bolt.me-2
+                                        | Mua ngay
+                        else
+                            .soldout-box
+                                i.fas.fa-box-open
+                                div
+                                    strong Sản phẩm tạm hết hàng
+                                    span Liên hệ hotline 1900 1234 hoặc
+                                        a.ms-1(href="/contact") để lại lời nhắn
+                                        |  để được báo khi có hàng.
 
     // Product Description
     section.product-description.py-4

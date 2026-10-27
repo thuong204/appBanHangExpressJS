@@ -3058,3 +3058,113 @@ a.contact-channel:hover {
     height: 240px;
   }
 }
+
+/* Tồn kho: hết hàng / còn ít */
+.product-card .product-soldout {
+  position: absolute;
+  inset: auto 10px 10px auto;
+  z-index: 2;
+  background: rgba(17, 24, 39, 0.85);
+  color: #fff;
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 4px 10px;
+  border-radius: 6px;
+}
+
+.product-card.is-soldout .product-image img {
+  opacity: 0.45;
+  filter: grayscale(0.6);
+}
+
+.product-card.is-soldout .price-new {
+  color: var(--muted);
+}
+
+.product-detail .color-btn .color-soldout {
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: var(--danger);
+}
+
+.product-detail .color-btn:disabled .color-name {
+  text-decoration: line-through;
+}
+
+.stock-left {
+  font-size: 0.875rem;
+  color: var(--muted);
+}
+
+.soldout-box {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 16px 18px;
+  border-radius: var(--radius);
+  background: #fef2f2;
+  color: #991b1b;
+}
+
+.soldout-box > i {
+  font-size: 1.6rem;
+}
+
+.soldout-box strong,
+.soldout-box span {
+  display: block;
+}
+
+.soldout-box span {
+  font-size: 0.875rem;
+  color: #7f1d1d;
+}
+
+.soldout-box a {
+  color: #991b1b;
+  font-weight: 700;
+}
+
+.cart-stock-warning {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--danger);
+  margin-bottom: 8px;
+}
+
+.cart-stock-low {
+  font-size: 0.8rem;
+  color: #b45309;
+  margin-bottom: 8px;
+}
+
+
+/* Banner iPhone 18 (ảnh 16:9, cắt giữa cho vừa khung 16:7; mobile hiện đủ ảnh) */
+.hero-main .hero-img-iphone18 {
+  object-position: center 45%;
+  background: #000;
+}
+
+/* Ô Laptop nền trắng để hòa với ảnh MacBook nền trắng */
+.promo-light {
+  background: #fff;
+  color: var(--ink);
+  border: 1px solid var(--line);
+}
+
+.promo-light .promo-link {
+  color: #b45309;
+}
+
+.promo-light img {
+  filter: none;
+  width: 48%;
+  max-width: 210px;
+  right: -6px;
+  bottom: 50%;
+  transform: translateY(50%);
+}
+
+.promo-light:hover img {
+  transform: translateY(50%) scale(1.05);
+}

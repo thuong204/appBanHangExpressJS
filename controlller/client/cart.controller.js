@@ -7,6 +7,22 @@ const { priceInter } = require("../../helpers/priceInter");
 const CategoryProduct = require("../../models/category-product.model");
 const formatDate = require("../../helpers/formatDate");
 const vnAddress = require("../../helpers/vnAddress");
+const inventory = require("../../helpers/inventory");
+
+/** Kiểm tra tồn kho các dòng giỏ hàng đã có productInfo; trả về danh sách thông báo lỗi */
+function stockProblems(cartProducts) {
+  const problems = [];
+  for (const item of cartProducts) {
+    const info = item.productInfo;
+    if (!info) continue;
+    const available = inventory.stockOf(info, item.color);
+    if (item.quantity > available) {
+      const label = item.color ? `${info.title} (${item.color})` : info.title;
+      problems.push(available > 0 ? `${label} chỉ còn ${available} sản phẩm` : `${label} đã hết hàng`);
+    }
+  }
+  return problems;
+}
 module.exports.index = async (req, res) => {
   const cartId = req.cookies.cartId;
   const cart = await Cart.findOne({
@@ -14,15 +30,22 @@ module.exports.index = async (req, res) => {
   });
   console.log(req.cookies.cartId);
   if (cart) {
-    for (const cartproduct of cart.products) {
+    for (let i = cart.products.length - 1; i >= 0; i--) {
+      const cartproduct = cart.products[i];
       const productInCart = await Product.findOne({
         _id: cartproduct.product_id,
         delete: false,
         status: "active",
       }).select("-description -content -createdBy -updatedBy");
 
+      // Sản phẩm đã ngừng bán / bị xoá: không hiển thị (trước đây làm lỗi trang)
+      if (!productInCart) {
+        cart.products.splice(i, 1);
+        continue;
+      }
       productInCart.priceNew = productsHelper.priceNewProduct(productInCart);
       cartproduct.productInfo = productInCart;
+      cartproduct.available = inventory.stockOf(productInCart, cartproduct.color);
       cartproduct.totalPrice = cartproduct.quantity * productInCart.priceNew;
       cartproduct.totalPriceInter = priceInter(cartproduct.totalPrice);
     }
@@ -38,55 +61,65 @@ module.exports.index = async (req, res) => {
 };
 module.exports.addPost = async (req, res) => {
   const cartId = req.cookies.cartId;
-  const objectCart = {
-    product_id: req.params.productId,
-    quantity: req.body.quantity,
-    color: req.body.color,
-  };
-  console.log(objectCart);
-
-  const cart = await Cart.findOne({
-    _id: cartId,
-  });
-
-  // const cartNew  = JSON.stringify(cart.products)
-  if (cart) {
-    const exsistProductinCart = cart.products.find(
-      (item) =>
-        item.product_id == req.params.productId && item.color == req.body.color
-    );
-    if (exsistProductinCart) {
-      const newQuantity =
-        parseInt(req.body.quantity) + exsistProductinCart.quantity;
-
-      await Cart.updateOne(
-        {
-          _id: cartId,
-          "products.product_id": req.params.productId,
-          "products.color": req.body.color,
-        },
-        {
-          "products.$.quantity": newQuantity,
-        }
-      );
-      req.flash("Success", "Thêm vào giỏ hàng thành công");
-      res.redirect("back");
-    } else {
-      await Cart.updateOne(
-        {
-          _id: cartId,
-        },
-        {
-          $push: { products: objectCart },
-        }
-      );
-      req.flash("Success", "Thêm vào giỏ hàng thành công");
-      res.redirect("back");
-    }
-  } else {
-    req.flash("Error", "Thêm vào giỏ hàng thất bại");
-    res.redirect("back");
+  const quantity = parseInt(req.body.quantity, 10);
+  if (!Number.isInteger(quantity) || quantity < 1) {
+    req.flash("Error", "Số lượng không hợp lệ");
+    return res.redirect("back");
   }
+
+  const [cart, product] = await Promise.all([
+    Cart.findOne({ _id: cartId }),
+    Product.findOne({ _id: req.params.productId, delete: false, status: "active" })
+      .select("title variations totalQuantity quantity")
+      .catch(() => null),
+  ]);
+  if (!cart || !product) {
+    req.flash("Error", "Thêm vào giỏ hàng thất bại");
+    return res.redirect("back");
+  }
+
+  // Sản phẩm có màu thì phải chọn đúng một màu đang bán; lưu tên màu chuẩn theo dữ liệu sản phẩm
+  let color = String(req.body.color || "");
+  if (product.variations && product.variations.length) {
+    const variation = inventory.findVariation(product, color);
+    if (!variation) {
+      req.flash("Error", "Vui lòng chọn màu sắc");
+      return res.redirect("back");
+    }
+    color = variation.color;
+  }
+
+  const existing = cart.products.find(
+    (item) => item.product_id == req.params.productId && (item.color || "") == color
+  );
+  const inCart = existing ? existing.quantity : 0;
+  const available = inventory.stockOf(product, color);
+  if (inCart + quantity > available) {
+    req.flash(
+      "Error",
+      available <= 0
+        ? "Sản phẩm đã hết hàng"
+        : `Chỉ còn ${available} sản phẩm${inCart ? ` (giỏ hàng đã có ${inCart})` : ""}`
+    );
+    return res.redirect("back");
+  }
+
+  if (existing) {
+    await Cart.updateOne(
+      { _id: cartId, products: { $elemMatch: { product_id: req.params.productId, color: existing.color } } },
+      { $set: { "products.$.quantity": inCart + quantity } }
+    );
+  } else {
+    await Cart.updateOne(
+      { _id: cartId },
+      { $push: { products: { product_id: req.params.productId, quantity, color } } }
+    );
+  }
+  if (req.body.buyNow) {
+    return res.redirect("/cart");
+  }
+  req.flash("Success", "Thêm vào giỏ hàng thành công");
+  res.redirect("back");
 };
 module.exports.delete = async (req, res) => {
   const productId = req.params.product_id;
@@ -106,23 +139,28 @@ module.exports.delete = async (req, res) => {
 };
 module.exports.update = async (req, res) => {
   const productId = req.params.product_id;
-  const quantity = req.query.quantity;
-  const cart = await Cart.findById(req.cookies.cartId);
+  const color = String(req.query.color || "");
+  let quantity = parseInt(req.query.quantity, 10);
+  if (!Number.isInteger(quantity) || quantity < 1) quantity = 1;
 
-  const productIndex = cart.products.findIndex(
-    (product) =>
-      product.product_id.toString() === productId &&
-      product.color === req.query.color
-  );
+  const product = await Product.findById(productId)
+    .select("variations totalQuantity quantity")
+    .catch(() => null);
+  if (product) {
+    const available = inventory.stockOf(product, color);
+    if (quantity > available) {
+      quantity = Math.max(1, available);
+      req.flash("Error", available > 0 ? `Chỉ còn ${available} sản phẩm` : "Sản phẩm đã hết hàng");
+    }
+  }
+
   await Cart.updateOne(
     {
       _id: req.cookies.cartId,
-      "products.product_id": productId,
-      "products.color": req.query.color,
+      // Giỏ hàng cũ có thể lưu màu là null thay vì chuỗi rỗng
+      products: { $elemMatch: { product_id: productId, color: color || { $in: ["", null] } } },
     },
-    {
-      $set: { [`products.${productIndex}.quantity`]: quantity },
-    }
+    { $set: { "products.$.quantity": quantity } }
   );
   res.redirect("back");
 };
@@ -158,8 +196,17 @@ module.exports.order = async (req, res) => {
         cartproduct.productInfo = productInCart;
         cartproduct.totalPrice = cartproduct.quantity * productInCart.priceNew;
         cartproduct.totalPriceInter = priceInter(cartproduct.totalPrice);
+      } else {
+        // Sản phẩm đã ngừng bán / bị xoá
+        cart.products.splice(i, 1);
       }
     }
+  }
+
+  const problems = stockProblems(cart.products);
+  if (problems.length || !cart.products.length) {
+    req.flash("Error", problems.length ? `${problems.join("; ")}. Vui lòng cập nhật giỏ hàng.` : "Sản phẩm đã ngừng kinh doanh");
+    return res.redirect("/cart");
   }
   cart.total = cart.products.reduce((sum, item) => sum + item.totalPrice, 0);
   cart.totalInter = priceInter(cart.total);
@@ -343,7 +390,31 @@ module.exports.orderPost = async (req, res) => {
     objOrder.status = "Chưa thanh toán";
   }
 
-  await objOrder.save();
+  // Trừ kho. Đơn đã thanh toán payOS mà hết hàng giữa chừng thì vẫn lưu đơn và đánh dấu để shop xử lý
+  const reservation = await inventory.reserve(products);
+  if (reservation.ok) {
+    objOrder.stockReserved = true;
+  } else {
+    const failed = await Product.findById(reservation.failed.product_id).select("title variations totalQuantity quantity").catch(() => null);
+    const left = failed ? inventory.stockOf(failed, reservation.failed.color) : 0;
+    const label = failed ? failed.title : "Một sản phẩm";
+    if (objOrder.status !== "Đã thanh toán") {
+      req.flash("Error", left > 0 ? `${label} chỉ còn ${left} sản phẩm. Vui lòng cập nhật giỏ hàng.` : `${label} vừa hết hàng. Vui lòng cập nhật giỏ hàng.`);
+      return res.redirect("/cart");
+    }
+    objOrder.stockReserved = false;
+    objOrder.stockShortage = true;
+  }
+
+  try {
+    await objOrder.save();
+  } catch (error) {
+    if (objOrder.stockReserved) await inventory.release(products);
+    throw error;
+  }
+  if (objOrder.stockShortage) {
+    req.flash("Error", "Đơn đã thanh toán nhưng có sản phẩm vừa hết hàng. Cửa hàng sẽ liên hệ bạn để đổi hoặc hoàn tiền.");
+  }
   delete req.session.checkout;
   req.flash("success", "Đặt hàng thành công");
   res.redirect(`checkout/success/${objOrder.id}`);

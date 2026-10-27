@@ -1,4 +1,5 @@
 const CategoryProduct = require("../models/category-product.model");
+const inventory = require("./inventory");
 
 /**
  * Hồ sơ hiển thị theo loại sản phẩm: quyết định trang chi tiết / thẻ sản phẩm
@@ -200,6 +201,7 @@ async function attachProfiles(products, categoryMap) {
     item.kindIcon = profile.icon;
     if (chain[0]) item.category = { title: chain[0].title, slug: chain[0].slug };
     item.cardSpecs = buildCardSpecs(item, profile);
+    item.inStock = inventory.totalStock(item) > 0;
   }
   return products;
 }

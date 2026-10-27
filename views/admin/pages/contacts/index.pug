@@ -1,0 +1,145 @@
+extends ../../layouts/default.pug
+include ../../mixins/alert.pug
+include ../../mixins/formatDateTime.pug
+include ../../mixins/pagination.pug
+block main
+        +alert-success(3000)
+        +alert-error(3000)
+
+        .d-flex.justify-content-between.align-items-center.flex-wrap.gap-2.mb-4
+            h1.m-0
+                i.fas.fa-envelope-open-text.me-2.text-primary
+                | Liên hệ khách hàng
+            if type === "newsletter" && stats.newsletter
+                a.btn.btn-outline-success(href=`${prefixAdmin}/contacts/export-newsletter`)
+                    i.fas.fa-file-csv.me-1
+                    | Xuất CSV
+
+        .row.g-3.mb-4
+            .col-6.col-lg-3
+                .card.shadow-sm.h-100
+                    .card-body
+                        .text-muted.small Tổng liên hệ
+                        .fs-3.fw-bold #{stats.contact}
+            .col-6.col-lg-3
+                .card.shadow-sm.h-100.border-danger
+                    .card-body
+                        .text-muted.small Chưa xem
+                        .fs-3.fw-bold.text-danger #{stats.new}
+            .col-6.col-lg-3
+                .card.shadow-sm.h-100
+                    .card-body
+                        .text-muted.small Đã phản hồi
+                        .fs-3.fw-bold.text-success #{stats.replied}
+            .col-6.col-lg-3
+                .card.shadow-sm.h-100
+                    .card-body
+                        .text-muted.small Đăng ký nhận tin
+                        .fs-3.fw-bold.text-primary #{stats.newsletter}
+
+        .card.shadow-sm.mb-4
+            .card-header.bg-white.py-3
+                ul.nav.nav-pills.mb-3
+                    li.nav-item
+                        a.nav-link(href=`${prefixAdmin}/contacts` class=type === "contact" ? "active" : "")
+                            i.fas.fa-comments.me-1
+                            | Liên hệ
+                            if stats.new
+                                span.badge.bg-danger.ms-2 #{stats.new}
+                    li.nav-item
+                        a.nav-link(href=`${prefixAdmin}/contacts?type=newsletter` class=type === "newsletter" ? "active" : "")
+                            i.fas.fa-paper-plane.me-1
+                            | Đăng ký nhận tin
+                form.row.g-2.align-items-center(method="GET")
+                    if type === "newsletter"
+                        input(type="hidden" name="type" value="newsletter")
+                    else
+                        .col-auto
+                            select.form-select(name="status" onchange="this.form.submit()")
+                                option(value="") Tất cả trạng thái
+                                each label, key in statuses
+                                    option(value=key selected=status === key) #{label}
+                    .col
+                        input.form-control(type="search" name="keyword" value=keyword placeholder=type === "newsletter" ? "Tìm email..." : "Tìm theo tên, email, số điện thoại, nội dung...")
+                    .col-auto
+                        button.btn.btn-primary(type="submit")
+                            i.fas.fa-search
+
+            .card-body.p-0
+                .table-responsive
+                    table.table.table-hover.align-middle.mb-0
+                        thead.bg-light
+                            if type === "newsletter"
+                                tr
+                                    th.py-3 STT
+                                    th.py-3 Email
+                                    th.py-3 Ngày đăng ký
+                                    th.py-3.text-end Thao tác
+                            else
+                                tr
+                                    th.py-3 Khách hàng
+                                    th.py-3 Chủ đề
+                                    th.py-3 Nội dung
+                                    th.py-3 Ngày gửi
+                                    th.py-3 Trạng thái
+                                    th.py-3.text-end Thao tác
+                        tbody
+                            if items.length
+                                each item, index in items
+                                    if type === "newsletter"
+                                        tr
+                                            td.py-3 #{pagination.skip + index + 1}
+                                            td.py-3
+                                                a(href=`mailto:${item.email}`) #{item.email}
+                                            td.py-3
+                                                small.text-muted
+                                                    +formatDateTime(item.createdAt)
+                                            td.py-3.text-end
+                                                button.btn.btn-outline-danger.btn-sm(button-delete data-id=item._id title="Xoá")
+                                                    i.fas.fa-trash-alt
+                                    else
+                                        tr(class=item.status === "new" ? "fw-semibold" : "")
+                                            td.py-3
+                                                div #{item.fullName}
+                                                small.text-muted.d-block #{item.email}
+                                                if item.phone
+                                                    small.text-muted.d-block #{item.phone}
+                                            td.py-3 #{item.subject || "—"}
+                                            td.py-3(style="max-width:320px")
+                                                .text-truncate #{item.message}
+                                            td.py-3
+                                                small.text-muted
+                                                    +formatDateTime(item.createdAt)
+                                            td.py-3
+                                                case item.status
+                                                    when "new"
+                                                        span.badge.bg-danger Mới
+                                                    when "replied"
+                                                        span.badge.bg-success Đã phản hồi
+                                                    default
+                                                        span.badge.bg-secondary Đã xem
+                                            td.py-3.text-end.text-nowrap
+                                                a.btn.btn-outline-primary.btn-sm(href=`${prefixAdmin}/contacts/detail/${item._id}` title="Xem & phản hồi")
+                                                    i.fas.fa-reply
+                                                button.btn.btn-outline-danger.btn-sm.ms-1(button-delete data-id=item._id title="Xoá")
+                                                    i.fas.fa-trash-alt
+                            else
+                                tr
+                                    td.text-center.py-4.text-muted(colspan=6)
+                                        i.fas.fa-info-circle.me-2
+                                        if keyword || status
+                                            | Không có kết quả phù hợp
+                                        else if type === "newsletter"
+                                            | Chưa có email đăng ký nhận tin
+                                        else
+                                            | Chưa có liên hệ nào
+
+        if pagination.totalPage > 1
+            +pagination(pagination)
+
+        form(
+            action=""
+            method="POST"
+            id="form-delete-item"
+            data-path=`${prefixAdmin}/contacts/delete`
+        )

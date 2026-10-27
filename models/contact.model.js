@@ -8,7 +8,14 @@ const contactSchema = new mongoose.Schema(
         phone: String,
         subject: String,
         message: String,
-        status: { type: String, default: "new" },
+        status: { type: String, default: "new" }, // new | read | replied
+        readAt: Date,
+        reply: {
+            message: String,
+            repliedAt: Date,
+            account_id: String,
+            accountName: String,
+        },
     },
     {
         timestamps: true

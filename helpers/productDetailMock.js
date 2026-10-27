@@ -1,4 +1,5 @@
 const { PROFILES, colorSwatch } = require("./productProfile");
+const inventory = require("./inventory");
 
 const MOCK_THUMBNAIL =
   "https://res.cloudinary.com/dwk6tmsmh/image/upload/v1726925743/bsquy6vj7ktij4aheyzw.jpg";
@@ -15,12 +16,6 @@ const MOCK_STORAGE_OPTIONS = {
   laptop: ["256GB", "512GB", "1TB"],
 };
 
-const MOCK_VARIATIONS = [
-  { color: "Đen", quantity: 12 },
-  { color: "Trắng", quantity: 10 },
-  { color: "Xanh", quantity: 8 },
-];
-
 const MOCK_SCREEN = {
   phone: { screen: '6.67 inch', screenType: "IPS LCD, 90Hz" },
   tablet: { screen: "10.9 inch", screenType: "IPS LCD" },
@@ -36,25 +31,6 @@ function stripHtml(html) {
 
 function hasText(value) {
   return stripHtml(value).length > 0;
-}
-
-function getStockQuantity(product) {
-  const fromRootQty = Number(product.quantity);
-  const fromTotalQty = Number(product.totalQuantity);
-  let qty = Math.max(
-    Number.isFinite(fromRootQty) && fromRootQty >= 0 ? fromRootQty : 0,
-    Number.isFinite(fromTotalQty) && fromTotalQty >= 0 ? fromTotalQty : 0
-  );
-
-  if (Array.isArray(product.variations) && product.variations.length) {
-    const fromVariants = product.variations.reduce(
-      (sum, v) => sum + (Number(v.quantity) || 0),
-      0
-    );
-    qty = Math.max(qty, fromVariants);
-  }
-
-  return qty > 0 ? qty : 99;
 }
 
 function buildMockDescription(title, profile) {
@@ -191,22 +167,27 @@ function normalizeProductDetail(rawProduct, kind = "other", categoryTitle = "") 
   const variations = Array.isArray(product.variations)
     ? product.variations.filter((v) => hasText(v.color))
     : [];
-  if (variations.length) {
-    product.variations = variations;
-  } else {
-    product.variations = profile.hasStorage ? MOCK_VARIATIONS.map((v) => ({ ...v })) : [];
-  }
+  // Chỉ hiển thị màu có thật trong dữ liệu (không bịa màu/tồn kho)
+  product.variations = variations.map((v) => ({
+    ...v,
+    quantity: Math.max(0, Number(v.quantity) || 0),
+    swatch: colorSwatch(v.color),
+  }));
   // Chỉ một lựa chọn "Mặc định" thì không cần cho khách chọn
   product.showVariations = !(
     product.variations.length === 1 && /mặc định|mac dinh/i.test(product.variations[0].color)
   ) && product.variations.length > 0;
-  product.variations = product.variations.map((v) => ({ ...v, swatch: colorSwatch(v.color) }));
 
-  if (!product.color && product.variations[0]?.color) {
-    product.color = product.variations[0].color;
+  // Màu chọn sẵn: màu đầu tiên còn hàng
+  if (!product.color && product.variations.length) {
+    product.color = (product.variations.find((v) => v.quantity > 0) || product.variations[0]).color;
   }
 
-  product.stock = getStockQuantity(product);
+  // Tồn kho thật (xem helpers/inventory.js); stockSelected là tồn của màu đang chọn
+  product.stock = inventory.totalStock(product);
+  product.stockSelected = product.variations.length
+    ? inventory.stockOf(product, product.color)
+    : product.stock;
 
   if (!hasText(product.description)) {
     product.description = buildMockDescription(title, profile);

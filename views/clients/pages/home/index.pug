@@ -25,7 +25,8 @@ block main
                     button(type="button" data-bs-target="#homeCarousel" data-bs-slide-to="1" aria-label="Banner 2")
                 .carousel-inner
                     .carousel-item.active
-                        img.d-block.w-100(src='https://res.cloudinary.com/dwk6tmsmh/image/upload/v1726925743/bsquy6vj7ktij4aheyzw.jpg' alt='Khuyến mãi')
+                        a(href="/search?keyword=iphone")
+                            img.d-block.w-100.hero-img-iphone18(src="/images/maxresdefault.jpg" alt="iPhone 18 Pro")
                     .carousel-item
                         img.d-block.w-100(src='https://res.cloudinary.com/dwk6tmsmh/image/upload/v1726925866/dclwzzorvxdehvhgorzw.webp' alt='Khuyến mãi')
                 button.carousel-control-prev(type='button' data-bs-target='#homeCarousel' data-bs-slide='prev')
@@ -36,13 +37,13 @@ block main
                     span.visually-hidden Sau
 
             .hero-side
-                a.promo-card.promo-dark(href="/products/laptop")
+                a.promo-card.promo-light(href="/products/laptop")
                     .promo-text
                         span.promo-eyebrow Laptop & MacBook
                         strong.promo-title Mạnh mẽ cho mọi công việc
                         span.promo-link Mua ngay
                             i.fas.fa-arrow-right.ms-2
-                    img(src="https://cdn.dummyjson.com/product-images/laptops/apple-macbook-pro-14-inch-space-grey/thumbnail.webp" alt="" loading="lazy")
+                    img(src="/images/64346432323.png" alt="MacBook Pro M5 Pro" loading="lazy")
                 a.promo-card.promo-warm(href="/products/phu-kien")
                     .promo-text
                         span.promo-eyebrow Phụ kiện chính hãng

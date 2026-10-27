@@ -1,5 +1,6 @@
 const Contact = require("../../models/contact.model")
 const sendMailHelper = require("../../helpers/sendmail")
+const mailTemplates = require("../../helpers/mailTemplates")
 const {
     COMPANY,
     NEWS,
@@ -89,8 +90,15 @@ module.exports.contactPost = async (req, res) => {
 <p><b>Số điện thoại:</b> ${escapeHtml(phone)}</p>
 <p><b>Nội dung:</b></p><p>${escapeHtml(message).replace(/\n/g, "<br>")}</p>`
             )
+            // Email cảm ơn gửi cho khách (gửi nền, lỗi chỉ ghi log trong sendmail.js)
+            const baseUrl = (process.env.BASE_URL || `${req.protocol}://${req.get("host")}`).replace(/\/$/, "")
+            sendMailHelper.sendMail(
+                email,
+                `${COMPANY.name} đã nhận được liên hệ của bạn`,
+                mailTemplates.contactThankYou({ fullName, subject, message }, COMPANY, baseUrl)
+            )
         }
-        req.flash("Success", "Cảm ơn bạn! Chúng tôi sẽ phản hồi trong thời gian sớm nhất.")
+        req.flash("Success", "Cảm ơn bạn! Chúng tôi đã gửi email xác nhận và sẽ phản hồi trong thời gian sớm nhất.")
     } catch (error) {
         console.log(error)
         req.flash("Error", "Không gửi được liên hệ, vui lòng thử lại sau.")

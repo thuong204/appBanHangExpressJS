@@ -1,10 +1,12 @@
 //- Thẻ sản phẩm dùng chung cho mọi danh sách (trang chủ, danh mục, tìm kiếm, giỏ hàng)
 mixin product-card(item)
-    .product-card(data-kind=item.kind)
+    .product-card(data-kind=item.kind class=item.inStock === false ? "is-soldout" : "")
         a.product-image(href=`/products/detail/${item.slug}`)
             img(src=item.thumbnail alt=item.title loading="lazy")
             if item.discountPercentage
                 span.product-badge -#{item.discountPercentage}%
+            if item.inStock === false
+                span.product-soldout Hết hàng
 
         .product-info
             if item.category
