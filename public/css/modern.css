@@ -3168,3 +3168,46 @@ a.contact-channel:hover {
 .promo-light:hover img {
   transform: translateY(50%) scale(1.05);
 }
+
+/* Layout tối giản cho trang tài khoản (views/clients/layouts/default-2.pug) */
+.auth-layout {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background:
+    radial-gradient(circle at 15% 20%, rgba(255, 193, 7, 0.18), transparent 40%),
+    radial-gradient(circle at 85% 80%, rgba(17, 24, 39, 0.06), transparent 40%),
+    var(--surface-2);
+}
+
+.auth-topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px clamp(16px, 4vw, 40px);
+}
+
+.auth-back {
+  color: var(--ink-2);
+  font-weight: 600;
+  font-size: 0.9rem;
+  text-decoration: none;
+}
+
+.auth-back:hover {
+  color: var(--ink);
+}
+
+.auth-layout .auth-page {
+  flex: 1;
+  min-height: 0;
+  background: none;
+  padding-top: 8px;
+}
+
+.auth-copy {
+  text-align: center;
+  font-size: 0.8rem;
+  color: var(--muted);
+  margin: 0 0 20px;
+}
