@@ -11,7 +11,7 @@ function classifyIntent(message) {
   }
 
   const productHints =
-    /sản phẩm|mua |giá |bao nhiêu|điện thoại|laptop|iphone|samsung|xiaomi|oppo|macbook|tai nghe|headphone|rẻ |đắt |tầm trung|cao cấp|còn hàng|kho|danh sách|triệu| gaming|so sánh|tư vấn|gợi ý|dưới |trên |tầm /;
+    /sản phẩm|mua |giá |bao nhiêu|điện thoại|laptop|iphone|samsung|xiaomi|oppo|macbook|tai nghe|headphone|rẻ |đắt |tầm trung|cao cấp|còn hàng|kho|danh sách|triệu| gaming|so sánh|tư vấn|gợi ý|dưới |trên |tầm |máy|pin|cấu hình|ram|chip|camera|chụp|màn hình|đi học|sinh viên|văn phòng|đồ họa|lập trình|chơi game|nhẹ|mỏng|tablet|ipad|đồng hồ|sạc|loa/;
   if (productHints.test(text)) {
     return "product";
   }

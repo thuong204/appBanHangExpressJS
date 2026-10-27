@@ -5,6 +5,7 @@ const filterStatusHelpers = require("../../helpers/filterStatus")
 const searchHelpers = require("../../helpers/search")
 const paginationHelpers = require("../../helpers/pagination")
 const tree = require("../../helpers/createtree")
+const { refreshProductEmbedding } = require("../../helpers/embedding")
 
 function toArray(value) {
     if (value == null || value === "") return [];
@@ -236,8 +237,9 @@ module.exports.saveItem = async (req, res) => {
     delete req.body.quantities
 
     const product = new Product(req.body)
-    
+
     await product.save()
+    refreshProductEmbedding(product._id)
     res.redirect('/admin/products')
 }
 
@@ -292,6 +294,7 @@ module.exports.updateItem = async (req, res) => {
             ...req.body,
             $push: { updatedBy: updatedBy }
         })
+        refreshProductEmbedding(id)
         req.flash("Success", "Cập nhật thành công!")
     } catch (error) {
         req.flash("Error", "Cập nhật không thành công")

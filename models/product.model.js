@@ -58,7 +58,10 @@ const productSchema = new mongoose.Schema(
             slug:"title",
             unique: true,
             index: true
-        }
+        },
+        // Vector ngữ nghĩa cho chatbot RAG (scripts/embed-products.js) — ẩn khỏi query thường
+        embedding: { type: [Number], select: false },
+        embeddingHash: { type: String, select: false }
     },
     {
         timestamps: true
