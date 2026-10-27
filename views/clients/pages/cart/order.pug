@@ -51,27 +51,33 @@ block main
                                 option(value="") Chọn tỉnh/thành trước
                         .col-12
                             label.form-label(for="addressDetail") Địa chỉ chi tiết
-                            input.form-control(
-                                type="text"
-                                id="addressDetail"
-                                name="addressDetail"
-                                required
-                                autocomplete="address-line1"
-                                placeholder="Số nhà, tên đường, tòa nhà...")
+                            .address-suggest
+                                input.form-control(
+                                    type="text"
+                                    id="addressDetail"
+                                    name="addressDetail"
+                                    required
+                                    autocomplete="off"
+                                    role="combobox"
+                                    aria-autocomplete="list"
+                                    aria-expanded="false"
+                                    aria-controls="address-suggestions"
+                                    placeholder="Số nhà, tên đường, tòa nhà...")
+                                ul#address-suggestions.address-suggest-list(role="listbox" hidden)
+                        //- Google Maps nhúng (không cần API key; hl=vi, gl=VN hiển thị đúng chủ quyền Hoàng Sa, Trường Sa)
                         .col-12
                             .map-picker
                                 .map-picker-head
                                     span
                                         i.fas.fa-map-marker-alt.me-2
-                                        | Ghim vị trí giao hàng
-                                        small.text-muted.ms-1 (không bắt buộc)
-                                    button.btn.btn-sm.btn-light(type="button" data-locate-me)
-                                        i.fas.fa-location-arrow.me-1
-                                        | Vị trí của tôi
-                                #delivery-map.map-picker-map(aria-label="Bản đồ chọn vị trí giao hàng")
-                                .map-picker-foot(data-map-status) Chạm vào bản đồ hoặc kéo ghim tới đúng nơi bạn muốn nhận hàng.
-                            input(type="hidden" name="lat" id="lat")
-                            input(type="hidden" name="lng" id="lng")
+                                        | Xem trước vị trí giao hàng
+                                iframe#delivery-map.map-picker-map(
+                                    title="Bản đồ vị trí giao hàng"
+                                    src="https://maps.google.com/maps?q=Vi%E1%BB%87t%20Nam&hl=vi&gl=VN&z=5&output=embed"
+                                    loading="lazy"
+                                    referrerpolicy="no-referrer-when-downgrade"
+                                )
+                                .map-picker-foot Bản đồ tự cập nhật theo địa chỉ bạn nhập.
                         .col-12
                             label.form-label(for="note") Ghi chú
                             textarea.form-control(
@@ -135,8 +141,6 @@ block main
                     .summary-row.summary-total
                         span Tổng thanh toán
                         span #{cart.totalInter}đ
-        link(rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css")
-        script(src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js")
         script(src="/js/address-picker.js" defer)
         script#qr-payment-data(type="application/json")!= JSON.stringify({ qr: qr, payosPaid: payosPaid || false })
         div.modal.fade.container-qr(id='qrModal' tabindex='-1' aria-labelledby='qrModalLabel' aria-hidden='true')

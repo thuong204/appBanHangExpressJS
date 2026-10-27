@@ -3211,3 +3211,63 @@ a.contact-channel:hover {
   color: var(--muted);
   margin: 0 0 20px;
 }
+
+iframe.map-picker-map {
+  display: block;
+  width: 100%;
+  border: 0;
+}
+
+/* Gợi ý địa chỉ chi tiết (trang đặt hàng) */
+.address-suggest {
+  position: relative;
+}
+
+.address-suggest-list {
+  position: absolute;
+  z-index: 20;
+  top: calc(100% + 6px);
+  left: 0;
+  right: 0;
+  list-style: none;
+  margin: 0;
+  padding: 6px;
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  box-shadow: var(--shadow-lg);
+  max-height: 320px;
+  overflow-y: auto;
+}
+
+.address-suggest-list [role="option"] {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 9px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.address-suggest-list [role="option"]:hover,
+.address-suggest-list [role="option"].active {
+  background: var(--brand-soft);
+}
+
+.address-suggest-list strong {
+  font-size: 0.92rem;
+  font-weight: 600;
+}
+
+.address-suggest-list small {
+  color: var(--muted);
+  font-size: 0.8rem;
+}
+
+.address-suggest-credit {
+  padding: 6px 12px 2px;
+  font-size: 0.7rem;
+  color: var(--muted);
+  border-top: 1px solid #f1f2f4;
+  margin-top: 4px;
+}

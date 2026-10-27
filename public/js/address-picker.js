@@ -1,4 +1,6 @@
-// Chọn địa chỉ giao hàng: Tỉnh/Thành → Phường/Xã → địa chỉ chi tiết + ghim trên bản đồ (Leaflet/OSM)
+// Chọn địa chỉ giao hàng: Tỉnh/Thành → Phường/Xã → địa chỉ chi tiết, kèm bản đồ Google nhúng (không cần API key).
+// Bản đồ dùng hl=vi, gl=VN để hiển thị đúng chủ quyền Hoàng Sa, Trường Sa.
+// Bản đồ chỉ để xem, tự cập nhật theo địa chỉ khách nhập.
 (function initAddressPicker() {
   const root = document.querySelector("[data-address-picker]");
   if (!root) return;
@@ -6,19 +8,10 @@
   const provinceSelect = root.querySelector("#provinceCode");
   const wardSelect = root.querySelector("#wardCode");
   const detailInput = root.querySelector("#addressDetail");
-  const latInput = root.querySelector("#lat");
-  const lngInput = root.querySelector("#lng");
-  const statusEl = root.querySelector("[data-map-status]");
-  const locateBtn = root.querySelector("[data-locate-me]");
-  const mapEl = root.querySelector("#delivery-map");
+  const mapFrame = root.querySelector("#delivery-map");
 
-  const NOMINATIM = "https://nominatim.openstreetmap.org";
   const byName = (a, b) => a.localeCompare(b, "vi");
   let provinces = [];
-
-  const setStatus = (text) => {
-    if (statusEl) statusEl.textContent = text;
-  };
 
   const fillSelect = (select, placeholder, items) => {
     select.innerHTML = "";
@@ -26,169 +19,189 @@
     items.forEach(([value, label]) => select.append(new Option(label, value)));
   };
 
-  // ---- Nominatim: tối đa 1 request/giây theo chính sách sử dụng ----
-  let lastRequest = 0;
-  const nominatim = async (path, params) => {
-    const wait = Math.max(0, lastRequest + 1100 - Date.now());
-    if (wait) await new Promise((r) => setTimeout(r, wait));
-    lastRequest = Date.now();
-    const query = new URLSearchParams({ format: "jsonv2", "accept-language": "vi", ...params });
-    const response = await fetch(`${NOMINATIM}/${path}?${query}`);
-    if (!response.ok) throw new Error(`Nominatim ${response.status}`);
-    return response.json();
+  // ---- Bản đồ nhúng ----
+  const showOnMap = (query, zoom) => {
+    if (!mapFrame) return;
+    const params = new URLSearchParams({ q: query, hl: "vi", gl: "VN", z: String(zoom), output: "embed" });
+    const src = `https://maps.google.com/maps?${params}`;
+    if (mapFrame.src !== src) mapFrame.src = src;
   };
 
-  const searchArea = async (text) => {
-    try {
-      const results = await nominatim("search", { q: text, countrycodes: "vn", limit: 1 });
-      return results[0] || null;
-    } catch (err) {
-      console.warn("searchArea:", err);
-      return null;
-    }
-  };
-
-  // ---- Bản đồ ----
-  const hasLeaflet = typeof window.L !== "undefined" && mapEl;
-  let map = null;
-  let marker = null;
-
-  if (hasLeaflet) {
-    map = L.map(mapEl, { scrollWheelZoom: false }).setView([16.2, 107.0], 5);
-    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-      maxZoom: 19,
-      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
-    }).addTo(map);
-    map.on("click", (e) => placeMarker(e.latlng, { lookup: true }));
-  } else if (mapEl) {
-    mapEl.closest(".map-picker").hidden = true;
-  }
-
-  const describeAddress = (data) => {
-    const a = (data && data.address) || {};
-    const street = [a.house_number, a.road].filter(Boolean).join(" ");
-    return { street, label: data && data.display_name ? data.display_name : "" };
-  };
-
-  let reverseTimer = null;
-  const reverseLookup = (latlng) => {
-    clearTimeout(reverseTimer);
-    reverseTimer = setTimeout(async () => {
-      setStatus("Đang xác định địa chỉ...");
-      try {
-        const data = await nominatim("reverse", { lat: latlng.lat, lon: latlng.lng, zoom: 18 });
-        const { street, label } = describeAddress(data);
-        setStatus(label ? `Vị trí đã ghim: ${label}` : "Đã ghim vị trí giao hàng.");
-        // Chỉ gợi ý khi khách chưa tự nhập địa chỉ chi tiết
-        if (street && !detailInput.value.trim()) {
-          detailInput.value = street;
-        }
-      } catch (err) {
-        setStatus("Đã ghim vị trí giao hàng.");
-      }
-    }, 400);
-  };
-
-  function placeMarker(latlng, { lookup = false, zoom } = {}) {
-    if (!map) return;
-    if (!marker) {
-      marker = L.marker(latlng, { draggable: true, autoPan: true }).addTo(map);
-      marker.on("dragend", () => {
-        const pos = marker.getLatLng();
-        savePosition(pos);
-        reverseLookup(pos);
-      });
-    } else {
-      marker.setLatLng(latlng);
-    }
-    if (zoom) map.setView(latlng, zoom);
-    savePosition(latlng);
-    if (lookup) reverseLookup(latlng);
-  }
-
-  function savePosition(latlng) {
-    latInput.value = latlng.lat.toFixed(6);
-    lngInput.value = latlng.lng.toFixed(6);
-  }
-
-  const flyToArea = async (text, zoom) => {
-    if (!map) return;
-    const place = await searchArea(text);
-    // Chỉ di chuyển khung nhìn; không tự đặt ghim vì tâm phường/xã không phải điểm giao
-    if (place && !marker) {
-      map.setView([Number(place.lat), Number(place.lon)], zoom);
-    }
-  };
-
-  // ---- Tỉnh / Phường ----
   const currentProvince = () => provinces.find((p) => String(p.code) === provinceSelect.value);
+  const currentWard = () => (wardSelect.value ? wardSelect.selectedOptions[0]?.textContent : "");
 
+  // Hiện địa chỉ khách đang nhập, chi tiết nhất có thể
+  const updateMapFromAddress = () => {
+    const province = currentProvince();
+    if (!province) return showOnMap("Việt Nam", 5);
+    const ward = currentWard();
+    const detail = detailInput.value.trim();
+    const parts = [detail, ward, province.name, "Việt Nam"].filter(Boolean);
+    showOnMap(parts.join(", "), detail ? 17 : ward ? 15 : 11);
+  };
+
+  // ---- Tỉnh / Phường / Địa chỉ chi tiết ----
   provinceSelect.addEventListener("change", () => {
     const province = currentProvince();
     if (!province) {
       fillSelect(wardSelect, "Chọn tỉnh/thành trước", []);
       wardSelect.disabled = true;
-      return;
+    } else {
+      const wards = [...province.wards].sort((a, b) => byName(a[1], b[1]));
+      fillSelect(wardSelect, `Chọn phường/xã (${wards.length})`, wards);
+      wardSelect.disabled = false;
     }
-    const wards = [...province.wards].sort((a, b) => byName(a[1], b[1]));
-    fillSelect(wardSelect, `Chọn phường/xã (${wards.length})`, wards);
-    wardSelect.disabled = false;
-    flyToArea(`${province.name}, Việt Nam`, 10);
+    updateMapFromAddress();
   });
 
   wardSelect.addEventListener("change", () => {
+    updateMapFromAddress();
+    if (wardSelect.value) detailInput.focus();
+  });
+
+  let typingTimer = null;
+  detailInput.addEventListener("input", () => {
+    clearTimeout(typingTimer);
+    typingTimer = setTimeout(updateMapFromAddress, 800);
+  });
+
+  // ---- Gợi ý địa chỉ chi tiết (Photon, dữ liệu OpenStreetMap, không cần key) ----
+  const PHOTON = "https://photon.komoot.io/api/";
+  const listEl = root.querySelector("#address-suggestions");
+  const areaCenters = new Map(); // "Phường X, Tỉnh Y" -> {lat, lon}
+  let suggestions = [];
+  let activeIndex = -1;
+  let suggestTimer = null;
+  let suggestAbort = null;
+
+  const photon = async (params, signal) => {
+    // lang=default: luôn trả tên địa phương (tiếng Việt), không theo ngôn ngữ trình duyệt
+    const query = new URLSearchParams({ limit: "6", lang: "default", ...params });
+    const response = await fetch(`${PHOTON}?${query}`, { signal });
+    if (!response.ok) throw new Error(`Photon ${response.status}`);
+    return (await response.json()).features || [];
+  };
+
+  // Toạ độ phường/xã (hoặc tỉnh) đang chọn để ưu tiên gợi ý gần khu vực đó
+  const areaCenter = async () => {
     const province = currentProvince();
-    const wardName = wardSelect.selectedOptions[0]?.textContent;
-    if (province && wardSelect.value) {
-      flyToArea(`${wardName}, ${province.name}, Việt Nam`, 15);
-      detailInput.focus();
+    if (!province) return null;
+    const area = [currentWard(), province.name].filter(Boolean).join(", ");
+    if (!areaCenters.has(area)) {
+      const [hit] = await photon({ q: `${area}, Việt Nam`, limit: "1" }).catch(() => []);
+      areaCenters.set(area, hit ? { lat: hit.geometry.coordinates[1], lon: hit.geometry.coordinates[0] } : null);
+    }
+    return areaCenters.get(area);
+  };
+
+  const describe = (feature) => {
+    const p = feature.properties || {};
+    const main = [p.housenumber, p.name || p.street].filter(Boolean).join(" ");
+    const sub = [p.name && p.street && p.name !== p.street ? p.street : "", p.district, p.city || p.county, p.state]
+      .filter(Boolean)
+      .filter((v, i, arr) => arr.indexOf(v) === i)
+      .join(", ");
+    return { main, sub };
+  };
+
+  const closeSuggestions = () => {
+    suggestions = [];
+    activeIndex = -1;
+    listEl.hidden = true;
+    listEl.innerHTML = "";
+    detailInput.setAttribute("aria-expanded", "false");
+    detailInput.removeAttribute("aria-activedescendant");
+  };
+
+  const highlight = (index) => {
+    activeIndex = index;
+    [...listEl.querySelectorAll("[role=option]")].forEach((el, i) => {
+      el.classList.toggle("active", i === index);
+      el.setAttribute("aria-selected", i === index ? "true" : "false");
+    });
+    if (index >= 0) detailInput.setAttribute("aria-activedescendant", `address-option-${index}`);
+  };
+
+  const choose = (index) => {
+    const item = suggestions[index];
+    if (!item) return;
+    detailInput.value = item.main;
+    closeSuggestions();
+    updateMapFromAddress();
+  };
+
+  const renderSuggestions = () => {
+    listEl.innerHTML = "";
+    suggestions.forEach((item, i) => {
+      const li = document.createElement("li");
+      li.id = `address-option-${i}`;
+      li.setAttribute("role", "option");
+      const main = document.createElement("strong");
+      main.textContent = item.main;
+      const sub = document.createElement("small");
+      sub.textContent = item.sub;
+      li.append(main, sub);
+      // mousedown thay vì click để chọn trước khi ô nhập mất focus
+      li.addEventListener("mousedown", (e) => {
+        e.preventDefault();
+        choose(i);
+      });
+      listEl.append(li);
+    });
+    const credit = document.createElement("li");
+    credit.className = "address-suggest-credit";
+    credit.textContent = "Gợi ý từ dữ liệu © OpenStreetMap";
+    listEl.append(credit);
+    listEl.hidden = false;
+    detailInput.setAttribute("aria-expanded", "true");
+    highlight(-1);
+  };
+
+  const fetchSuggestions = async () => {
+    const text = detailInput.value.trim();
+    if (text.length < 3) return closeSuggestions();
+    if (suggestAbort) suggestAbort.abort();
+    suggestAbort = new AbortController();
+    try {
+      const center = await areaCenter();
+      const features = await photon(
+        { q: text, ...(center ? { lat: center.lat, lon: center.lon } : {}) },
+        suggestAbort.signal
+      );
+      const seen = new Set();
+      suggestions = features
+        .filter((f) => (f.properties || {}).countrycode === "VN")
+        .map(describe)
+        .filter((item) => item.main && !seen.has(item.main + item.sub) && seen.add(item.main + item.sub));
+      if (detailInput.value.trim() !== text) return; // khách đã gõ tiếp
+      suggestions.length ? renderSuggestions() : closeSuggestions();
+    } catch (err) {
+      if (err.name !== "AbortError") closeSuggestions();
+    }
+  };
+
+  detailInput.addEventListener("input", () => {
+    clearTimeout(suggestTimer);
+    suggestTimer = setTimeout(fetchSuggestions, 300);
+  });
+
+  detailInput.addEventListener("keydown", (e) => {
+    if (listEl.hidden || !suggestions.length) return;
+    if (e.key === "ArrowDown") {
+      e.preventDefault();
+      highlight((activeIndex + 1) % suggestions.length);
+    } else if (e.key === "ArrowUp") {
+      e.preventDefault();
+      highlight(activeIndex <= 0 ? suggestions.length - 1 : activeIndex - 1);
+    } else if (e.key === "Enter" && activeIndex >= 0) {
+      e.preventDefault(); // chọn gợi ý, không gửi form
+      choose(activeIndex);
+    } else if (e.key === "Escape") {
+      closeSuggestions();
     }
   });
 
-  // ---- Vị trí hiện tại ----
-  const GEO_ERRORS = {
-    1: "Trình duyệt đang chặn quyền vị trí. Bấm biểu tượng ổ khoá cạnh thanh địa chỉ → Vị trí → Cho phép, rồi thử lại.",
-    2: "Thiết bị không xác định được vị trí (máy tính thường không có GPS). Hãy bật định vị hoặc chạm vào bản đồ để ghim.",
-    3: "Lấy vị trí quá lâu. Hãy thử lại hoặc chạm vào bản đồ để ghim.",
-  };
-
-  const getPosition = (options) =>
-    new Promise((resolve, reject) => navigator.geolocation.getCurrentPosition(resolve, reject, options));
-
-  const locate = async () => {
-    try {
-      // Thử GPS chính xác cao trước; máy không có GPS thì lùi về định vị qua mạng
-      return await getPosition({ enableHighAccuracy: true, timeout: 8000, maximumAge: 0 });
-    } catch (err) {
-      if (err.code === 1) throw err;
-      return getPosition({ enableHighAccuracy: false, timeout: 15000, maximumAge: 300000 });
-    }
-  };
-
-  if (locateBtn) {
-    if (!navigator.geolocation || !map) {
-      locateBtn.hidden = true;
-    } else {
-      locateBtn.addEventListener("click", async () => {
-        // Trình duyệt chỉ cho dùng GPS trên HTTPS hoặc localhost
-        if (!window.isSecureContext) {
-          setStatus("Định vị chỉ hoạt động khi website chạy HTTPS. Bạn hãy chạm vào bản đồ để ghim vị trí.");
-          return;
-        }
-        locateBtn.disabled = true;
-        setStatus("Đang lấy vị trí của bạn...");
-        try {
-          const pos = await locate();
-          placeMarker(L.latLng(pos.coords.latitude, pos.coords.longitude), { lookup: true, zoom: 17 });
-        } catch (err) {
-          console.warn("geolocation error:", err.code, err.message);
-          setStatus(GEO_ERRORS[err.code] || "Không lấy được vị trí. Hãy chạm vào bản đồ để ghim.");
-        } finally {
-          locateBtn.disabled = false;
-        }
-      });
-    }
-  }
+  detailInput.addEventListener("blur", () => setTimeout(closeSuggestions, 150));
 
   // ---- Tải dữ liệu tỉnh/xã ----
   fetch(root.dataset.source)
