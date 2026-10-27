@@ -4,37 +4,39 @@ block main
     +alert-success(3000)
     +alert-error(3000)
 
-    .body-login
-        form(action="login" method="post")
-            .login-box
-                .login-header
-                    header Welcome
-                    p We are happy to have you back!
-                .input-box
-                    input(type="text" class="input-field" name="email" autocomplete="off" )
-                    label(for="email") Email
-                .input-box
-                    input(type="password" class="input-field" name="password" autocomplete="off" )
-                    label(for="password") Password
-                .forgot
-                    section
-                        input(type="checkbox" name="check")
-                        label(for="check") Remember me
-                    section
-                        a(href="password/forgot" class="forgot-link") Forgot password?
-                .input-box
-                    button(type="submit" class="input-submit btn btn-success") Sign In
-                .middle-text
-                    hr
-                    p.or-text Or
-                .input-box
-                    a.input-social.btn.btn-light(href="/user/login/federated/google")
-                        img(src="https://res.cloudinary.com/dwk6tmsmh/image/upload/v1722602737/jnwhzzq4939gb1gl7edy.png" alt="")
-                        p.fw-bold.text-uppercase Đăng nhập với Google
-                .input-box
-                    a.btn.input-social.btn-light(href="/user/login/federated/facebook")
-                        img(src="https://res.cloudinary.com/dwk6tmsmh/image/upload/v1729341273/zrzv5lyvnzpyfslzncoj.png" alt="")
-                        p.fw-bold.text-uppercase Đăng nhập với Facebook
-                .sign-up
-                    p Don't have account 
-                        a(href="register") Sign up
+    .auth-page
+        form.auth-card(action="login" method="post")
+            .auth-head
+                span.auth-icon
+                    i.fas.fa-user
+                h1 Đăng nhập
+                p Chào mừng bạn quay lại!
+
+            .mb-3
+                label.form-label(for="email") Email
+                input.form-control(type="email" id="email" name="email" autocomplete="email" placeholder="ban@email.com" required)
+            .mb-2
+                label.form-label(for="password") Mật khẩu
+                input.form-control(type="password" id="password" name="password" autocomplete="current-password" placeholder="••••••••" required)
+            .auth-row
+                label.form-check
+                    input.form-check-input(type="checkbox" name="check")
+                    span.form-check-label Ghi nhớ đăng nhập
+                a(href="password/forgot") Quên mật khẩu?
+
+            button.btn.btn-warning.btn-lg.w-100(type="submit") Đăng nhập
+
+            .auth-divider
+                span hoặc
+
+            .d-grid.gap-2
+                a.btn-social(href="/user/login/federated/google")
+                    img(src="https://res.cloudinary.com/dwk6tmsmh/image/upload/v1722602737/jnwhzzq4939gb1gl7edy.png" alt="")
+                    | Tiếp tục với Google
+                a.btn-social(href="/user/login/federated/facebook")
+                    img(src="https://res.cloudinary.com/dwk6tmsmh/image/upload/v1729341273/zrzv5lyvnzpyfslzncoj.png" alt="")
+                    | Tiếp tục với Facebook
+
+            p.auth-foot
+                | Chưa có tài khoản?
+                a(href="register") Đăng ký ngay

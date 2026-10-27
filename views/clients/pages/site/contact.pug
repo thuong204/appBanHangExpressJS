@@ -1,0 +1,73 @@
+extends ../../layouts/default.pug
+include ../../mixins/section-page.pug
+include ../../mixins/page-hero.pug
+include ../../mixins/alert.pug
+block main
+    +alert-success(4000)
+    +alert-error(4000)
+    +section-page(pageTitle)
+    +page-hero("Liên hệ với chúng tôi", "Bạn cần tư vấn sản phẩm, hỗ trợ đơn hàng hay bảo hành? Hãy để lại lời nhắn nhé.", "fa-envelope-open-text")
+    .container.page-shell
+        .contact-channels
+            a.contact-channel(href=`tel:${company.hotlineTel}`)
+                i.fas.fa-phone-alt
+                strong Hotline
+                span #{company.hotline}
+            a.contact-channel(href=`mailto:${company.email}`)
+                i.fas.fa-envelope
+                strong Email
+                span #{company.email}
+            a.contact-channel(href="/chat")
+                i.fas.fa-comments
+                strong Nhắn tin
+                span Chat trực tiếp với shop
+            .contact-channel
+                i.fas.fa-clock
+                strong Giờ làm việc
+                span #{company.hours}
+
+        .row.g-4.mt-1
+            .col-lg-7
+                form.surface-card(action="/contact" method="POST")
+                    h5.card-section-title
+                        i.fas.fa-paper-plane.me-2
+                        | Gửi lời nhắn
+                    .row.g-3
+                        .col-md-6
+                            label.form-label(for="fullName") Họ tên *
+                            input.form-control(type="text" id="fullName" name="fullName" autocomplete="name" required)
+                        .col-md-6
+                            label.form-label(for="phone") Số điện thoại
+                            input.form-control(type="tel" id="phone" name="phone" autocomplete="tel")
+                        .col-12
+                            label.form-label(for="email") Email *
+                            input.form-control(type="email" id="email" name="email" autocomplete="email" required)
+                        .col-12
+                            label.form-label(for="subject") Chủ đề
+                            select.form-select(id="subject" name="subject")
+                                option Tư vấn sản phẩm
+                                option Hỗ trợ đơn hàng
+                                option Bảo hành / đổi trả
+                                option Hợp tác kinh doanh
+                                option Khác
+                        .col-12
+                            label.form-label(for="message") Nội dung *
+                            textarea.form-control(id="message" name="message" rows="5" required placeholder="Bạn cần chúng tôi hỗ trợ điều gì?")
+                    button.btn.btn-warning.btn-lg.mt-4(type="submit")
+                        i.fas.fa-paper-plane.me-2
+                        | Gửi liên hệ
+
+            .col-lg-5
+                .surface-card.p-0.overflow-hidden.h-100.d-flex.flex-column
+                    iframe.contact-map(
+                        title="Bản đồ cửa hàng"
+                        src="https://www.google.com/maps?q=H%C3%B2a%20Qu%C3%BD%2C%20Ng%C5%A9%20H%C3%A0nh%20S%C6%A1n%2C%20%C4%90%C3%A0%20N%E1%BA%B5ng&output=embed"
+                        loading="lazy"
+                        referrerpolicy="no-referrer-when-downgrade"
+                    )
+                    .p-4
+                        h5.fw-bold.mb-2 #{company.name}
+                        p.mb-1.text-muted
+                            i.fas.fa-map-marker-alt.me-2.text-warning
+                            | #{company.address}
+                        a.small.fw-semibold(href="/stores") Xem hệ thống cửa hàng →

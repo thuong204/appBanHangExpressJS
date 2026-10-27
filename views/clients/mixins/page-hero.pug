@@ -1,0 +1,10 @@
+//- Phần đầu trang cho các trang thông tin (tin tức, liên hệ, chính sách...)
+mixin page-hero(title, subtitle, icon)
+    section.page-hero
+        .container
+            if icon
+                span.page-hero-icon
+                    i.fas(class=icon)
+            h1.page-hero-title #{title}
+            if subtitle
+                p.page-hero-sub #{subtitle}

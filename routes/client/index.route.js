@@ -4,6 +4,7 @@ const searchRouter = require("./search.route");
 const cartRouter = require("./cart.route");
 const userRouter = require("./user.route");
 const chatRouter = require("./chat.route");
+const pageRouter = require("./page.route");
 const chatbotController = require("../../controlller/client/chatbot.controller");
 
 const categoryMiddledware = require("../../middlewares/clients/category.middleware");
@@ -21,6 +22,7 @@ module.exports = (app) => {
   app.use("/cart", authMiddleware.requireAuth, cartRouter);
   app.use("/user", userRouter);
   app.use("/chat", authMiddleware.requireAuth, chatRouter);
+  app.use("/", pageRouter);
 
   // API endpoint for chatbot
   app.post("/api/chatbot", chatbotController.handleChat);

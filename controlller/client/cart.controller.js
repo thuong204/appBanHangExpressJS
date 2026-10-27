@@ -6,6 +6,7 @@ const Order = require("../../models/order.model");
 const { priceInter } = require("../../helpers/priceInter");
 const CategoryProduct = require("../../models/category-product.model");
 const formatDate = require("../../helpers/formatDate");
+const vnAddress = require("../../helpers/vnAddress");
 module.exports.index = async (req, res) => {
   const cartId = req.cookies.cartId;
   const cart = await Cart.findOne({
@@ -258,6 +259,15 @@ module.exports.orderResume = async (req, res) => {
 module.exports.orderPost = async (req, res) => {
   const userInfo = req.body;
   const productOrders = req.body.dataOrder; // Mảng chứa các sản phẩm được chọn từ client
+
+  // Địa chỉ: tỉnh/thành → phường/xã → địa chỉ chi tiết (+ toạ độ trên bản đồ nếu có)
+  const area = vnAddress.resolve(userInfo.provinceCode, userInfo.wardCode);
+  const addressDetail = String(userInfo.addressDetail || "").trim();
+  if (!area || !addressDetail) {
+    req.flash("Error", "Vui lòng chọn tỉnh/thành, phường/xã và nhập địa chỉ chi tiết.");
+    return res.redirect("/cart/order/resume");
+  }
+  const location = vnAddress.parseLocation(userInfo.lat, userInfo.lng);
   const cartId = req.cookies.cartId;
   const cart = await Cart.findOne({ _id: cartId });
 
@@ -300,7 +310,10 @@ module.exports.orderPost = async (req, res) => {
     userInfo: {
       fullName: userInfo.fullname,
       phone: userInfo.phone,
-      address: userInfo.address,
+      address: [addressDetail, area.ward, area.province].join(", "),
+      addressDetail,
+      ...area,
+      ...(location ? { location } : {}),
     },
     payments: userInfo.payment,
     dateOrder: new Date(),
@@ -346,6 +359,7 @@ module.exports.success = async (req, res) => {
       }).select("title thumbnail");
       product.productInfo = productInfo;
       product.priceNew = productsHelper.priceNewProduct(product);
+      product.priceInter = priceInter(product.priceNew);
       product.totalPrice = product.priceNew * product.quantity;
       product.totalPriceInter = priceInter(product.totalPrice);
     }
@@ -448,17 +462,27 @@ module.exports.orderHistory = async (req, res) => {
       const productInfo = await Product.findOne({
         _id: product.product_id,
       }).select("title thumbnail categoryProduct slug");
-      const category = await CategoryProduct.findOne({
-        _id: productInfo.categoryProduct,
-      }).select("title slug");
+      // Sản phẩm có thể đã bị xoá khỏi hệ thống sau khi đặt
+      const category = productInfo?.categoryProduct
+        ? await CategoryProduct.findOne({
+          _id: productInfo.categoryProduct,
+        }).select("title slug")
+        : null;
       product.priceNew = productsHelper.priceNewProduct(product);
       product.priceOldInter = priceInter(product.price);
+      product.priceInter = priceInter(product.priceNew);
       product.totalPrice = product.priceNew * product.quantity;
       product.totalPriceInter = priceInter(product.totalPrice);
       product.info = productInfo;
       product.category = category;
     }
   }
+  orderHistory.forEach(order => {
+    order.orderTotalInter = priceInter(order.products.reduce((sum, p) => sum + (p.totalPrice || 0), 0));
+    order.date = formatDate(order.dateOrder || order.createdAt);
+    order.isPaid = order.status === "Đã thanh toán" || order.status === "Paid";
+  });
+  orderHistory.reverse();
   res.render("clients/pages/cart/history", {
     pageTitle: "Lịch sử mua hàng",
     orderHistory: orderHistory,

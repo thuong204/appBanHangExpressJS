@@ -1,77 +1,75 @@
 extends ../../layouts/default.pug
-include ../../mixins/grid-products.pug
 include ../../mixins/section-page.pug
 include ../../mixins/alert.pug
 
-block main  
+block main
     +alert-success(3000)
-    +section-page(pageTitle)
-    .order-history-container
-        .container 
-            .order-history-header
-                h2.page-title
-                    i.fas.fa-history
-                    | Lịch sử mua hàng
-                .order-stats
-                    .stat-item
-                        i.fas.fa-shopping-bag
-                        span.stat-value #{orderHistory.length}
-                        span.stat-label Đơn hàng
-                    .stat-item
-                        i.fas.fa-box
-                        span.stat-value #{orderHistory.filter(order => order.status === 'completed').length}
-                        span.stat-label Đã giao
-                    .stat-item
-                        i.fas.fa-clock
-                        span.stat-value #{orderHistory.filter(order => order.status === 'pending').length}
-                        span.stat-label Đang xử lý
+    +section-page("Đơn hàng của tôi")
+    .container.page-shell
+        h1.page-heading.mb-3 Đơn hàng của tôi
 
+        .stat-tiles
+            .stat-tile
+                i.fas.fa-receipt
+                div
+                    strong #{orderHistory.length}
+                    span Đơn hàng
+            .stat-tile
+                i.fas.fa-check-circle.text-success
+                div
+                    strong #{orderHistory.filter(order => order.isPaid).length}
+                    span Đã thanh toán
+            .stat-tile
+                i.fas.fa-clock.text-warning
+                div
+                    strong #{orderHistory.filter(order => !order.isPaid).length}
+                    span Chưa thanh toán
+
+        if !orderHistory.length
+            .empty-state
+                i.fas.fa-receipt
+                h5 Bạn chưa có đơn hàng nào
+                p Các đơn hàng đã đặt sẽ hiển thị tại đây.
+                a.btn.btn-warning(href="/products") Mua sắm ngay
+        else
             .order-list
                 each order in orderHistory
-                    each item in order.products
-                        .order-card
-                            .order-header
-                                .order-status
-                                    i.fas.fa-check-circle
-                                    span.status-text Giao hàng thành công
-                                .order-date
-                                    i.fas.fa-calendar-alt
-                                    span #{order.date}
-                            
-                            .order-content
-                                .product-info
-                                    a.product-image-link(href=`/products/detail/${item.info.slug}`)
-                                        .product-image-wrapper
-                                            img.product-image-success(src=item.info.thumbnail alt=item.info.title)
-                                    .product-details
-                                        if(item.info.title)
-                                            a.product-title(href=`/products/detail/${item.info.slug}`) #{item.info.title}
-                                        .product-meta
-                                            .product-category
-                                                i.fas.fa-tag
-                                                span #{item.category.title}
-                                            .product-quantity
-                                                i.fas.fa-shopping-cart
-                                                span x#{item.quantity}
-                                        .product-features
-                                            .warranty-badge
-                                                i.fas.fa-shield-alt
-                                                span Trả hàng miễn phí 15 ngày
-                                        .product-pricing
-                                            .price-old #{item.priceOldInter}đ
-                                            .price-new #{item.priceInter}đ
-                            
-                            .order-footer
-                                .order-total
-                                    span.label Thành tiền:
-                                    span.amount #{item.totalPriceInter}đ
-                                .order-actions
-                                    button.btn-review
-                                        i.fas.fa-star
-                                        span Đánh giá
-                                    button.btn-reorder
-                                        i.fas.fa-redo
-                                        span Mua lại
-                                    a.btn-details(href=`/cart/checkout/success/${order.id}`)
-                                        i.fas.fa-info-circle
-                                        span Chi tiết
+                    .surface-card.order-card
+                        .order-card-head
+                            div
+                                span.order-card-date
+                                    i.far.fa-calendar-alt.me-2
+                                    | #{order.date}
+                            if order.isPaid
+                                span.status-pill.status-paid
+                                    i.fas.fa-check-circle.me-1
+                                    | Đã thanh toán
+                            else
+                                span.status-pill.status-pending
+                                    i.fas.fa-clock.me-1
+                                    | #{order.payments == "paymentdelivery" ? "Thanh toán khi nhận hàng" : "Chưa thanh toán"}
+
+                        ul.order-lines
+                            each item in order.products
+                                li
+                                    if item.info
+                                        a(href=`/products/detail/${item.info.slug}`)
+                                            img(src=item.info.thumbnail alt="")
+                                    .order-line-info
+                                        if item.info
+                                            a.order-line-title(href=`/products/detail/${item.info.slug}`) #{item.info.title}
+                                        else
+                                            span.order-line-title Sản phẩm không còn kinh doanh
+                                        span.order-line-meta
+                                            | #{item.priceInter}đ × #{item.quantity}
+                                            if item.category
+                                                |  · #{item.category.title}
+                                    span.order-line-price #{item.totalPriceInter}đ
+
+                        .order-card-foot
+                            span.text-muted
+                                | Tổng tiền:
+                                strong.order-card-total #{order.orderTotalInter}đ
+                            a.btn.btn-outline-dark.btn-sm(href=`/cart/checkout/success/${order.id}`)
+                                | Xem chi tiết
+                                i.fas.fa-arrow-right.ms-2

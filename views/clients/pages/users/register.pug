@@ -4,42 +4,45 @@ block main
     +alert-success(3000)
     +alert-error(3000)
 
-    .body-register
-        form(action="register" method="POST")
-            .register-box
-                .register-header
-                    header Tạo tài khoản
-                    p.text-danger.fw-bold Welcome to Thuong Electronics
+    .auth-page
+        form.auth-card(action="register" method="POST")
+            .auth-head
+                span.auth-icon
+                    i.fas.fa-user-plus
+                h1 Tạo tài khoản
+                p Mua sắm nhanh hơn và theo dõi đơn hàng dễ dàng.
 
-                .input-box
-                    input.input-field(type="text" name="fullName" autocomplete="off")
-                    label(for="fullName") Họ và tên
-                .input-box
-                    input.input-field(type="date" name="dateOfBirth" autocomplete="off" )
-                    label(for="dateOfBirth" style="display:none") Date of birth
-                .input-box
-                    input.input-field(type="text" name="email" autocomplete="off" )
-                    label(for="email") Email
-                .input-box.mb-3
-                    input.input-field(type="password" name="password" autocomplete="off" )
-                    label(for="password") Mật khẩu
-                    i(class="" style="font-size:10px;top:0px;color:red")  Mật khẩu phải có ít nhất 8 ký tự, bao gồm chữ hoa, chữ thường, số và ký tự đặc biệt.
-                .input-box
-                    input.input-field(type="text" name="phone" autocomplete="off" )
-                    label(for="phone") Số điện thoại
-                .input-box
-                    button.input-submit.btn.btn-success(type="submit") Đăng kí
-                .middle-text
-                    hr
-                    p.or-text Or
-                .input-box
-                    a.input-social.btn.btn-light
-                        img(src="https://res.cloudinary.com/dwk6tmsmh/image/upload/v1722602737/jnwhzzq4939gb1gl7edy.png" alt="")
-                        p.fw-bold.text-uppercase Đăng nhập  với Google
-                .input-box
-                    a.btn.input-social.btn-light
-                        img(src="https://res.cloudinary.com/dwk6tmsmh/image/upload/v1722595810/s5duvlhqarv7xfrtedfl.png" alt="")
-                        p.fw-bold.text-uppercase Đăng nhập với Twitter
-                .sign-up
-                    p Bạn đã có tài khoản
-                        a(href="login") Đăng nhập
+            .mb-3
+                label.form-label(for="fullName") Họ và tên
+                input.form-control(type="text" id="fullName" name="fullName" autocomplete="name" placeholder="Nguyễn Văn A")
+            .row.g-3.mb-3
+                .col-sm-6
+                    label.form-label(for="dateOfBirth") Ngày sinh
+                    input.form-control(type="date" id="dateOfBirth" name="dateOfBirth")
+                .col-sm-6
+                    label.form-label(for="phone") Số điện thoại
+                    input.form-control(type="tel" id="phone" name="phone" autocomplete="tel" placeholder="09xx xxx xxx")
+            .mb-3
+                label.form-label(for="email") Email
+                input.form-control(type="email" id="email" name="email" autocomplete="email" placeholder="ban@email.com")
+            .mb-4
+                label.form-label(for="password") Mật khẩu
+                input.form-control(type="password" id="password" name="password" autocomplete="new-password" placeholder="••••••••")
+                .form-text Ít nhất 8 ký tự, gồm chữ hoa, chữ thường, số và ký tự đặc biệt.
+
+            button.btn.btn-warning.btn-lg.w-100(type="submit") Đăng ký
+
+            .auth-divider
+                span hoặc
+
+            .d-grid.gap-2
+                a.btn-social(href="/user/login/federated/google")
+                    img(src="https://res.cloudinary.com/dwk6tmsmh/image/upload/v1722602737/jnwhzzq4939gb1gl7edy.png" alt="")
+                    | Tiếp tục với Google
+                a.btn-social(href="/user/login/federated/facebook")
+                    img(src="https://res.cloudinary.com/dwk6tmsmh/image/upload/v1729341273/zrzv5lyvnzpyfslzncoj.png" alt="")
+                    | Tiếp tục với Facebook
+
+            p.auth-foot
+                | Đã có tài khoản?
+                a(href="login") Đăng nhập

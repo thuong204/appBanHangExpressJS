@@ -1,0 +1,41 @@
+extends ../../layouts/default.pug
+include ../../mixins/section-page.pug
+include ../../mixins/page-hero.pug
+block main
+    +section-page(pageTitle)
+    +page-hero("Gia nhập Vô Thường", "Cùng chúng tôi mang trải nghiệm mua sắm công nghệ tốt nhất đến khách hàng.", "fa-briefcase")
+    .container.page-shell
+        .value-grid.mb-5
+            .value-card
+                i.fas.fa-money-bill-wave
+                h5 Thu nhập cạnh tranh
+                p Lương cứng, thưởng doanh số và thưởng lễ Tết.
+            .value-card
+                i.fas.fa-graduation-cap
+                h5 Đào tạo bài bản
+                p Đào tạo sản phẩm, kỹ năng tư vấn và kỹ thuật định kỳ.
+            .value-card
+                i.fas.fa-users
+                h5 Môi trường trẻ
+                p Đồng nghiệp thân thiện, nhiều hoạt động gắn kết.
+            .value-card
+                i.fas.fa-percent
+                h5 Ưu đãi nhân viên
+                p Giảm giá khi mua sản phẩm tại hệ thống.
+
+        h2.section-head-title.mb-3 Vị trí đang tuyển
+        .job-list
+            each job in jobs
+                .surface-card.job-card
+                    div
+                        h5 #{job.title}
+                        p.text-muted.mb-2 #{job.desc}
+                        .job-tags
+                            span
+                                i.fas.fa-map-marker-alt.me-1
+                                | #{job.location}
+                            span
+                                i.fas.fa-clock.me-1
+                                | #{job.type}
+                    a.btn.btn-warning(href=`mailto:${company.email}?subject=${encodeURIComponent("Ứng tuyển: " + job.title)}`) Ứng tuyển
+        p.text-muted.mt-4 Gửi CV về email #[a(href=`mailto:${company.email}`) #{company.email}] với tiêu đề "Ứng tuyển - Vị trí - Họ tên".

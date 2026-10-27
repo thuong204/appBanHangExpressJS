@@ -1,13 +1,42 @@
 extends ../../layouts/default.pug
+include ../../mixins/alert.pug
 include ../../mixins/grid-products-category.pug
 include ../../mixins/section-page.pug
 block main
-    +section-page(pageTitle)
-    .body 
-        .main 
+    +alert-success(4000)
+    +alert-error(4000)
+    +section-page(pageTitle, breadcrumbs)
+    .body
+        .main
             .container
-                .row 
+                .row
                     .col-lg-12.col-md-12.col-sm-12
-                        h4(class="text-success") #{pageTitle}
-                        .row.mt-4
-                            +grid-products(products)
+                        .catalog-header
+                            div
+                                h1.page-heading.mb-1 #{pageTitle}
+                                p.catalog-count.mb-0 #{products.length} sản phẩm
+                            if sortOptions
+                                form.catalog-sort(method="GET")
+                                    label.me-2(for="catalog-sort") Sắp xếp:
+                                    select#catalog-sort.form-select.form-select-sm(name="sort" onchange="this.form.submit()")
+                                        each option in sortOptions
+                                            option(value=option.value selected=option.value === currentSort) #{option.label}
+
+                        if categoryChips && categoryChips.length
+                            .catalog-chips
+                                each chip in categoryChips
+                                    a.catalog-chip(
+                                        href=`/products/${chip.slug}`
+                                        class=chip.slug === currentCategorySlug ? 'active' : ''
+                                    )
+                                        | #{chip.title}
+                                        span.catalog-chip-count #{chip.count}
+
+                        if products.length
+                            .row.g-3.g-md-4.mt-1
+                                +grid-products(products)
+                        else
+                            .catalog-empty
+                                i.fas.fa-box-open
+                                p.mb-3 Chưa có sản phẩm trong danh mục này.
+                                a.btn.btn-warning(href="/products") Xem tất cả sản phẩm

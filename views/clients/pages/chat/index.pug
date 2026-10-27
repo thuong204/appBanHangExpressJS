@@ -1,14 +1,19 @@
 extends ../../layouts/default.pug
 include ../../mixins/grid-products.pug
+include ../../mixins/section-page.pug
 block main 
-    section
-        p Trang chat / #{pageTitle}
-    .body 
-        .main 
-            .container.mt-5(myId= user.id)
-                .row.justify-content-center
-                    div(class="name-send fw-bold fs-5") Tran cong Thuong
-                    .card
+    +section-page("Hỗ trợ khách hàng")
+    .container.page-shell
+            .chat-shell(myId= user.id)
+                    .card.chat-card
+                        .chat-card-head
+                            span.chat-avatar
+                                i.fas.fa-headset
+                            div
+                                strong Hỗ trợ khách hàng
+                                small
+                                    span.online-dot
+                                    | Thường phản hồi trong vài phút
                         .card-body.chat-body
                             .chat-messages.mb-3
                                 each chat in chats
@@ -35,11 +40,11 @@ block main
                         .card-footer
                             form(id ="form-send")
                                 .input-group
-                                    input.form-control(type="text" placeholder="Type a message..." name= "content" input-chat style="margin-right:10px" )
+                                    input.form-control(type="text" placeholder="Nhập tin nhắn..." name= "content" input-chat autocomplete="off")
                                     label(for ="file-upload-with-preview-my-unique-id" class="btn-image mt-1") <i class="fas fa-image"></i>
                                     i(class="far fa-smile btn-icon" width="20px")
                                     button.btn-send(type="submit" btn-send)  <i class="fas fa-paper-plane text-light"></i>
-        div(class="tooltip" role="tooltip")
-            emoji-picker
+            div(class="tooltip" role="tooltip")
+                emoji-picker
     script(src="/socket.io/socket.io.js") 
     script(type="module" src="/js/chat.js") 

@@ -4,143 +4,169 @@ include ../../mixins/alert.pug
 
 block main     
     +alert-success(3000)
-    +section-page(pageTitle)
-    .body 
-        .container 
-            .row 
-                .col-7
-                    h3(class="text-warning") Thông tin đặt hàng
-                    form(
-                        action="order"
-                        method="POST"
-                    )
-                        div(class="mb-3")
-                            label(for="fullname") Họ tên
+    +alert-error(5000)
+    +section-page("Đặt hàng", [{ title: "Giỏ hàng", href: "/cart" }])
+    .container.page-shell
+        h1.page-heading.mb-3 Thông tin đặt hàng
+        .row.g-4
+            .col-lg-7
+                form.surface-card(
+                    action="/cart/order"
+                    method="POST"
+                )
+                    h5.card-section-title
+                        span.step-badge 1
+                        | Người nhận
+                    .row.g-3
+                        .col-md-6
+                            label.form-label(for="fullname") Họ tên
                             input.form-control(
                                 type="text" 
                                 id="fullname" 
                                 name="fullname" 
                                 required 
-                                placeholder="Nhập họ tên" )
-                        div(class="mb-3")
-                            label(for="phone") Số điện thoại
+                                autocomplete="name"
+                                placeholder="Nguyễn Văn A" )
+                        .col-md-6
+                            label.form-label(for="phone") Số điện thoại
                             input.form-control(
-                                type="text" 
+                                type="tel" 
                                 id="phone" 
                                 name="phone" 
                                 required 
-                                placeholder="Nhập số điện thoại")
-                        div(class="mb-3")
-                            label(for="address") Địa chỉ nhận hàng:
+                                autocomplete="tel"
+                                placeholder="09xx xxx xxx")
+
+                    h5.card-section-title.mt-4
+                        span.step-badge 2
+                        | Địa chỉ giao hàng
+                    .row.g-3(data-address-picker data-source="/data/vn-address.json")
+                        .col-md-6
+                            label.form-label(for="provinceCode") Tỉnh / Thành phố
+                            select.form-select(id="provinceCode" name="provinceCode" required)
+                                option(value="") Đang tải...
+                        .col-md-6
+                            label.form-label(for="wardCode") Phường / Xã
+                            select.form-select(id="wardCode" name="wardCode" required disabled)
+                                option(value="") Chọn tỉnh/thành trước
+                        .col-12
+                            label.form-label(for="addressDetail") Địa chỉ chi tiết
                             input.form-control(
-                                type="text" 
-                                id="address" 
-                                name="address" 
+                                type="text"
+                                id="addressDetail"
+                                name="addressDetail"
                                 required
-                                placeholder="Nhập địa chỉ nhận hàng")
-                        div(class="mb-3")
-                            label(for="note") Ghi chú đơn hàng
+                                autocomplete="address-line1"
+                                placeholder="Số nhà, tên đường, tòa nhà...")
+                        .col-12
+                            .map-picker
+                                .map-picker-head
+                                    span
+                                        i.fas.fa-map-marker-alt.me-2
+                                        | Ghim vị trí giao hàng
+                                        small.text-muted.ms-1 (không bắt buộc)
+                                    button.btn.btn-sm.btn-light(type="button" data-locate-me)
+                                        i.fas.fa-location-arrow.me-1
+                                        | Vị trí của tôi
+                                #delivery-map.map-picker-map(aria-label="Bản đồ chọn vị trí giao hàng")
+                                .map-picker-foot(data-map-status) Chạm vào bản đồ hoặc kéo ghim tới đúng nơi bạn muốn nhận hàng.
+                            input(type="hidden" name="lat" id="lat")
+                            input(type="hidden" name="lng" id="lng")
+                        .col-12
+                            label.form-label(for="note") Ghi chú
                             textarea.form-control(
-                                rows=3
+                                rows=2
                                 id="note"
                                 name="note"
+                                placeholder="Ví dụ: giao giờ hành chính, gọi trước khi giao"
                             )
-                        div(class="mb-3 form-check-inline form-check" )
-                            input(
+
+                    h5.card-section-title.mt-4
+                        span.step-badge 3
+                        | Phương thức thanh toán
+                    .payment-options
+                        label.payment-option(for="paymentdelivery")
+                            input.form-check-input(
                                 type="radio" 
-                                class="form-check-input" 
                                 id="paymentdelivery" 
                                 name="payment" 
                                 checked
                                 value="paymentdelivery")
-                            label(
-                                for="paymentdelivery" 
-                                class="form-check-label") Thanh toán khi nhận hàng       
-                        div(class="mb-3 form-check-inline form-check" )
-                            input(
+                            i.fas.fa-money-bill-wave
+                            span
+                                strong Thanh toán khi nhận hàng
+                                small Trả tiền mặt khi nhận được hàng
+                        label.payment-option(for="paymentcard")
+                            input.form-check-input(
                                 type="radio" 
-                                class="form-check-input" 
                                 id="paymentcard" 
                                 name="payment" 
-
                                 value="paymentcard")
-                            label(
-                                for="paymentcard" 
-                                class="form-check-label") Thanh toán payOS (QR / chuyển khoản)
-                        div(class="mb-3")
-                            input(type="hidden" name="payosOrderCode" id="payosOrderCode" value=qr.orderCode)
-                            each item in cart.products
-                                input(type="hidden" name="dataOrder" value=item.product_id)
-                        div(class="mb-3")
-                            button(type="submit" class="btn btn-warning mb-3" button-order) Đặt hàng
-                .col-5
-                    .container
-                        table.table.table-hover.fs-4.text-uppercase.table-warning.table-border.custom-table
-                            thead
-                                tr 
-                                    th Đơn hàng của bạn
-                        table.table.table-hover.table-sm.fs-5(cellspacing="0") 
-                            tbody 
-                                tr
-                                    td(colspan="2")
-                                        table.table.fs-6(cellspacing="0").custom-table
-                                            thead 
-                                                tr 
-                                                    th SẢN PHẨM
-                                                    th.text-end Tổng
-                                            tbody 
-                                            each item in cart.products
-                                                tr 
-                                                    td.text-warning #{item.productInfo.title} 
-                                                        span(class="fw-bold") x#{item.quantity}
-                                                        if(item.color)
-                                                            span (#{item.color}) 
-                                                    td.text-end #{item.totalPrice}đ
+                            i.fas.fa-qrcode
+                            span
+                                strong Chuyển khoản qua payOS
+                                small Quét mã QR bằng app ngân hàng
 
-                                tr 
-                                    th  Tổng tiền: 
-                                    td.text-end #{cart.totalInter}đ
-                                tr 
-                                    th Phí vận chuyển 
-                                    td.text-end.fs-6 Miễn phí
-                                tr 
-                                    th Tổng tiền thanh toán: 
-                                    td.text-end.text-warning.text-uppercase.fw-bold.fs-5 #{cart.totalInter}đ
-                    script#qr-payment-data(type="application/json")!= JSON.stringify({ qr: qr, payosPaid: payosPaid || false })
-                    div.modal.fade.container-qr(id='qrModal' tabindex='-1' aria-labelledby='qrModalLabel' aria-hidden='true')
-                        div.modal-dialog
-                            div.modal-content
-                                div.modal-header
-                                    h5#qrModalLabel.modal-title Thanh toán qua payOS
-                                    button.btn-close(type='button' data-bs-dismiss='modal' aria-label='Close')
-                                div.modal-body
-                                    p.text-muted Quét mã QR bằng app ngân hàng hoặc mở trang thanh toán payOS.
-                                    div.text-center
-                                        img#qrImage(src=`${qr.image}` alt='QR payOS' width='70%')
-                                    if qr.checkoutUrl
-                                        p.mt-3.text-center
-                                            a.btn.btn-primary(href=qr.checkoutUrl target="_blank" rel="noopener") Mở trang thanh toán payOS
-                                    .information.fw-bold.mt-3
-                                        if qr.information.accountNo
-                                            div Số tài khoản: #{qr.information.accountNo}
-                                        div Nội dung: #{qr.information.addInfo}
-                                        div Số tiền: #{qr.information.amount}đ
-                                div.modal-footer.text-center
-                                    .wait-payment
-                                        span.text-warning Đang chờ xác nhận từ payOS...
-                                    button.btn.btn-secondary(type='button' data-bs-dismiss='modal') Đóng
-                    div.modal.fade#paymentSuccessModal(tabindex="-1", aria-labelledby="paymentSuccessLabel", aria-hidden="true")
-                        div.modal-dialog
-                            div.modal-content
-                                div.modal-body.text-center
-                                    i.fa.fa-check-circle.text-success(style=" font-size: 3rem")
-                                    p.payment-success.text-success Thanh toán thành công
-                                    p Đơn hàng của quý khách đã thanh toán thành công. Chúng tôi sẽ giao hàng cho bạn trong thời gian sớm nhất.
-                                div.modal-footer.d-block.text-center
-                                    button.btn.btn-primary(type="button", data-bs-dismiss="modal") OK
+                    input(type="hidden" name="payosOrderCode" id="payosOrderCode" value=qr.orderCode)
+                    each item in cart.products
+                        input(type="hidden" name="dataOrder" value=item.product_id)
+                    button.btn.btn-warning.btn-lg.w-100.mt-4(type="submit" button-order) Đặt hàng
 
-
-
-
-
-
+            .col-lg-5
+                .surface-card.summary-card
+                    h5.summary-title Đơn hàng của bạn
+                    ul.order-lines
+                        each item in cart.products
+                            li
+                                img(src=item.productInfo.thumbnail alt="")
+                                .order-line-info
+                                    span.order-line-title #{item.productInfo.title}
+                                    span.order-line-meta
+                                        | SL: #{item.quantity}
+                                        if(item.color)
+                                            |  · #{item.color}
+                                span.order-line-price #{item.totalPriceInter || item.totalPrice}đ
+                    .summary-row
+                        span Tạm tính
+                        span.fw-semibold #{cart.totalInter}đ
+                    .summary-row
+                        span Phí vận chuyển
+                        span.text-success.fw-semibold Miễn phí
+                    .summary-row.summary-total
+                        span Tổng thanh toán
+                        span #{cart.totalInter}đ
+        link(rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css")
+        script(src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js")
+        script(src="/js/address-picker.js" defer)
+        script#qr-payment-data(type="application/json")!= JSON.stringify({ qr: qr, payosPaid: payosPaid || false })
+        div.modal.fade.container-qr(id='qrModal' tabindex='-1' aria-labelledby='qrModalLabel' aria-hidden='true')
+            div.modal-dialog
+                div.modal-content
+                    div.modal-header
+                        h5#qrModalLabel.modal-title Thanh toán qua payOS
+                        button.btn-close(type='button' data-bs-dismiss='modal' aria-label='Close')
+                    div.modal-body
+                        p.text-muted Quét mã QR bằng app ngân hàng hoặc mở trang thanh toán payOS.
+                        div.text-center
+                            img#qrImage(src=`${qr.image}` alt='QR payOS' width='70%')
+                        if qr.checkoutUrl
+                            p.mt-3.text-center
+                                a.btn.btn-warning(href=qr.checkoutUrl target="_blank" rel="noopener") Mở trang thanh toán payOS
+                        .information.fw-bold.mt-3
+                            if qr.information.accountNo
+                                div Số tài khoản: #{qr.information.accountNo}
+                            div Nội dung: #{qr.information.addInfo}
+                            div Số tiền: #{qr.information.amount}đ
+                    div.modal-footer.text-center
+                        .wait-payment
+                            span.text-warning Đang chờ xác nhận từ payOS...
+                        button.btn.btn-secondary(type='button' data-bs-dismiss='modal') Đóng
+        div.modal.fade#paymentSuccessModal(tabindex="-1", aria-labelledby="paymentSuccessLabel", aria-hidden="true")
+            div.modal-dialog
+                div.modal-content
+                    div.modal-body.text-center
+                        i.fa.fa-check-circle.text-success(style=" font-size: 3rem")
+                        p.payment-success.text-success Thanh toán thành công
+                        p Đơn hàng của quý khách đã thanh toán thành công. Chúng tôi sẽ giao hàng cho bạn trong thời gian sớm nhất.
+                    div.modal-footer.d-block.text-center
+                        button.btn.btn-warning(type="button", data-bs-dismiss="modal") OK

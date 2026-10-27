@@ -1,10 +1,31 @@
 extends ../../layouts/default.pug
+include ../../mixins/alert.pug
 include ../../mixins/grid-products.pug
+include ../../mixins/section-page.pug
 block main
-    section 
-        p Trang chủ / Kết quả tìm kiếm "#{keyword}"
+    +alert-success(4000)
+    +alert-error(4000)
+    +section-page(keyword ? `Kết quả cho "${keyword}"` : pageTitle)
 
-    .container.my-3 
-        h4(class="text-success") #{pageTitle}
-        .row.mt-4
+    .container.pb-5
+        .catalog-header
+            div
+                h4.page-heading.mb-1
+                    if keyword
+                        | Kết quả tìm kiếm cho "#{keyword}"
+                    else
+                        | Tìm kiếm sản phẩm
+                if keyword
+                    p.catalog-count.mb-0 Tìm thấy #{products.length} sản phẩm
+
+        if products.length
+            .row.g-3.g-md-4.mt-1
                 +grid-products(products)
+        else
+            .catalog-empty
+                i.fas.fa-search
+                if keyword
+                    p.mb-3 Không tìm thấy sản phẩm phù hợp với "#{keyword}".
+                else
+                    p.mb-3 Nhập tên sản phẩm vào ô tìm kiếm phía trên.
+                a.btn.btn-warning(href="/products") Xem tất cả sản phẩm

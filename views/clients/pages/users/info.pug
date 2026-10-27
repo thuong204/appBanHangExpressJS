@@ -1,37 +1,54 @@
 extends ../../layouts/default.pug
 include ../../mixins/alert.pug
-block main 
+include ../../mixins/section-page.pug
+block main
     +alert-success(3000)
     +alert-error(3000)
-    section
-        p Trang chủ / #{pageTitle}
-    .body 
-        .main 
-            .row.mb-3
-                .col-7
-                    h3.text-success Thông tin cá nhân
-                    if user.fullName
-                        div.mb-4 Họ tên: <b> #{user.fullName}</b>
-                    if user.dateOfBirth
-                        div.mb-4 Ngày sinh: <b> #{user.dateOfBirth}</b>
+    +section-page("Tài khoản")
+    .container.page-shell
+        .row.g-4
+            .col-lg-4
+                .surface-card.profile-card
+                    if user.avatar
+                        img.profile-avatar(src=user.avatar alt="")
+                    else
+                        span.profile-avatar.profile-avatar-text #{(user.fullName || user.email || "?").trim().charAt(0).toUpperCase()}
+                    h1.profile-name #{user.fullName || "Khách hàng"}
                     if user.email
-                        div.mb-4 Email: <b> #{user.email}</b>
-                    if user.phone
-                        div.mb-4 Số điện thoại: <b> #{user.phone}</b>
-                    if user.status
-                        div.mb-4
-                            span Trạng thái 
-                            if user.status == 'active'
-                                span.badge.bg-success.mt-3 Hoạt động
-                            else 
-                                span.badge.bg-danger.mt-3 Dừng hoạt động
-                    if user.createdAt 
-                        div.mb-4  Ngày tạo tài khoản: #{user.createdAt}
-                    a(
-                        href=`${prefixAdmin}/user/edit`
-                        class="btn btn-warning btn-sm ms-1 "                          
-                        data-id =id ) Sửa
-                    a(
-                        href=`${prefixAdmin}/user/changepassword`
-                        class="btn btn-danger btn-sm ms-1 d-inline "                         
-                        data-id =id ) Thay đổi mật khẩu
+                        p.text-muted.mb-3 #{user.email}
+                    if user.status == 'active'
+                        span.status-pill.status-paid
+                            i.fas.fa-check-circle.me-1
+                            | Đang hoạt động
+                    else
+                        span.status-pill.status-pending Tạm khoá
+                    .profile-links
+                        a(href="/cart/order/history")
+                            i.fas.fa-receipt
+                            | Đơn hàng của tôi
+                        a(href="/cart")
+                            i.fas.fa-shopping-bag
+                            | Giỏ hàng
+                        a(href="/user/password/forgot")
+                            i.fas.fa-key
+                            | Đổi mật khẩu
+                        a.text-danger(href="/user/logout")
+                            i.fas.fa-sign-out-alt
+                            | Đăng xuất
+
+            .col-lg-8
+                .surface-card
+                    h5.card-section-title
+                        i.fas.fa-id-card.me-2
+                        | Thông tin cá nhân
+                    dl.info-list.info-list-wide
+                        dt Họ tên
+                        dd #{user.fullName || "—"}
+                        dt Email
+                        dd #{user.email || "—"}
+                        dt Số điện thoại
+                        dd #{user.phone || "—"}
+                        dt Ngày sinh
+                        dd #{user.dateOfBirth ? new Date(user.dateOfBirth).toLocaleDateString("vi-VN") : "—"}
+                        dt Ngày tham gia
+                        dd #{user.createdAt ? new Date(user.createdAt).toLocaleDateString("vi-VN") : "—"}

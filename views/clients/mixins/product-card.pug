@@ -1,0 +1,30 @@
+//- Thẻ sản phẩm dùng chung cho mọi danh sách (trang chủ, danh mục, tìm kiếm, giỏ hàng)
+mixin product-card(item)
+    .product-card(data-kind=item.kind)
+        a.product-image(href=`/products/detail/${item.slug}`)
+            img(src=item.thumbnail alt=item.title loading="lazy")
+            if item.discountPercentage
+                span.product-badge -#{item.discountPercentage}%
+
+        .product-info
+            if item.category
+                a.product-kind(href=`/products/${item.category.slug}`) #{item.category.title}
+
+            a.product-title(href=`/products/detail/${item.slug}`) #{item.title}
+
+            //- Thông số chỉ hiện khi sản phẩm có dữ liệu phù hợp (màn hình, dung lượng)
+            if item.cardSpecs && item.cardSpecs.length
+                ul.product-spec-tags
+                    each spec in item.cardSpecs
+                        li #{spec.label}
+
+            .product-price
+                if item.discountPercentage
+                    span.price-new #{item.priceNew}đ
+                    span.price-old #{item.priceInter}đ
+                else
+                    span.price-new #{item.priceInter}đ
+
+            a.product-cta(href=`/products/detail/${item.slug}`)
+                | Xem chi tiết
+                i.fas.fa-arrow-right.ms-2

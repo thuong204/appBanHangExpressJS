@@ -18,7 +18,13 @@ module.exports.cartId = async (req,res,next) =>{
         }
     }
     else{
-
+        // Số lượng hiển thị trên icon giỏ hàng ở header
+        try {
+            const cart = await Cart.findById(req.cookies.cartId).select("products").lean()
+            res.locals.cartCount = (cart?.products || []).reduce((sum, item) => sum + (item.quantity || 0), 0)
+        } catch (error) {
+            res.locals.cartCount = 0
+        }
     }
     next()
 }

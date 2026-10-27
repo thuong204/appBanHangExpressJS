@@ -1,4 +1,4 @@
-mixin section-page(pageTitle)
+mixin section-page(pageTitle, breadcrumbs)
   style.
     .breadcrumb-container {
       border-bottom: 1px solid #e9ecef;
@@ -40,5 +40,9 @@ mixin section-page(pageTitle)
             a.text-decoration-none(href="/")
               i.fas.fa-home.me-1
               span Trang chủ
+          if breadcrumbs
+            each crumb in breadcrumbs
+              li.breadcrumb-item
+                a.text-decoration-none(href=crumb.href) #{crumb.title}
           if pageTitle
             li.breadcrumb-item.active.text-dark(aria-current="page") #{pageTitle}

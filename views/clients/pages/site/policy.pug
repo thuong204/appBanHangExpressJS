@@ -1,0 +1,30 @@
+extends ../../layouts/default.pug
+include ../../mixins/section-page.pug
+block main
+    +section-page(pageTitle, [{ title: "Chính sách", href: "/policy/doi-tra" }])
+    .container.page-shell
+        .row.g-4
+            .col-lg-3
+                nav.surface-card.policy-nav
+                    each item in policies
+                        a(href=`/policy/${item.slug}` class=item.slug === policy.slug ? 'active' : '')
+                            i.fas(class=item.icon)
+                            | #{item.title}
+                    a(href="/faq")
+                        i.fas.fa-question-circle
+                        | Câu hỏi thường gặp
+            .col-lg-9
+                article.surface-card.article
+                    span.page-hero-icon.mb-3
+                        i.fas(class=policy.icon)
+                    h1.article-title #{policy.title}
+                    p.article-lead #{policy.summary}
+                    .article-content !{policy.content}
+                    .policy-help
+                        i.fas.fa-headset
+                        span
+                            | Cần hỗ trợ thêm? Gọi
+                            a(href=`tel:${company.hotlineTel}`)  #{company.hotline}
+                            |  hoặc
+                            a(href="/contact")  gửi liên hệ
+                            | .

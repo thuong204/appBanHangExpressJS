@@ -98,15 +98,15 @@ if (showAlert) {
 
 const rows = document.querySelectorAll(".button-add-quantity");
 rows.forEach((row) => {
-  const productId = row
-    .closest("tr")
+  const item = row.closest("[data-cart]");
+  const productId = item
     .querySelector(".product-info")
     .getAttribute("product_id");
   const decreaseButton = row.querySelector("[button-decrease]");
   const increaseButton = row.querySelector("[button-increase]");
   const quantityInput = row.querySelector("[value-quantity]");
-  const itemColor = row.closest("tr").querySelector("[item-color]");
-  const color = itemColor.getAttribute("value");
+  const itemColor = item.querySelector("[item-color]");
+  const color = encodeURIComponent(itemColor ? itemColor.getAttribute("value") || "" : "");
   decreaseButton.addEventListener("click", () => {
     const quantity = parseInt(quantityInput.value) - 1;
     window.location.href = `/cart/update/${productId}?color=${color}&quantity=${quantity}`;

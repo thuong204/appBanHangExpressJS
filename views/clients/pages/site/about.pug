@@ -1,0 +1,63 @@
+extends ../../layouts/default.pug
+include ../../mixins/section-page.pug
+include ../../mixins/page-hero.pug
+block main
+    +section-page(pageTitle)
+    +page-hero("Về Vô Thường", "Mang công nghệ chính hãng đến gần hơn với mọi người, với giá hợp lý và dịch vụ tận tâm.", "fa-store")
+    .container.page-shell
+        .row.g-4.align-items-stretch
+            .col-lg-7
+                .surface-card.h-100
+                    h5.card-section-title Câu chuyện của chúng tôi
+                    p #{company.name} được thành lập tại Đà Nẵng với mong muốn trở thành điểm đến tin cậy cho các sản phẩm công nghệ: điện thoại, laptop, máy tính bảng, phụ kiện, điện máy và văn phòng.
+                    p Chúng tôi chỉ kinh doanh hàng chính hãng có nguồn gốc rõ ràng, đi kèm chính sách bảo hành minh bạch và đội ngũ tư vấn am hiểu sản phẩm.
+                    p.mb-0 Bên cạnh cửa hàng, website giúp khách hàng trên toàn quốc dễ dàng tham khảo, so sánh và đặt mua sản phẩm chỉ với vài thao tác.
+            .col-lg-5
+                .about-stats
+                    .stat-tile
+                        i.fas.fa-box-open
+                        div
+                            strong 7+
+                            span Nhóm sản phẩm
+                    .stat-tile
+                        i.fas.fa-shield-alt
+                        div
+                            strong 100%
+                            span Hàng chính hãng
+                    .stat-tile
+                        i.fas.fa-shipping-fast
+                        div
+                            strong 2 giờ
+                            span Giao nhanh nội thành
+                    .stat-tile
+                        i.fas.fa-headset
+                        div
+                            strong 8 - 22h
+                            span Hỗ trợ mỗi ngày
+
+        h2.section-head-title.mt-5.mb-3 Giá trị cốt lõi
+        .value-grid
+            .value-card
+                i.fas.fa-certificate
+                h5 Chính hãng
+                p Cam kết 100% sản phẩm chính hãng, hoàn tiền nếu phát hiện hàng giả.
+            .value-card
+                i.fas.fa-hand-holding-usd
+                h5 Giá hợp lý
+                p Giá niêm yết rõ ràng, nhiều chương trình ưu đãi và trả góp 0%.
+            .value-card
+                i.fas.fa-heart
+                h5 Tận tâm
+                p Tư vấn đúng nhu cầu, hỗ trợ sau bán hàng nhanh chóng.
+            .value-card
+                i.fas.fa-tools
+                h5 Bảo hành chu đáo
+                p Đổi mới trong 30 ngày, bảo hành tận nơi với các sản phẩm điện máy.
+
+        .cta-band.mt-5
+            div
+                h3 Bạn cần tư vấn sản phẩm?
+                p Đội ngũ của chúng tôi sẵn sàng hỗ trợ bạn mỗi ngày.
+            .d-flex.gap-2.flex-wrap
+                a.btn.btn-dark.btn-lg(href="/contact") Liên hệ ngay
+                a.btn.btn-light.btn-lg(href="/products") Xem sản phẩm

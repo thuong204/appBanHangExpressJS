@@ -1,293 +1,146 @@
 include ../mixins/sub-menu.pug
-header.header
-    // Upper header section with logo, search, and account
-    .header-top.py-2.border-bottom
-        .container
-            .row.align-items-center
-                // Logo
-                .col-3.col-sm-3.col-md-2
-                    .logo
-                        a(href="/")
-                            img.img-fluid(src="/images/dina.png" alt="Logo" style="max-height: 38px;")
-                
-                // Search bar
-                .col-6.col-sm-6.col-md-7
-                    form.search-form(action="/search" method="GET")
-                        .input-group.input-group-sm
-                            input.form-control.rounded-start.border-warning(
-                                type="text"
-                                placeholder="Hôm nay bạn tìm gì..."
-                                name="keyword"
-                                value=keyword
-                            )
-                            button.btn.btn-warning.rounded-end(type="submit")
-                                i.fas.fa-search
-                
-                // Account and cart icons
-                .col-3.col-sm-3.col-md-3
-                    .d-flex.justify-content-end.align-items-center
-                        // Cart
-                        a.icon-link.me-3(href="/cart" title="Giỏ hàng")
-                            i.fas.fa-shopping-cart
-                            span.badge.bg-danger.rounded-circle.position-absolute.top-0.start-100.translate-middle 0
-                        
-                        // User account
+
+// Thanh thông báo trên cùng
+.topbar.d-none.d-md-block
+    .container.d-flex.justify-content-between.align-items-center
+        span
+            i.fas.fa-truck.me-2
+            | Miễn phí giao hàng cho đơn từ 500.000đ
+        .topbar-links
+            a(href="/news")
+                i.fas.fa-newspaper.me-1
+                | Tin tức
+            a(href="/contact")
+                i.fas.fa-headset.me-1
+                | Liên hệ
+            a(href="tel:19001234")
+                i.fas.fa-phone-alt.me-1
+                | 1900 1234
+
+header.site-header
+    .container
+        .site-header-main
+            // Mobile menu
+            button.header-icon-btn.d-lg-none(type="button" data-bs-toggle="offcanvas" data-bs-target="#mainNavOffcanvas" aria-label="Mở danh mục")
+                i.fas.fa-bars
+
+            a.site-logo(href="/")
+                img(src="/images/dina.png" alt="Vô Thường")
+
+            button.btn-categories.d-none.d-lg-inline-flex(type="button" data-bs-toggle="offcanvas" data-bs-target="#mainNavOffcanvas")
+                i.fas.fa-th-large.me-2
+                | Danh mục
+
+            form.site-search(action="/search" method="GET" role="search")
+                i.fas.fa-search.site-search-icon
+                input(
+                    type="search"
+                    placeholder="Bạn cần tìm gì hôm nay?"
+                    name="keyword"
+                    value=keyword
+                    aria-label="Tìm kiếm sản phẩm"
+                )
+                button(type="submit") Tìm
+
+            .site-actions
+                a.header-action(href="/cart" title="Giỏ hàng")
+                    span.header-action-icon
+                        i.fas.fa-shopping-bag
+                        if cartCount
+                            span.cart-count #{cartCount > 99 ? '99+' : cartCount}
+                    span.header-action-label.d-none.d-xl-inline Giỏ hàng
+
+                .dropdown
+                    button.header-action(type="button" data-bs-toggle="dropdown" aria-expanded="false")
+                        span.header-action-icon
+                            i.fas.fa-user
+                        span.header-action-label.d-none.d-xl-inline= user ? user.name : "Tài khoản"
+                    ul.dropdown-menu.dropdown-menu-end.account-menu
                         if(user)
-                            .dropdown
-                                button.btn.btn-sm.btn-warning.dropdown-toggle.d-flex.align-items-center(type="button" data-bs-toggle="dropdown")
-                                    i.fas.fa-user.me-1
-                                    span.d-none.d-md-inline.small= user.name
-                                ul.dropdown-menu.dropdown-menu-end.shadow-sm
-                                    li
-                                        a.dropdown-item.py-2(href="/user/info")
-                                            i.fas.fa-user-circle.me-2.text-warning
-                                            | Thông tin
-                                    li 
-                                        a.dropdown-item.py-2(href="/cart/order/history")
-                                            i.fas.fa-history.me-2.text-warning
-                                            | Đơn hàng
-                                    li.border-top
-                                        a.dropdown-item.py-2(href="/user/logout")
-                                            i.fas.fa-sign-out-alt.me-2.text-warning
-                                            | Đăng xuất
+                            li
+                                a.dropdown-item(href="/user/info")
+                                    i.fas.fa-user-circle.me-2
+                                    | Thông tin
+                            li
+                                a.dropdown-item(href="/cart/order/history")
+                                    i.fas.fa-receipt.me-2
+                                    | Đơn hàng
+                            li
+                                hr.dropdown-divider
+                            li
+                                a.dropdown-item(href="/user/logout")
+                                    i.fas.fa-sign-out-alt.me-2
+                                    | Đăng xuất
                         else
-                            .dropdown
-                                button.btn.btn-sm.btn-warning.dropdown-toggle(type="button" data-bs-toggle="dropdown")
-                                    i.fas.fa-user.me-1
-                                    span.d-none.d-md-inline.small Tài khoản
-                                ul.dropdown-menu.dropdown-menu-end.shadow-sm
-                                    li
-                                        a.dropdown-item.py-2(href="/user/login")
-                                            i.fas.fa-sign-in-alt.me-2.text-warning
-                                            | Đăng nhập
-                                    li
-                                        a.dropdown-item.py-2(href="/user/register")
-                                            i.fas.fa-user-plus.me-2.text-warning
-                                            | Đăng ký
-    
-    // Main navigation
-    .header-nav.bg-warning.sticky-top
+                            li
+                                a.dropdown-item(href="/user/login")
+                                    i.fas.fa-sign-in-alt.me-2
+                                    | Đăng nhập
+                            li
+                                a.dropdown-item(href="/user/register")
+                                    i.fas.fa-user-plus.me-2
+                                    | Đăng ký
+
+    // Thanh danh mục (cuộn ngang trên mobile)
+    nav.category-bar(aria-label="Danh mục sản phẩm")
         .container
-            .row
-                .col-12.position-relative.p-0
-                    // Mobile toggle button
-                    button.navbar-toggler.d-lg-none(type="button" data-bs-toggle="offcanvas" data-bs-target="#mainNavOffcanvas")
-                        i.fas.fa-bars
-                    
-                    // Desktop navigation
-                    .main-navigation.d-none.d-lg-block
-                        ul.nav.nav-fill.nav-justified
-                            li.nav-item
-                                a.nav-link.text-dark.py-2.d-flex.align-items-center.justify-content-center(href="/")
-                                    i.fas.fa-home.me-2
-                                    span Trang chủ
-                            each item in categoryProducts
-                                li.nav-item
-                                    a.nav-link.text-dark.py-2(href=`/products/${item.slug}`) #{item.title}
-                            li.nav-item
-                                a.nav-link.text-dark.py-2(href="/") 
-                                    i.fas.fa-newspaper.me-2
-                                    span Tin tức
-                            li.nav-item
-                                a.nav-link.text-dark.py-2(href="/chat")
-                                    i.fas.fa-comment.me-2
-                                    span Liên hệ
-                            li.nav-item
-                                a.nav-link.text-dark.py-2(href="/")
-                                    i.fas.fa-store.me-2
-                                    span Hệ thống
+            ul.category-bar-list
+                each item in categoryProducts
+                    li
+                        a(href=`/products/${item.slug}`)
+                            i.fas(class=item.icon)
+                            span #{item.title}
+                li
+                    a(href="/products?sort=discount")
+                        i.fas.fa-fire.text-danger
+                        span Khuyến mãi
+                li
+                    a(href="/news")
+                        i.fas.fa-newspaper
+                        span Tin tức
 
 // Mobile sidebar menu
 .offcanvas.offcanvas-start#mainNavOffcanvas(tabindex="-1")
-    .offcanvas-header.bg-warning
+    .offcanvas-header
         h5.offcanvas-title
-            i.fas.fa-bars.me-2
+            i.fas.fa-th-large.me-2
             | Danh mục
-        button.btn-close(type="button" data-bs-dismiss="offcanvas" aria-label="Close")
+        button.btn-close(type="button" data-bs-dismiss="offcanvas" aria-label="Đóng")
     .offcanvas-body.p-0
         .list-group.list-group-flush
-            a.list-group-item.list-group-item-action.py-3(href="/")
-                i.fas.fa-home.me-2.text-warning
+            a.list-group-item.list-group-item-action(href="/")
+                i.fas.fa-home.me-3
                 | Trang chủ
+            a.list-group-item.list-group-item-action(href="/products")
+                i.fas.fa-store.me-3
+                | Tất cả sản phẩm
             each item in categoryProducts
-                a.list-group-item.list-group-item-action.py-3(href=`/products/${item.slug}`)
-                    i.fas.fa-box.me-2.text-warning
+                a.list-group-item.list-group-item-action(href=`/products/${item.slug}`)
+                    i.fas.me-3(class=item.icon)
                     | #{item.title}
-            a.list-group-item.list-group-item-action.py-3(href="/")
-                i.fas.fa-newspaper.me-2.text-warning
+            a.list-group-item.list-group-item-action(href="/news")
+                i.fas.fa-newspaper.me-3
                 | Tin tức
-            a.list-group-item.list-group-item-action.py-3(href="/chat")
-                i.fas.fa-comment.me-2.text-warning
+            a.list-group-item.list-group-item-action(href="/contact")
+                i.fas.fa-envelope.me-3
                 | Liên hệ
-            a.list-group-item.list-group-item-action.py-3(href="/")
-                i.fas.fa-store.me-2.text-warning
+            a.list-group-item.list-group-item-action(href="/stores")
+                i.fas.fa-map-marker-alt.me-3
                 | Hệ thống cửa hàng
-        
-        // User account shortcuts in mobile menu
-        .p-3.mt-2.bg-light
-            h6.text-uppercase.fw-bold.small.mb-3
-                i.fas.fa-user-circle.me-2
-                | Tài khoản
+
+        .p-3.mt-2
             if(user)
                 .d-grid.gap-2
-                    a.btn.btn-sm.btn-outline-warning.d-flex.align-items-center(href="/user/info")
+                    a.btn.btn-light(href="/user/info")
                         i.fas.fa-user-circle.me-2
                         | Thông tin tài khoản
-                    a.btn.btn-sm.btn-outline-warning.d-flex.align-items-center(href="/cart/order/history")
-                        i.fas.fa-history.me-2
+                    a.btn.btn-light(href="/cart/order/history")
+                        i.fas.fa-receipt.me-2
                         | Lịch sử mua hàng
-                    a.btn.btn-sm.btn-outline-warning.d-flex.align-items-center(href="/user/logout")
+                    a.btn.btn-outline-secondary(href="/user/logout")
                         i.fas.fa-sign-out-alt.me-2
                         | Đăng xuất
             else
                 .d-grid.gap-2
-                    a.btn.btn-sm.btn-warning.d-flex.align-items-center.justify-content-center(href="/user/login")
-                        i.fas.fa-sign-in-alt.me-2
-                        | Đăng nhập
-                    a.btn.btn-sm.btn-outline-warning.d-flex.align-items-center.justify-content-center(href="/user/register")
-                        i.fas.fa-user-plus.me-2
-                        | Đăng ký
-
-style.
-    /* Header styling */
-   .header-top {
-        box-shadow: 0 1px 3px rgba(0,0,0,0.05);
-        position: relative;
-        z-index: 1050; /* Higher than sticky nav */
-    }
-    
-    /* Navigation styling */
-    .header-nav {
-        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-        z-index: 1030; /* Lower than dropdowns but still high */
-    }
-    
-    /* Dropdown menu fixes */
-    .dropdown {
-        position: relative;
-    }
-    
-    .dropdown-menu {
-        border-radius: 0;
-        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-        min-width: auto;
-        z-index: 1060 !important; /* Force higher z-index */
-    }
-    
-    .nav-item {
-        position: relative;
-        transition: all 0.2s ease;
-    }
-    
-    .nav-link {
-        color: #333 !important;
-        font-weight: 500;
-        white-space: nowrap;
-    }
-    
-    .nav-link:hover {
-        color: #000 !important;
-        background-color: rgba(255,255,255,0.2);
-    }
-    
-    .navbar-toggler {
-        position: absolute;
-        left: 15px;
-        top: 50%;
-        transform: translateY(-50%);
-        border: none;
-        background-color: transparent;
-        color: #333;
-        font-size: 1.2rem;
-        z-index: 10;
-    }
-    
-    /* Icons styling */
-    .icon-link {
-        position: relative;
-        color: #333;
-        font-size: 1.1rem;
-        padding: 5px;
-        transition: all 0.2s ease;
-    }
-    
-    .icon-link:hover {
-        color: #000;
-    }
-    
-    .badge {
-        font-size: 0.6rem;
-        font-weight: 400;
-        width: 18px;
-        height: 18px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-    }
-    
-    /* Form styling */
-    .search-form {
-        width: 100%;
-    }
-    
-    .search-form .form-control {
-        border-color: #ffc107;
-    }
-    
-    .search-form .form-control:focus {
-        box-shadow: 0 0 0 0.25rem rgba(255, 193, 7, 0.25);
-    }
-    
-    /* Mobile menu styling */
-    .offcanvas {
-        max-width: 280px;
-    }
-    
-    .offcanvas-header {
-        padding: 0.75rem 1rem;
-    }
-    
-    .list-group-item-action:hover {
-        background-color: #fff9e6;
-    }
-    
-    /* Responsive adjustments */
-    @media (max-width: 576px) {
-        .search-form .form-control {
-            height: 32px;
-            font-size: 0.875rem;
-        }
-        .search-form .btn {
-            height: 32px;
-            padding: 0.25rem 0.5rem;
-        }
-        .icon-link {
-            font-size: 1rem;
-        }
-        .navbar-toggler {
-            font-size: 1rem;
-            left: 10px;
-        }
-    }
-    
-    @media (min-width: 992px) {
-        .main-navigation {
-            height: 100%;
-        }
-        .nav-justified > .nav-item {
-            flex: 1;
-            text-align: center;
-        }
-        .nav-item:not(:last-child) {
-            border-right: 1px solid rgba(0,0,0,0.1);
-        }
-        .nav-item:hover::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            height: 3px;
-            background-color: #fff;
-        }
-    }
+                    a.btn.btn-warning.fw-semibold(href="/user/login") Đăng nhập
+                    a.btn.btn-outline-secondary(href="/user/register") Đăng ký

@@ -1,0 +1,34 @@
+extends ../../layouts/default.pug
+include ../../mixins/section-page.pug
+include ../../mixins/page-hero.pug
+block main
+    +section-page(pageTitle)
+    +page-hero("Hệ thống cửa hàng", "Ghé cửa hàng để trải nghiệm sản phẩm và được tư vấn trực tiếp.", "fa-map-marked-alt")
+    .container.page-shell
+        each store in stores
+            .surface-card.store-card.mb-4
+                .row.g-0
+                    .col-lg-5.p-4
+                        if store.main
+                            span.news-tag Cửa hàng chính
+                        h3.store-name #{store.name}
+                        ul.store-info
+                            li
+                                i.fas.fa-map-marker-alt
+                                | #{store.address}
+                            li
+                                i.fas.fa-phone-alt
+                                a(href=`tel:${store.phone.replace(/\s/g, "")}`) #{store.phone}
+                            li
+                                i.fas.fa-clock
+                                | #{store.hours}
+                        a.btn.btn-warning(href=`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(store.mapQuery)}` target="_blank" rel="noopener")
+                            i.fas.fa-directions.me-2
+                            | Chỉ đường
+                    .col-lg-7
+                        iframe.contact-map(
+                            title=`Bản đồ ${store.name}`
+                            src=`https://www.google.com/maps?q=${encodeURIComponent(store.mapQuery)}&output=embed`
+                            loading="lazy"
+                            referrerpolicy="no-referrer-when-downgrade"
+                        )

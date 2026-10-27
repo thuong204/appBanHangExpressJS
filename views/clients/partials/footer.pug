@@ -10,8 +10,8 @@ footer.footer-modern
                             h5.mb-0.fw-bold.text-white Đăng ký nhận thông tin
                             p.mb-0.text-white-50.small Nhận thông tin về sản phẩm mới và khuyến mãi đặc biệt
                 .col-lg-6
-                    form.d-flex
-                        input.form-control.rounded-start-pill(type="email" placeholder="Email của bạn")
+                    form.d-flex(action="/newsletter" method="POST")
+                        input.form-control.rounded-start-pill(type="email" name="email" placeholder="Email của bạn" required aria-label="Email nhận tin")
                         button.btn.btn-warning.rounded-end-pill.px-2(type="submit") Đăng ký
 
     // Main Footer Content
@@ -54,22 +54,22 @@ footer.footer-modern
                     .footer-links
                         h5.text-white.mb-3 Về chúng tôi
                         ul.list-unstyled
-                            li.mb-2: a(href="#") Giới thiệu
-                            li.mb-2: a(href="#") Tuyển dụng
-                            li.mb-2: a(href="#") Tin tức
-                            li.mb-2: a(href="#") Liên hệ
-                            li.mb-2: a(href="#") Hệ thống cửa hàng
+                            li.mb-2: a(href="/about") Giới thiệu
+                            li.mb-2: a(href="/careers") Tuyển dụng
+                            li.mb-2: a(href="/news") Tin tức
+                            li.mb-2: a(href="/contact") Liên hệ
+                            li.mb-2: a(href="/stores") Hệ thống cửa hàng
 
                 // Customer Service
                 .col-lg-3.col-md-6
                     .footer-links
                         h5.text-white.mb-3 Chính sách
                         ul.list-unstyled
-                            li.mb-2: a(href="#") Chính sách khách hàng thân thiết
-                            li.mb-2: a(href="#") Chính sách đổi trả
-                            li.mb-2: a(href="#") Chính sách bảo hành
-                            li.mb-2: a(href="#") Chính sách bảo mật
-                            li.mb-2: a(href="#") Câu hỏi thường gặp
+                            li.mb-2: a(href="/policy/khach-hang-than-thiet") Chính sách khách hàng thân thiết
+                            li.mb-2: a(href="/policy/doi-tra") Chính sách đổi trả
+                            li.mb-2: a(href="/policy/bao-hanh") Chính sách bảo hành
+                            li.mb-2: a(href="/policy/bao-mat") Chính sách bảo mật
+                            li.mb-2: a(href="/faq") Câu hỏi thường gặp
 
                 // Contact Info
                 .col-lg-3.col-md-6
@@ -106,11 +106,17 @@ footer.footer-modern
                 .col-md-6.text-center.text-md-end
                     .payment-methods
                         span.text-white-50.me-2.small Thanh toán:
-                        img.me-2(src="/images/payment/visa.png" alt="Visa" height="20")
-                        img.me-2(src="/images/payment/mastercard.png" alt="Mastercard" height="20")
-                        img.me-2(src="/images/payment/momo.png" alt="Momo" height="20")
-                        img.me-2(src="/images/payment/zalopay.png" alt="ZaloPay" height="20")
-                        img(src="/images/payment/vnpay.png" alt="VNPay" height="20")
+                        span.pay-badge.pay-visa(title="Visa")
+                            i.fab.fa-cc-visa
+                        span.pay-badge.pay-mastercard(title="Mastercard")
+                            i.fab.fa-cc-mastercard
+                        span.pay-badge.pay-momo(title="MoMo") MoMo
+                        span.pay-badge.pay-zalopay(title="ZaloPay")
+                            | Zalo
+                            b Pay
+                        span.pay-badge.pay-vnpay(title="VNPay")
+                            | VN
+                            b PAY
 
     .chatbot-widget
         .chatbot-button

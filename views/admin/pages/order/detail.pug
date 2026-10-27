@@ -28,7 +28,12 @@ block main
                         dt.col-sm-5 Số điện thoại
                         dd.col-sm-7 #{order.userInfo && order.userInfo.phone ? order.userInfo.phone : "—"}
                         dt.col-sm-5 Địa chỉ
-                        dd.col-sm-7 #{order.userInfo && order.userInfo.address ? order.userInfo.address : "—"}
+                        dd.col-sm-7
+                            | #{order.userInfo && order.userInfo.address ? order.userInfo.address : "—"}
+                            if order.userInfo && order.userInfo.location && order.userInfo.location.lat
+                                a.d-block.small.mt-1(href=`https://www.google.com/maps/dir/?api=1&destination=${order.userInfo.location.lat},${order.userInfo.location.lng}` target="_blank" rel="noopener")
+                                    i.fas.fa-directions.me-1
+                                    | Chỉ đường tới vị trí khách ghim
                         dt.col-sm-5 Ngày đặt
                         dd.col-sm-7
                             if(order.dateOrder)

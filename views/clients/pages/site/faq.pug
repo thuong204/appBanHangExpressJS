@@ -1,0 +1,23 @@
+extends ../../layouts/default.pug
+include ../../mixins/section-page.pug
+include ../../mixins/page-hero.pug
+block main
+    +section-page(pageTitle)
+    +page-hero("Câu hỏi thường gặp", "Giải đáp nhanh các thắc mắc về đặt hàng, giao hàng, bảo hành và tài khoản.", "fa-question-circle")
+    .container.page-shell
+        .row.g-4
+            .col-lg-8
+                each group, gi in faqs
+                    h2.faq-group-title #{group.group}
+                    .faq-list
+                        each item in group.items
+                            details.faq-item
+                                summary #{item.q}
+                                p #{item.a}
+            .col-lg-4
+                .surface-card.sticky-aside.help-card
+                    i.fas.fa-headset
+                    h5 Chưa tìm thấy câu trả lời?
+                    p Liên hệ với chúng tôi, đội ngũ hỗ trợ sẽ phản hồi nhanh nhất có thể.
+                    a.btn.btn-warning.w-100(href=`tel:${company.hotlineTel}`) Gọi #{company.hotline}
+                    a.btn.btn-light.w-100.mt-2(href="/contact") Gửi liên hệ

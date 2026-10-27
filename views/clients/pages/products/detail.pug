@@ -5,84 +5,112 @@ include ../../mixins/section-page.pug
 
 block main
     +alert-success(3000)
+    +alert-error(3000)
     
     // Breadcrumb
     .container.mt-3
-       +section-page(pageTitle)
+       +section-page(pageTitle, breadcrumbs)
         
 
     // Product Detail Section
-    section.product-detail.py-4
+    section.product-detail.py-4(data-kind=product.kind)
         .container
-            .row.g-4
+            .row.g-3.g-md-4
                 // Product Gallery
                 .col-lg-7.col-md-6
                     .product-gallery
                         .main-image-wrapper
                             .main-image
                                 img#main-thumbnail.img-fluid.rounded-3(src=product.thumbnail alt=product.title)
-                            .image-controls
-                                button.btn-control.prev(type="button")
-                                    i.fas.fa-chevron-left
-                                button.btn-control.next(type="button")
-                                    i.fas.fa-chevron-right
+                            if product.listImage.length
+                                .image-controls
+                                    button.btn-control.prev(type="button")
+                                        i.fas.fa-chevron-left
+                                    button.btn-control.next(type="button")
+                                        i.fas.fa-chevron-right
                         
-                        .thumbnail-list
-                            .thumbnail-item.active
-                                img.thumbnail-img(src=product.thumbnail alt="Thumbnail")
-                            each image in product.listImage
-                                .thumbnail-item
-                                    img.thumbnail-img(src=image alt="Thumbnail")
+                        if product.listImage.length
+                            .thumbnail-list
+                                .thumbnail-item.active
+                                    img.thumbnail-img(src=product.thumbnail alt="Thumbnail")
+                                each image in product.listImage
+                                    .thumbnail-item
+                                        img.thumbnail-img(src=image alt="Thumbnail" loading="lazy")
 
                 // Product Info
                 .col-lg-5.col-md-6
                     .product-info
                         // Title and Price
                         .product-header.mb-4
+                            .product-meta.mb-2
+                                span.product-kind-badge
+                                    i.fas.me-1(class=product.kindIcon)
+                                    | #{product.categoryTitle || product.kindLabel}
+                                if product.stock > 0
+                                    span.stock-badge.in-stock
+                                        i.fas.fa-check-circle.me-1
+                                        | Còn hàng
+                                else
+                                    span.stock-badge.out-stock Hết hàng
                             h1.product-title #{product.title}
                             .product-price.mt-3
-                                if product.priceNew
+                                if product.discountPercentage && product.priceNew
                                     .price-new #{product.priceNew}đ
                                     .price-old #{product.priceInter}đ
+                                    span.price-discount -#{product.discountPercentage}%
                                 else
                                     .price-new #{product.priceInter}đ
                         
-                        // Specifications
-                        .product-specs.mb-4
-                            if product.screen || product.screenType
+                        // Thông số nhanh: chỉ với sản phẩm có màn hình (điện thoại, tablet, laptop)
+                        if product.screen || product.screenType
+                            .product-specs.mb-4
                                 .specs-group
-                                    h5.specs-title Thông số kỹ thuật
+                                    h5.specs-title Thông số nổi bật
                                     ul.specs-list
                                         if product.screen
                                             li
-                                                i.fas.fa-mobile-alt.me-2
-                                                | #{product.screen}
+                                                i.fas.me-2(class=product.kindIcon)
+                                                | Màn hình #{product.screen}
                                         if product.screenType
                                             li
                                                 i.fas.fa-desktop.me-2
                                                 | #{product.screenType}
                         
                         // Storage Options
-                        .storage-options.mb-4
-                            h5.storage-title Dung lượng
-                            .storage-buttons
-                                each item in productList
-                                    a.storage-btn(
-                                        href=`/products/detail/${item.slug}`
-                                        class=(item.storage === product.storage ? 'active' : '')
-                                    ) #{item.storage}
+                        if productList.length
+                            .storage-options.mb-4
+                                h5.storage-title #{product.storageLabel}
+                                .storage-buttons
+                                    each item in productList
+                                        a.storage-btn(
+                                            href=`/products/detail/${item.slug}`
+                                            class=(item.storage === product.storage ? 'active' : '')
+                                        ) #{item.storage}
                         
                         // Color Options
-                        if product.variations
+                        if product.showVariations
                             .color-options.mb-4
-                                h5.color-title Màu sắc
+                                h5.color-title #{product.colorLabel}
                                 .color-buttons
                                     each item in product.variations
                                         button.color-btn(
+                                            type="button"
                                             data-color=item.color
-                                            style=`background-color: ${item.color}`
+                                            title=item.color
                                             class=item.color === product.color ? 'active' : ''
+                                            disabled=item.quantity === 0
                                         )
+                                            if item.swatch
+                                                span.color-swatch(style=`background-color: ${item.swatch}`)
+                                            span.color-name #{item.color}
+                        
+                        // Chính sách theo loại sản phẩm
+                        if product.perks && product.perks.length
+                            ul.product-perks.mb-4
+                                each perk in product.perks
+                                    li
+                                        i.fas.fa-shield-alt.me-2
+                                        | #{perk}
                         
                         // Add to Cart Form
                         form.add-to-cart-form(action=`/cart/add/${product.id}` method="POST")
@@ -151,6 +179,6 @@ block main
             h2.section-title.mb-4
                 i.fas.fa-sync-alt.me-2
                 | Sản phẩm tương tự
-            .row.g-4
+            .row.g-3.g-md-4
                 +grid-products(productstRelated)
 

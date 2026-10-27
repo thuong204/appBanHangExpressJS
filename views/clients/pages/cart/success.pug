@@ -2,101 +2,82 @@ extends ../../layouts/default.pug
 include ../../mixins/section-page.pug
 include ../../mixins/alert.pug
 
-block main     
-    +section-page(pageTitle)
-    .order-success-container
-        .container 
-            .success-header
-                i.fas.fa-check-circle.success-icon
-                h3.success-title Đặt hàng thành công
-                .success-message
-                    | Chúc mừng bạn đã đặt hàng thành công! Chúng tôi sẽ xử lí đơn hàng trong thời gian sớm nhất.
+block main
+    +section-page("Đặt hàng thành công")
+    .container.page-shell
+        .surface-card.success-hero
+            span.success-hero-icon
+                i.fas.fa-check
+            h1.page-heading Đặt hàng thành công!
+            p.text-muted.mb-0 Cảm ơn bạn đã mua sắm. Chúng tôi sẽ xử lý đơn hàng trong thời gian sớm nhất.
 
-            if(order)
-                .order-details
-                    .order-section
-                        h4.section-title
-                            i.fas.fa-user
-                            | Thông tin cá nhân
-                        .info-card
-                            .info-row
-                                .info-label Họ tên
-                                .info-value #{order.userInfo.fullName}
-                            .info-row
-                                .info-label Số điện thoại
-                                .info-value #{order.userInfo.phone}
-                            .info-row
-                                .info-label Địa chỉ
-                                .info-value #{order.userInfo.address}
-                            .info-row
-                                .info-label Ngày đặt hàng
-                                .info-value #{order.date}
+        if(order)
+            .row.g-4.mt-1
+                .col-lg-8
+                    .surface-card
+                        h5.card-section-title
+                            i.fas.fa-box.me-2
+                            | Sản phẩm đã đặt
+                        ul.order-lines.order-lines-lg
+                            each item in order.products
+                                li
+                                    if item.productInfo
+                                        img(src=item.productInfo.thumbnail alt="")
+                                    .order-line-info
+                                        span.order-line-title #{item.productInfo ? item.productInfo.title : "Sản phẩm không còn kinh doanh"}
+                                        span.order-line-meta
+                                            | #{item.priceInter}đ × #{item.quantity}
+                                            if item.color
+                                                |  · #{item.color}
+                                    span.order-line-price #{item.totalPriceInter}đ
+                        if(order.note)
+                            .order-note
+                                i.fas.fa-sticky-note.me-2
+                                | Ghi chú: #{order.note}
 
-                    .order-section
-                        h4.section-title
-                            i.fas.fa-shopping-bag
-                            | Thông tin đơn hàng
-                        .order-table-wrapper
-                            table.order-table
-                                thead
-                                    tr
-                                        th STT
-                                        th Ảnh
-                                        th Tên
-                                        th Màu sắc
-                                        th Giá
-                                        th Số lượng
-                                        th Tổng tiền
-                                tbody
-                                    each item, index in order.products
-                                        tr
-                                            td #{index+1}
-                                            td
-                                                img.product-image-success(
-                                                    src=item.productInfo.thumbnail
-                                                    alt=item.productInfo.title
-                                                )
-                                            td #{item.productInfo.title}
-                                            td #{item.color}
-                                            td #{item.priceInter}đ
-                                            td #{item.quantity}
-                                            td #{item.totalPriceInter}đ
+                .col-lg-4
+                    .surface-card.mb-4
+                        h5.card-section-title
+                            i.fas.fa-user.me-2
+                            | Người nhận
+                        dl.info-list
+                            dt Họ tên
+                            dd #{order.userInfo.fullName}
+                            dt Số điện thoại
+                            dd #{order.userInfo.phone}
+                            dt Địa chỉ
+                            dd
+                                | #{order.userInfo.address}
+                                if order.userInfo.location && order.userInfo.location.lat
+                                    a.d-block.small.mt-1(href=`https://www.google.com/maps?q=${order.userInfo.location.lat},${order.userInfo.location.lng}` target="_blank" rel="noopener")
+                                        i.fas.fa-map-marker-alt.me-1
+                                        | Xem vị trí trên bản đồ
+                            dt Ngày đặt
+                            dd #{order.date}
 
-                        if(order.products.length > 0)
-                            .order-summary
-                                if(order.note)
-                                    .note-section
-                                        i.fas.fa-sticky-note
-                                        span Ghi chú: #{order.note}
+                    if(order.products.length > 0)
+                        .surface-card.summary-card
+                            h5.summary-title Thanh toán
+                            .summary-row
+                                span Tổng đơn hàng
+                                span.fw-semibold #{order.totalPriceInter}đ
+                            .summary-row
+                                span Phương thức
+                                if(order.payments == "paymentdelivery")
+                                    span Khi nhận hàng
+                                else
+                                    span.text-success Đã chuyển khoản
+                            .summary-row.summary-total
+                                span Cần thanh toán
+                                if(order.payments == "paymentdelivery")
+                                    span #{order.totalPriceInter}đ
+                                else
+                                    span 0đ
 
-                                .payment-summary
-                                    if(order.payments == "paymentdelivery")
-                                        .summary-row
-                                            span Tổng đơn hàng
-                                            span #{order.totalPriceInter}đ
-                                        .summary-row
-                                            span Phương thức thanh toán
-                                            span Thanh toán khi nhận hàng
-                                        .summary-row.total
-                                            span Tổng tiền thanh toán
-                                            span #{order.totalPriceInter}đ
-                                    else
-                                        .summary-row
-                                            span Tổng đơn hàng
-                                            span #{order.totalPriceInter}đ
-                                        .summary-row
-                                            span Phương thức thanh toán
-                                            span Đã thanh toán khi đặt hàng
-                                        .summary-row.total
-                                            span Tổng tiền thanh toán
-                                            span 0đ
-
-                .action-buttons
-                    a.btn-continue-shopping(href="/products")
-                        i.fas.fa-arrow-left
-                        | Tiếp tục mua sắm
-                    a.btn-view-orders(href="/account/orders")
-                        i.fas.fa-list
-                        | Xem đơn hàng của tôi
-
-
+        .success-actions
+            a.btn.btn-light.btn-lg(href="/products")
+                i.fas.fa-arrow-left.me-2
+                | Tiếp tục mua sắm
+            a.btn.btn-warning.btn-lg(href="/cart/order/history")
+                i.fas.fa-receipt.me-2
+                | Xem đơn hàng của tôi

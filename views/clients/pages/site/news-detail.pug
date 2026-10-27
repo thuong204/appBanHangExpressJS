@@ -1,0 +1,44 @@
+extends ../../layouts/default.pug
+include ../../mixins/section-page.pug
+block main
+    +section-page(article.title, [{ title: "Tin tức", href: "/news" }])
+    .container.page-shell
+        .row.g-4
+            .col-lg-8
+                article.surface-card.article
+                    a.news-tag(href=`/news?category=${article.category}`) #{article.categoryTitle}
+                    h1.article-title #{article.title}
+                    .article-meta
+                        span
+                            i.far.fa-calendar-alt.me-2
+                            | #{article.dateText}
+                        span
+                            i.far.fa-user.me-2
+                            | Vô Thường
+                    p.article-lead #{article.excerpt}
+                    .article-cover
+                        img(src=article.image alt="")
+                    .article-content !{article.content}
+                    .article-foot
+                        a.btn.btn-light(href="/news")
+                            i.fas.fa-arrow-left.me-2
+                            | Tất cả bài viết
+                        a.btn.btn-warning(href="/products") Xem sản phẩm
+
+            .col-lg-4
+                .surface-card.sticky-aside
+                    h5.card-section-title Bài viết khác
+                    ul.side-news
+                        each item in relatedNews
+                            li
+                                a(href=`/news/${item.slug}`)
+                                    img(src=item.image alt="" loading="lazy")
+                                    span
+                                        strong #{item.title}
+                                        small #{item.dateText}
+                .surface-card.mt-4.help-card
+                    i.fas.fa-headset
+                    h5 Cần tư vấn?
+                    p Gọi hotline hoặc nhắn tin, đội ngũ của chúng tôi luôn sẵn sàng hỗ trợ.
+                    a.btn.btn-warning.w-100(href="tel:19001234") Gọi 1900 1234
+                    a.btn.btn-light.w-100.mt-2(href="/contact") Gửi liên hệ

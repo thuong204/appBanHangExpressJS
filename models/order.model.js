@@ -6,7 +6,17 @@ const orderSchema = new mongoose.Schema(
         userInfo:{
             fullName: String,
             phone: String,
+            // Địa chỉ đầy đủ đã ghép sẵn (giữ để tương thích các đơn/trang cũ)
             address: String,
+            addressDetail: String,
+            ward: String,
+            wardCode: Number,
+            province: String,
+            provinceCode: Number,
+            location: {
+                lat: Number,
+                lng: Number,
+            },
         },
         payments: String,
         status: String,

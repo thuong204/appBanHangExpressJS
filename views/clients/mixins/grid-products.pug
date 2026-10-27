@@ -1,52 +1,6 @@
+include product-card.pug
+
 mixin grid-products(products)
     each item in products
-        .col-sm-6.col-6.col-lg-3.col-md-4.mb-4
-            .product-card
-                // Discount Badge
-                if(item.discountPercentage != 0)
-                    .product-badge
-                        span.badge-text -#{item.discountPercentage}%
-                
-                // Product Image
-                .product-image
-                    a(href=`/products/detail/${item.slug}`)
-                        img.img-fluid(src=item.thumbnail alt=item.title)
-                    // Quick Actions
-                    .product-actions
-                        button.btn-action.wishlist-btn(type="button" title="Thêm vào yêu thích")
-                            i.far.fa-heart
-                        button.btn-action.quick-view-btn(type="button" title="Xem nhanh")
-                            i.fas.fa-eye
-                
-                // Product Info
-                .product-info
-                    // Category (if available)
-                    if item.category
-                        .product-category
-                            a(href=`/products/category/${item.category.slug}`) #{item.category.title}
-                    
-                    // Title
-                    .product-title
-                        a(href=`/products/detail/${item.slug}`) #{item.title}
-                    
-                    // Price
-                    .product-price
-                        if(item.discountPercentage != 0)
-                            .price-new #{item.priceNew}đ
-                            .price-old #{item.priceInter}đ
-                        else
-                            .price-new #{item.priceInter}đ
-                    
-                    // Rating
-                    .product-rating
-                        .stars
-                            - for (let i = 0; i < 5; i++)
-                                i.fas.fa-star
-                        .rating-count (12)
-                    
-                    // Add to Cart Button
-                    .product-cta
-                        button.btn-add-cart(type="button")
-                            i.fas.fa-shopping-cart.me-2
-                            | Thêm vào giỏ
-
+        .col-6.col-md-4.col-lg-3
+            +product-card(item)

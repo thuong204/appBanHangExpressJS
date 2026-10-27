@@ -4,11 +4,11 @@ const generate = require("../../helpers/generate")
 const sendMailHelper = require("../../helpers/sendmail")
 const Cart = require("../../models/carts.model")
 module.exports.register = async (req, res) => {
-    res.render("clients/pages/users/register")
+    res.render("clients/pages/users/register", { pageTitle: "Đăng ký" })
 
 }
 module.exports.login = async (req, res) => {
-    res.render("clients/pages/users/login")
+    res.render("clients/pages/users/login", { pageTitle: "Đăng nhập" })
 
 }
 module.exports.logout = async (req, res) => {
@@ -104,7 +104,7 @@ module.exports.forgotPost = async (req, res) => {
 module.exports.otpPassword = async (req, res) => {
     const email = req.query.email
     res.render("clients/pages/users/otp-password", {
-        pageTitle: "Nhạp mã OTP",
+        pageTitle: "Nhập mã OTP",
         email: email
     })
 }
@@ -127,7 +127,7 @@ module.exports.otpPasswordPost = async (req, res) => {
     res.redirect("/user/password/reset")
 }
 module.exports.resetPassword = (req, res) => {
-    res.render("clients/pages/users/reset-password")
+    res.render("clients/pages/users/reset-password", { pageTitle: "Đổi mật khẩu" })
 }
 module.exports.resetPasswordPost = async (req, res) => {
     const password = req.body.password

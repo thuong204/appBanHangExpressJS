@@ -1,0 +1,43 @@
+extends ../../layouts/default.pug
+include ../../mixins/section-page.pug
+include ../../mixins/page-hero.pug
+block main
+    +section-page(pageTitle)
+    +page-hero("Tin tức công nghệ", "Đánh giá, tư vấn chọn mua và thủ thuật hữu ích từ Vô Thường", "fa-newspaper")
+    .container.page-shell
+        .catalog-chips.mb-3
+            a.catalog-chip(href="/news" class=!currentCategory ? 'active' : '') Tất cả
+            each cat in newsCategories
+                a.catalog-chip(href=`/news?category=${cat.slug}` class=cat.slug === currentCategory ? 'active' : '') #{cat.title}
+
+        if !newsList.length
+            .empty-state
+                i.fas.fa-newspaper
+                h5 Chưa có bài viết trong chuyên mục này
+                a.btn.btn-warning(href="/news") Xem tất cả bài viết
+        else
+            - const featured = newsList[0]
+            a.news-featured(href=`/news/${featured.slug}`)
+                .news-featured-media
+                    img(src=featured.image alt="")
+                .news-featured-body
+                    span.news-tag #{featured.categoryTitle}
+                    h2 #{featured.title}
+                    p #{featured.excerpt}
+                    span.news-date
+                        i.far.fa-calendar-alt.me-2
+                        | #{featured.dateText}
+
+            .row.g-3.g-md-4.mt-1
+                each item in newsList.slice(1)
+                    .col-md-6.col-lg-4
+                        a.news-card(href=`/news/${item.slug}`)
+                            .news-card-media
+                                img(src=item.image alt="" loading="lazy")
+                            .news-card-body
+                                span.news-tag #{item.categoryTitle}
+                                h3 #{item.title}
+                                p #{item.excerpt}
+                                span.news-date
+                                    i.far.fa-calendar-alt.me-2
+                                    | #{item.dateText}
