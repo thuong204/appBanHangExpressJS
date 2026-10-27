@@ -3,7 +3,8 @@ const IS_VERCEL = Boolean(process.env.VERCEL);
 
 function parseMaxTokens() {
   const env = parseInt(process.env.CHATBOT_MAX_TOKENS || "0", 10);
-  const fallback = IS_VERCEL ? 512 : 768;
+  // Model reasoning (GPT-5.x…) tính cả token suy luận vào max_tokens → local cần dư dả
+  const fallback = IS_VERCEL ? 512 : 2500;
   let tokens = Number.isFinite(env) && env > 0 ? env : fallback;
   if (IS_VERCEL) tokens = Math.min(tokens, 768);
   return Math.min(8192, Math.max(64, tokens));

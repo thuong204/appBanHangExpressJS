@@ -22,7 +22,74 @@ if (!activeLLM) {
   );
 }
 
-const chatHistory = new Map();
+const MAX_MESSAGE_LENGTH = 500;
+const SESSION_TTL_MS = 30 * 60 * 1000;
+const MAX_SESSIONS = 2000;
+const RATE_WINDOW_MS = 60 * 1000;
+const RATE_MAX_REQUESTS = 12;
+
+/** sessionId → { history, lastProductSlugs, lastQuery, at } */
+const sessions = new Map();
+/** ip → { count, start } */
+const rateBuckets = new Map();
+let lastSweepAt = 0;
+
+/** Dọn phiên hết hạn và bucket rate-limit cũ (tối đa 1 lần/phút) */
+function sweepState(now) {
+  if (now - lastSweepAt < 60 * 1000) return;
+  lastSweepAt = now;
+  for (const [id, s] of sessions) {
+    if (now - s.at > SESSION_TTL_MS) sessions.delete(id);
+  }
+  for (const [ip, b] of rateBuckets) {
+    if (now - b.start > RATE_WINDOW_MS) rateBuckets.delete(ip);
+  }
+}
+
+function getClientIp(req) {
+  const fwd = String(req.headers["x-forwarded-for"] || "").split(",")[0].trim();
+  return fwd || req.ip || req.socket?.remoteAddress || "unknown";
+}
+
+function isRateLimited(ip, now) {
+  const bucket = rateBuckets.get(ip);
+  if (!bucket || now - bucket.start > RATE_WINDOW_MS) {
+    rateBuckets.set(ip, { count: 1, start: now });
+    return false;
+  }
+  bucket.count += 1;
+  return bucket.count > RATE_MAX_REQUESTS;
+}
+
+function getSession(sessionId, now) {
+  const id = /^[\w-]{1,64}$/.test(String(sessionId || "")) ? sessionId : null;
+  if (!id) return { history: [], lastProductSlugs: [], lastQuery: "", at: now };
+
+  let session = sessions.get(id);
+  if (!session || now - session.at > SESSION_TTL_MS) {
+    if (sessions.size >= MAX_SESSIONS) {
+      // Map giữ thứ tự chèn → xoá phiên cũ nhất
+      sessions.delete(sessions.keys().next().value);
+    }
+    session = { history: [], lastProductSlugs: [], lastQuery: "", at: now };
+    sessions.set(id, session);
+  }
+  session.at = now;
+  return session;
+}
+
+function pushHistory(session, userMessage, reply) {
+  session.history.push({ role: "user", content: userMessage });
+  session.history.push({ role: "assistant", content: reply });
+  if (session.history.length > 10) session.history = session.history.slice(-10);
+}
+
+/** Bỏ khối suy luận (<think>…</think>) mà một số model trả kèm */
+function cleanModelText(text) {
+  return String(text || "")
+    .replace(/<think>[\s\S]*?<\/think>/gi, "")
+    .trim();
+}
 
 const convertHistoryToOpenAIFormat = (history) =>
   history.slice(-6).map((msg) => ({
@@ -87,8 +154,15 @@ async function callLLM(messages) {
     throw new Error(`${status}: ${msg}`);
   }
 
-  const text = data?.choices?.[0]?.message?.content;
-  if (!text) throw new Error("API không trả về nội dung");
+  const choice = data?.choices?.[0];
+  const text = cleanModelText(choice?.message?.content);
+  if (!text) {
+    throw new Error(
+      choice?.finish_reason === "length"
+        ? "Model hết token trước khi trả lời — tăng CHATBOT_MAX_TOKENS (model reasoning cần ≥ 2000)."
+        : "API không trả về nội dung"
+    );
+  }
   return text;
 }
 
@@ -96,31 +170,47 @@ const handleChat = async (req, res) => {
   const started = Date.now();
 
   try {
-    const { message, sessionId } = req.body;
+    const now = Date.now();
+    sweepState(now);
+
+    const { sessionId } = req.body || {};
+    const message = String(req.body?.message || "").trim();
 
     if (!message) {
       return res.status(400).json({
         error: "Tin nhắn không được để trống.",
       });
     }
+    if (message.length > MAX_MESSAGE_LENGTH) {
+      return res.status(400).json({
+        error: "Tin nhắn quá dài.",
+        response: `Tin nhắn hơi dài, bạn rút gọn dưới ${MAX_MESSAGE_LENGTH} ký tự giúp mình nhé.`,
+      });
+    }
+    if (isRateLimited(getClientIp(req), now)) {
+      return res.status(429).json({
+        error: "Quá nhiều yêu cầu.",
+        response: "Bạn gửi hơi nhanh rồi, đợi khoảng một phút rồi hỏi tiếp giúp mình nhé.",
+      });
+    }
 
-    let history = chatHistory.get(sessionId) || [];
+    const session = getSession(sessionId, now);
 
     const intent = classifyIntent(message);
     if (intent === "greeting") {
-      history.push({ role: "user", content: message });
-      history.push({ role: "assistant", content: GREETING_REPLY });
-      if (history.length > 10) history = history.slice(-10);
-      chatHistory.set(sessionId, history);
+      pushHistory(session, message, GREETING_REPLY);
       return res.json({ response: GREETING_REPLY, productSuggestions: [] });
     }
 
-    const knowledge = await retrieveKnowledge(message);
+    const knowledge = await retrieveKnowledge(message, {
+      lastProductSlugs: session.lastProductSlugs,
+      lastQuery: session.lastQuery,
+    });
     const systemPrompt = buildSystemPrompt(knowledge);
 
     const messages = [
       { role: "system", content: systemPrompt },
-      ...convertHistoryToOpenAIFormat(history),
+      ...convertHistoryToOpenAIFormat(session.history),
       { role: "user", content: message },
     ];
 
@@ -131,10 +221,12 @@ const handleChat = async (req, res) => {
         ? await resolveProductSuggestions(response, knowledge.ragProducts || [])
         : [];
 
-    history.push({ role: "user", content: message });
-    history.push({ role: "assistant", content: response });
-    if (history.length > 10) history = history.slice(-10);
-    chatHistory.set(sessionId, history);
+    pushHistory(session, message, response);
+    // Ghi nhớ sản phẩm khách vừa thấy để hiểu câu hỏi nối tiếp ("cái thứ 2", "máy đó"…)
+    if (productSuggestions.length) {
+      session.lastProductSlugs = productSuggestions.map((p) => p.slug).slice(0, 5);
+    }
+    if (knowledge.searchQuery) session.lastQuery = knowledge.searchQuery;
 
     return res.json({ response, productSuggestions });
   } catch (error) {

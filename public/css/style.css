@@ -4032,6 +4032,55 @@ div#paymentSuccessModal .payment-success {
   margin-left: 4px;
 }
 
+.message-chat.bot .chatbot-product-row__media {
+  position: relative;
+}
+
+.message-chat.bot .chatbot-product-row__badge {
+  position: absolute;
+  top: 4px;
+  left: 4px;
+  padding: 1px 5px;
+  border-radius: 6px;
+  background: #e53935;
+  color: #fff;
+  font-size: 10px;
+  font-weight: 700;
+  line-height: 1.4;
+}
+
+.message-chat.bot .chatbot-product-row__price {
+  font-size: 13px;
+  font-weight: 700;
+  color: #e53935;
+}
+
+.message-chat.bot .chatbot-product-row__price del {
+  margin-left: 4px;
+  font-size: 11px;
+  font-weight: 400;
+  color: #999;
+}
+
+.message-chat.bot .chatbot-product-row__stock.is-out {
+  margin-right: 8px;
+  padding: 1px 6px;
+  border-radius: 6px;
+  background: #f1f1f1;
+  color: #777;
+  font-weight: 600;
+}
+
+.message-chat.bot .message-content ol {
+  margin: 4px 0 10px;
+  padding-left: 20px;
+}
+
+.message-chat.bot .message-content del {
+  color: #999;
+  font-size: 12px;
+}
+
 @media (max-width: 768px) {
   .chatbot-container {
     width: min(calc(100vw - 90px), 360px);

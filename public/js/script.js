@@ -602,7 +602,12 @@ document.addEventListener("DOMContentLoaded", function () {
     );
     return withHttps
       .replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>")
+      .replace(/~~(.+?)~~/g, "<del>$1</del>")
       .replace(/`(.+?)`/g, "<code>$1</code>");
+  }
+
+  function formatVnd(amount) {
+    return `${Number(amount || 0).toLocaleString("vi-VN")}đ`;
   }
 
   function renderProductCards(suggestions) {
@@ -614,12 +619,23 @@ document.addEventListener("DOMContentLoaded", function () {
         const thumb = s.thumbnail
           ? `<img src="${escapeHtml(s.thumbnail)}" alt="" loading="lazy" decoding="async" />`
           : '<div class="chatbot-row-noimg" aria-hidden="true"><i class="fas fa-image"></i></div>';
+        const discount = Number(s.discount) || 0;
+        const badge = discount > 0 ? `<span class="chatbot-product-row__badge">-${discount}%</span>` : "";
+        const price = Number(s.price) > 0
+          ? `<span class="chatbot-product-row__price">${formatVnd(s.price)}` +
+            (Number(s.priceOld) > 0 ? ` <del>${formatVnd(s.priceOld)}</del>` : "") +
+            `</span>`
+          : "";
+        const stock = s.inStock === false
+          ? '<span class="chatbot-product-row__stock is-out">Hết hàng</span>'
+          : "";
         return (
           `<a class="chatbot-product-row" href="${href}">` +
-          `<div class="chatbot-product-row__media">${thumb}</div>` +
+          `<div class="chatbot-product-row__media">${thumb}${badge}</div>` +
           `<div class="chatbot-product-row__body">` +
           `<span class="chatbot-product-row__title">${title}</span>` +
-          `<span class="chatbot-product-row__cta">Xem chi tiết <i class="fas fa-chevron-right"></i></span>` +
+          price +
+          `<span class="chatbot-product-row__cta">${stock}Xem chi tiết <i class="fas fa-chevron-right"></i></span>` +
           `</div></a>`
         );
       })
@@ -697,16 +713,27 @@ document.addEventListener("DOMContentLoaded", function () {
         continue;
       }
 
+      if (/^\d+[.)]\s+/.test(line)) {
+        const items = [];
+        while (i < lines.length && /^\d+[.)]\s+/.test(lines[i].trim())) {
+          items.push(`<li>${renderInline(lines[i].trim().replace(/^\d+[.)]\s+/, ""))}</li>`);
+          i += 1;
+        }
+        out.push(`<ol>${items.join("")}</ol>`);
+        continue;
+      }
+
       const chunk = [];
       while (
         i < lines.length &&
         lines[i].trim() &&
-        !/^#\s+|^##\s+|^###\s+|^[-*]\s+|^\|.+\|$/.test(lines[i].trim())
+        !/^#\s+|^##\s+|^###\s+|^[-*]\s+|^\d+[.)]\s+|^\|.+\|$/.test(lines[i].trim())
       ) {
         chunk.push(lines[i].trim());
         i += 1;
       }
-      out.push(`<p>${renderInline(chunk.join("<br>"))}</p>`);
+      // renderInline từng dòng rồi mới nối <br> (nếu nối trước, <br> bị escape thành chữ)
+      out.push(`<p>${chunk.map(renderInline).join("<br>")}</p>`);
     }
 
     return out.join("");
@@ -816,11 +843,18 @@ document.addEventListener("DOMContentLoaded", function () {
 
       if (!response.ok) {
         let errorMsg = "Không thể kết nối đến chatbot.";
+        let friendly = "";
         try {
           const errorData = await response.json();
           errorMsg = errorData.error || errorMsg;
+          friendly = errorData.response || "";
         } catch (_) {
           /* ignore parse error */
+        }
+        // Server đã soạn sẵn lời nhắn thân thiện (quá dài, gửi quá nhanh…) → hiện luôn
+        if (friendly) {
+          addMessage(friendly);
+          return;
         }
         throw new Error(errorMsg);
       }
