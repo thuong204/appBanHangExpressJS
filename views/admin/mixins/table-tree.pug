@@ -39,7 +39,7 @@ mixin table-tree(records, level=1)
 
                 if(role.permissions.includes("products-category-edit"))
                    a.btn.btn-sm.btn-outline-primary(
-                                                    href=`${prefixAdmin}/products/edit/${item.id}`
+                                                    href=`${prefixAdmin}/category-products/edit/${item.id}`
                                                     data-id=item.id
                                                     data-bs-toggle="tooltip" 
                                                     data-bs-placement="top" 

@@ -121,6 +121,10 @@ module.exports.editItem = async (req, res) => {
 
         const allCategoryProduct = await CategoryProduct.find(findCategory)
         const categoryProduct = await CategoryProduct.findOne(find)
+        if (!categoryProduct) {
+            req.flash("Error", "Không tồn tại danh mục này")
+            return res.redirect('/admin/category-products')
+        }
         const newAllCategoryProduct = tree.createTree(allCategoryProduct)
 
         res.render("admin/pages/category-products/edit",
